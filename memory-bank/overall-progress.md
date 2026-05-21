@@ -88,7 +88,7 @@ Downloaded / prepared:
 
 ### Data Added to Git
 
-At the user's request, the downloaded data directory is now tracked in git:
+At the user's request, the downloaded data directory is now tracked in git and pushed to `origin/main`:
 
 - Updated `.gitignore` so `deviation-bench/data_sources/downloaded/` is no longer ignored.
 - Added `deviation-bench/data_sources/下载清单与访问状态.md` with source URLs, licenses, checksums, counts, citations, and intended use.
@@ -100,6 +100,9 @@ At the user's request, the downloaded data directory is now tracked in git:
   - Weval configs: CC0 1.0.
   - Bloom / Weval cloned `.git` metadata is not tracked by the parent repository.
 - GitHub push protection flagged Stripe-like example keys in Bloom sabotage examples; these placeholders were redacted in the local tracked copies before pushing.
+- Data commit pushed: `27d461b` (`Add downloaded data sources`).
+- Parent repository status after push: clean.
+- Nested `.git` metadata for Bloom / Weval was temporarily moved while adding files, then restored locally; it is not tracked by the parent repository.
 
 ### Data Sources Identified but Not Downloaded
 

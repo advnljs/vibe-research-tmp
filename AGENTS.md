@@ -142,6 +142,8 @@ As of 2026-05-21:
 - Data/source collection has started.
 - Workspace navigation exists.
 - Memory bank exists.
+- Local git repository exists on branch `main`.
+- Remote `origin` is `git@github.com:advnljs/vibe-research-tmp.git`.
 - No formal experiment runner exists yet.
 - No pilot benchmark results exist yet.
 
@@ -157,6 +159,10 @@ Recommended next work:
 Target remote:
 
 - `git@github.com:advnljs/vibe-research-tmp.git`
+
+Current branch:
+
+- `main`
 
 Repository policy:
 

@@ -125,14 +125,16 @@ It records the user’s current requirements, constraints, safety boundaries, an
 
 ### Repository Setup
 
-Prepared repository tracking for the workspace:
+Completed repository setup for the workspace:
 
 - Added `.gitignore`.
 - Chose a conservative default: `deviation-bench/data_sources/downloaded/` is not committed because it contains raw downloaded datasets, extracted transcripts, archives, and cloned third-party repositories.
 - Added `.gitkeep` files for:
   - `deviation-bench/data_sources/notes/`
   - `deviation-bench/data_sources/restricted_or_apply/`
-- Target remote requested by user: `git@github.com:advnljs/vibe-research-tmp.git`.
+- Initialized local git repository on branch `main`.
+- Configured remote `origin`: `git@github.com:advnljs/vibe-research-tmp.git`.
+- Initial commit pushed to `origin/main`: `bb86941` (`Initial Deviation Bench research workspace`).
 
 ## Current Open Items
 

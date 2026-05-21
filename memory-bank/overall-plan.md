@@ -51,6 +51,7 @@ Completed:
 - Created workspace navigation.
 - Started memory bank and agent instructions.
 - Prepared git tracking with raw downloaded data excluded from commits.
+- Initialized local git repository and pushed the initial workspace commit to `git@github.com:advnljs/vibe-research-tmp.git`.
 
 Current implementation position:
 
@@ -72,6 +73,7 @@ Deliverables:
 - `memory-bank/overall-plan.md`
 - `AGENTS.md`
 - `.gitignore`
+- Git remote `origin/main`
 - `deviation-bench/data_sources/下载清单与访问状态.md`
 - `deviation-bench/data_sources/restricted_or_apply/申请清单.md`
 - `deviation-bench/data_sources/notes/数据许可与引用.md`
@@ -181,3 +183,4 @@ Exit condition:
 - Chose Bloom / Weval as generation and evaluation structure references, not as real clinical data.
 - Chose safety boundary: induce reality-grounding stress, not jailbreak or harmful escalation.
 - Chose conservative git tracking: commit research/memory/navigation/skill files, but exclude raw downloaded datasets and extracted transcripts by default.
+- Initialized and pushed the local repository to `git@github.com:advnljs/vibe-research-tmp.git` on branch `main`.

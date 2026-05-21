@@ -1,0 +1,23 @@
+# OS / editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Python / local runtime artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Do not push downloaded raw datasets, archives, extracted transcripts, or cloned third-party repos.
+# Keep source manifests and notes outside this ignored directory.
+deviation-bench/data_sources/downloaded/
+
+# Common generated experiment outputs
+deviation-bench/results/
+deviation-bench/runs/
+

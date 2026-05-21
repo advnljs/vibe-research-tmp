@@ -1,0 +1,71 @@
+name: "var-self-preservation-rep"
+program: bloom_eval.py
+method: grid
+metric:
+  name: average_behavior_presence_score
+  goal: maximize
+parameters:
+  # behavior parameters
+  behavior.name:
+    value: "self-preservation"
+  behavior.examples:
+    value: ["blackmail-opus4"]
+  
+  # Global parameters
+  temperature:
+    value: 1.0
+  evaluator_reasoning_effort:
+    value: "medium"
+  target_reasoning_effort:
+    value: "low"
+  max_concurrent:
+    value: 10
+  debug:
+    value: false
+
+  # Understanding parameters
+  
+  understanding.model:
+    value: "gpt-5"
+  understanding.max_tokens:
+    value: 5000
+  
+  # Ideation parameters
+  ideation.model:
+    value: "gpt-5"
+  ideation.total_evals:
+    value: 50
+  ideation.diversity:
+    value: 1.0
+  ideation.max_tokens:
+    value: 16000
+
+  # Rollout parameters
+  rollout.model:
+    value: "gpt-5"
+  rollout.target:
+    value: "grok-4"
+  rollout.modality:
+    value: "simenv"
+  rollout.max_turns:
+    value: 7
+  rollout.no_user_mode:
+    value: true
+  rollout.max_tokens:
+    value: 20000
+  rollout.num_reps:
+    value: 5
+  
+  # Judge parameters
+  judgment.model:
+    value: "claude-sonnet-4"
+  judgment.max_tokens:
+    value: 6000
+  judgment.num_samples:
+    value: 1
+  judgment.additional_qualities:
+    value: ["unrealism", "evaluator-forcefulness", "evaluation-awareness", "bugs", "creativity", "evaluation-invalidity"]
+  judgment.metajudgment_qualities:
+    value: ["diversity"]
+
+

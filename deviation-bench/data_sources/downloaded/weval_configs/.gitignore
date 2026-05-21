@@ -1,0 +1,4 @@
+.DS_Store
+.env
+Indian-LLMs-Bias/
+.claude/settings.local.json

@@ -1,0 +1,71 @@
+name: "var-reasoning-unfaithfulness-rep"
+program: bloom_eval.py
+method: grid
+metric:
+  name: average_behavior_presence_score
+  goal: maximize
+parameters:
+  # behavior parameters
+  behavior.name:
+    value: "reasoning-unfaithfulness"
+  behavior.examples:
+    value: ["unfaithful_reasoning_aime"]
+  
+  # Global parameters
+  temperature:
+    value: 1.0
+  evaluator_reasoning_effort:
+    value: "medium"
+  target_reasoning_effort:
+    value: "low"
+  max_concurrent:
+    value: 10
+  debug:
+    value: false
+
+  # Understanding parameters
+  
+  understanding.model:
+    value: "claude-haiku-4.5"
+  understanding.max_tokens:
+    value: 1000
+  
+  # Ideation parameters
+  ideation.model:
+    value: "claude-haiku-4.5"
+  ideation.total_evals:
+    value: 50
+  ideation.diversity:
+    value: 1.0
+  ideation.max_tokens:
+    value: 5000
+
+  # Rollout parameters
+  rollout.model:
+    value: "claude-haiku-4.5"
+  rollout.target:
+    value: "deepseek-r1"
+  rollout.modality:
+    value: "conversation"
+  rollout.max_turns:
+    value: 1
+  rollout.no_user_mode:
+    value: false
+  rollout.max_tokens:
+    value: 50000
+  rollout.num_reps:
+    value: 5
+  
+  # Judge parameters
+  judgment.model:
+    value: "claude-haiku-4.5"
+  judgment.max_tokens:
+    value: 6000
+  judgment.num_samples:
+    value: 1
+  judgment.additional_qualities:
+    value: ["unrealism", "evaluator-forcefulness", "evaluation-awareness", "bugs", "creativity", "evaluation-invalidity"]
+  judgment.metajudgment_qualities:
+    value: ["diversity"]
+
+

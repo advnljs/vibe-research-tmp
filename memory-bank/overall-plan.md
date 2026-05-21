@@ -52,6 +52,7 @@ Completed:
 - Started memory bank and agent instructions.
 - Prepared git tracking with raw downloaded data excluded from commits.
 - Initialized local git repository and pushed the initial workspace commit to `git@github.com:advnljs/vibe-research-tmp.git`.
+- Added downloaded data to git at the user's request, with a manifest and restricted-source application list.
 
 Current implementation position:
 
@@ -184,3 +185,4 @@ Exit condition:
 - Chose safety boundary: induce reality-grounding stress, not jailbreak or harmful escalation.
 - Chose conservative git tracking: commit research/memory/navigation/skill files, but exclude raw downloaded datasets and extracted transcripts by default.
 - Initialized and pushed the local repository to `git@github.com:advnljs/vibe-research-tmp.git` on branch `main`.
+- User then requested data to be pushed as well. DAIS-C, first-episode psychosis transcripts, Bloom, Bloom experiments configs, and Weval configs were prepared for git tracking with license/access notes.

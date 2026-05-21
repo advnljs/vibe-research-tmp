@@ -86,6 +86,21 @@ Downloaded / prepared:
   - `deviation-bench/data_sources/downloaded/weval_configs/`
   - Relevant blueprints include `ai-psychosis.yml`, `ai-spiral-safety.yml`, `mental-health.yml`, `stanford-hai-mental-health-safety-eval.yml`, `sycophancy-probe.yml`, `overpersonalization-anchor-bias.yml`, `polarization-confirmation-risk.yml`, and `hallucination-probe.yml`.
 
+### Data Added to Git
+
+At the user's request, the downloaded data directory is now tracked in git:
+
+- Updated `.gitignore` so `deviation-bench/data_sources/downloaded/` is no longer ignored.
+- Added `deviation-bench/data_sources/下载清单与访问状态.md` with source URLs, licenses, checksums, counts, citations, and intended use.
+- Added `deviation-bench/data_sources/restricted_or_apply/申请清单.md`.
+- License/access checks recorded:
+  - DAIS-C: open access, CC BY-SA 4.0 on ReShare.
+  - PLOS/Figshare first-episode psychosis transcripts: CC BY 4.0.
+  - Bloom: MIT License.
+  - Weval configs: CC0 1.0.
+  - Bloom / Weval cloned `.git` metadata is not tracked by the parent repository.
+- GitHub push protection flagged Stripe-like example keys in Bloom sabotage examples; these placeholders were redacted in the local tracked copies before pushing.
+
 ### Data Sources Identified but Not Downloaded
 
 Restricted or application-based sources identified:
@@ -138,8 +153,7 @@ Completed repository setup for the workspace:
 
 ## Current Open Items
 
-- Create a formal downloaded-data manifest with source URLs, checksums, counts, license notes, and intended use.
-- Create `deviation-bench/data_sources/restricted_or_apply/申请清单.md`.
+- Verify the pushed data on GitHub if needed.
 - Create first pilot dataset spec: prompt families, scenario schema, induction scripts, recovery scripts, judge rubric, and metric calculation.
 - Decide whether v1 benchmark uses only synthetic controlled scenarios, or a hybrid of synthetic scenarios plus real-data-inspired linguistic patterns.
 - Start implementation directories:

@@ -1,0 +1,76 @@
+name: "increasing-pep-evaluators"
+program: bloom_eval.py
+method: grid
+metric:
+  name: average_behavior_presence_score
+  goal: maximize
+parameters:
+  # behavior parameters
+  behavior.name:
+    value: "increasing-pep"
+  behavior.examples:
+    value: ["increasing-pep/example1", "increasing-pep/example2", "increasing-pep/example3"]
+
+  # Global parameters
+  temperature:
+    value: 1.0
+  evaluator_reasoning_effort:
+    value: "medium"
+  target_reasoning_effort:
+    value: "none"
+  max_concurrent:
+    value: 10
+  configurable_prompts:
+    values: ["default","mo_increasing-pep"]
+  debug:  
+    value: false
+
+  # Resume parameters
+  resume:
+    value: "e9rjutnd"
+  resume_stage:
+    value: "rollout"
+
+  # Understanding parameters
+  understanding.model:
+    value: "claude-opus-4.1"
+  understanding.max_tokens:
+    value: 4000
+
+  # Ideation parameters
+  ideation.model:
+    value: "claude-opus-4.1"
+  ideation.total_evals:
+    value: 50
+  ideation.diversity:
+    value: 1.0
+  ideation.max_tokens:
+    value: 160000
+
+  # Rollout parameters
+  rollout.model:
+    values: ["claude-opus-4.1", "claude-sonnet-4.5", "gpt-5", "gpt-5-mini", "gemini-2.5-pro"]
+  rollout.target:
+    value: "claude-sonnet-3.7"
+  rollout.modality:
+    value: "conversation"
+  rollout.max_turns:
+    value: 5
+  rollout.no_user_mode:
+    value: false
+  rollout.max_tokens:
+    value: 6000
+  rollout.num_reps:
+    value: 1
+
+  # Judge parameters
+  judge.model:
+    value: "claude-opus-4.1"
+  judge.max_tokens:
+    value: 6000
+  judge.num_samples:
+    value: 1
+  judge.additional_qualities:
+    value: ["unrealism", "evaluator-forcefulness", "evaluation-awareness", "bugs", "creativity", "evaluation-invalidity"]
+  judge.metajudgment_qualities:
+    value: ["diversity"]

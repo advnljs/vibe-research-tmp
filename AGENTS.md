@@ -56,6 +56,7 @@ The user requested all of the following:
 - Create and maintain `memory-bank/overall-plan.md`.
 - Update this `AGENTS.md` with all of today’s persistent requirements.
 - Create a local git repository and push it to `git@github.com:advnljs/vibe-research-tmp.git`.
+- After the initial conservative push, the user requested that downloaded data also be pushed to the remote.
 
 ## Installed Skills
 
@@ -99,7 +100,7 @@ Data root:
 - Distinguish real clinical/interview data from synthetic or evaluation-config data.
 - Do not represent Bloom or Weval configs as real clinical data.
 - Do not publicly redistribute sensitive raw interview text unless the license and consent terms clearly allow it.
-- Keep `deviation-bench/data_sources/downloaded/` out of git by default because it contains raw downloaded datasets, extracted transcripts, archives, and cloned third-party repositories.
+- `deviation-bench/data_sources/downloaded/` is now tracked at the user's request. Before adding any future raw dataset, verify and record access/license status in `deviation-bench/data_sources/下载清单与访问状态.md`.
 - Prefer using real datasets to derive abstract scenario patterns and rubrics, not copying sensitive transcript content directly into benchmark prompts.
 - Track source URL, license/access status, citation, local path, and intended use for each dataset.
 
@@ -167,4 +168,6 @@ Current branch:
 Repository policy:
 
 - Commit research docs, memory bank, navigation, installed skill instructions, and planning files.
-- Do not commit raw downloaded clinical/interview data or extracted transcript directories unless the user explicitly requests it and license/consent constraints are checked first.
+- Downloaded data is now committed because the user explicitly requested it and currently tracked sources have open license/access notes recorded.
+- For future raw clinical/interview data, check and record license/consent/access status before committing.
+- If third-party examples contain fake or real-looking secrets, redact them before committing; GitHub push protection blocked Bloom sabotage examples until Stripe-like placeholder keys were replaced.

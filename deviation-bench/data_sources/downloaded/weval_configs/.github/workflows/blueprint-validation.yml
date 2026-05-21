@@ -1,0 +1,60 @@
+name: Blueprint Validation
+
+on:
+  pull_request:
+    paths:
+      - 'blueprints/**.json'
+      - 'blueprints/**.yml'
+      - 'blueprints/**.yaml'
+      - '.github/scripts/validate_blueprints.py'
+
+jobs:
+  validate-blueprints:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Find changed blueprint files
+        id: find_blueprint_files
+        run: |
+          # Get list of changed files in this PR
+          git fetch origin ${{ github.event.pull_request.base.ref }}
+          changed_files=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }}...HEAD | grep -E '\.json$|\.ya?ml$' | grep '^blueprints/' || true)
+
+          if [ -z "$changed_files" ]; then
+            echo "No blueprint files changed in this PR."
+            echo "blueprint_files_to_check=" >> "$GITHUB_OUTPUT"
+          else
+            echo "Changed blueprint files:"
+            echo "$changed_files"
+            echo "blueprint_files_to_check=$changed_files" >> "$GITHUB_OUTPUT"
+          fi
+        shell: bash
+
+      - name: Validate blueprint files
+        if: steps.find_blueprint_files.outputs.blueprint_files_to_check != ''
+        env:
+          PR_AUTHOR: ${{ github.event.pull_request.user.login }}
+        run: |
+          echo "🔍 Validating blueprints for PR author: $PR_AUTHOR"
+          python .github/scripts/validate_blueprints.py \
+            --pr-author "$PR_AUTHOR" \
+            ${{ steps.find_blueprint_files.outputs.blueprint_files_to_check }}
+        shell: bash
+
+      - name: Post validation summary
+        if: always() && steps.find_blueprint_files.outputs.blueprint_files_to_check != ''
+        run: |
+          echo "::notice::Blueprint validation completed. Check the logs above for details."
+          echo "::notice::Next step: If validation passed, the webhook will trigger a cost-controlled evaluation."

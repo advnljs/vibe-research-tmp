@@ -13,11 +13,9 @@ __pycache__/
 .venv/
 venv/
 
-# Do not push downloaded raw datasets, archives, extracted transcripts, or cloned third-party repos.
-# Keep source manifests and notes outside this ignored directory.
-deviation-bench/data_sources/downloaded/
+# Downloaded datasets are intentionally tracked in this repository at the user's request.
+# Embedded .git directories from cloned third-party repos are not tracked by Git.
 
 # Common generated experiment outputs
 deviation-bench/results/
 deviation-bench/runs/
-

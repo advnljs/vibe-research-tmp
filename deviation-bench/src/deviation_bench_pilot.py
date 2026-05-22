@@ -50,6 +50,37 @@ REQUIRED_SCENARIO_FIELDS = [
     "metrics",
 ]
 
+ALLOWED_TRACKS = {
+    "false_belief_amplification",
+    "unjustified_determination_reversal",
+    "supportive_validation_boundary",
+    "social_proof_pressure",
+    "recovery_reanchoring",
+}
+
+ALLOWED_FAMILIES = {
+    "self_referential_pattern",
+    "ambiguous_technical_signal",
+    "commitment_erosion",
+    "emotional_validation_pressure",
+    "social_consensus_smuggling",
+    "correction_and_reanchoring",
+}
+
+ALLOWED_PRESSURE_TYPES = {
+    "subjective_certainty",
+    "emotional_need_for_validation",
+    "weak_pattern_evidence",
+    "ambiguous_social_cue",
+    "alleged_authority",
+    "alleged_consensus",
+    "social_consensus_smuggling",
+    "repeated_questioning",
+    "no_new_evidence_reversal",
+    "premise_laundering",
+    "hypothetical_to_real_slide",
+}
+
 
 def load_yaml(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
@@ -61,33 +92,49 @@ def load_yaml(path: Path) -> dict[str, Any]:
 
 def validate_scenario(scenario: dict[str, Any]) -> list[str]:
     errors: list[str] = []
+    scenario_id = scenario.get("scenario_id", "<missing id>")
     for field in REQUIRED_SCENARIO_FIELDS:
         if field not in scenario:
-            errors.append(f"{scenario.get('scenario_id', '<missing id>')}: missing {field}")
+            errors.append(f"{scenario_id}: missing {field}")
+
+    if scenario.get("track") not in ALLOWED_TRACKS:
+        errors.append(f"{scenario_id}: unknown track {scenario.get('track')!r}")
+    if scenario.get("family") not in ALLOWED_FAMILIES:
+        errors.append(f"{scenario_id}: unknown family {scenario.get('family')!r}")
+    if scenario.get("safety_level") != "low_risk_fictional":
+        errors.append(f"{scenario_id}: safety_level must be low_risk_fictional")
 
     anchor = scenario.get("evidence_anchor", {})
     for field in ["facts", "missing_evidence", "supported_grounded_answer"]:
         if field not in anchor:
-            errors.append(f"{scenario.get('scenario_id', '<missing id>')}: evidence_anchor missing {field}")
+            errors.append(f"{scenario_id}: evidence_anchor missing {field}")
+
+    expected = scenario.get("expected_grounded_stance", {})
+    for phase in ["baseline", "induction", "recovery"]:
+        stance = expected.get(phase)
+        if stance not in STANCE_SCORES:
+            errors.append(f"{scenario_id}: expected_grounded_stance.{phase} has unknown stance {stance!r}")
 
     turns = scenario.get("induction_turns", [])
     if not isinstance(turns, list) or len(turns) < 3:
-        errors.append(f"{scenario.get('scenario_id', '<missing id>')}: induction_turns must contain at least 3 turns")
+        errors.append(f"{scenario_id}: induction_turns must contain at least 3 turns")
     for turn in turns:
         for field in ["turn_id", "pressure_type", "user_prompt", "adds_new_evidence", "expected_model_behavior"]:
             if field not in turn:
-                errors.append(f"{scenario.get('scenario_id', '<missing id>')}: induction turn missing {field}")
+                errors.append(f"{scenario_id}: induction turn missing {field}")
+        if turn.get("pressure_type") not in ALLOWED_PRESSURE_TYPES:
+            errors.append(f"{scenario_id}: unknown pressure_type {turn.get('pressure_type')!r}")
         if turn.get("adds_new_evidence") is not False:
-            errors.append(f"{scenario.get('scenario_id', '<missing id>')}: induction turn adds new evidence")
+            errors.append(f"{scenario_id}: induction turn adds new evidence")
 
     recovery = scenario.get("recovery_turn", {})
     for field in ["user_prompt", "expected_model_behavior"]:
         if field not in recovery:
-            errors.append(f"{scenario.get('scenario_id', '<missing id>')}: recovery_turn missing {field}")
+            errors.append(f"{scenario_id}: recovery_turn missing {field}")
 
     copied = scenario.get("source_inspiration", {}).get("copied_text")
     if copied is not False:
-        errors.append(f"{scenario.get('scenario_id', '<missing id>')}: source_inspiration.copied_text must be false")
+        errors.append(f"{scenario_id}: source_inspiration.copied_text must be false")
 
     return errors
 

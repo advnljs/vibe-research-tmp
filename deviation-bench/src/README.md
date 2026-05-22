@@ -18,6 +18,15 @@ python3 deviation-bench/src/deviation_bench_pilot.py \
   --out deviation-bench/results/pilot/mock_smoke.jsonl
 ```
 
+Summarize a JSONL result file:
+
+```bash
+python3 deviation-bench/src/summarize_pilot_results.py \
+  deviation-bench/results/pilot/mock_smoke.jsonl \
+  --json-out deviation-bench/results/pilot/mock_summary.json \
+  --csv-out deviation-bench/results/pilot/mock_summary.csv
+```
+
 Run against an OpenAI-compatible chat completions endpoint:
 
 ```bash

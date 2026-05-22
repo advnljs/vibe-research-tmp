@@ -102,6 +102,7 @@ Deliverables:
 - `研究导航.md`
 - `memory-bank/overall-progress.md`
 - `memory-bank/overall-plan.md`
+- `memory-bank/next-step.md`
 - `AGENTS.md`
 - `.gitignore`
 - Git remote `origin/main`
@@ -114,6 +115,7 @@ Deliverables:
 Exit condition:
 
 - Any future agent can understand what exists, what is real data, what is synthetic/reference config, and what access restrictions apply.
+- Any future agent can identify the next actionable task and longer roadmap from the three memory-bank files before reading the full research corpus.
 
 ### Milestone 2: Pilot Benchmark Specification
 
@@ -217,12 +219,16 @@ Exit condition:
 
 Phase shift 2026-05-22 afternoon：在 framing 决策落地之前，主路径暂停 pilot 扩量，转到“等用户决策 + 与 framing 无关的准备工作”。
 
+Detailed handoff queue:
+
+- `memory-bank/next-step.md`
+
 1. **阻塞中**：等用户回答 `deviation-bench/目标收缩-工作流深思考.md` §7 的 6 个开放问题（A/B/C framing、venue、companion method 是否做、语种、原文使用阈值、deadline）。
 2. 与 framing 无关、可并行（来自同文 §6）：
    - 已完成：写 Table 1 Benchmark Comparison Table 草稿（weval / Stanford HAI / ELEPHANT 等 prior 横向对比）。
-   - 跑 real-API smoke test（1 target + 1 judge × 1-2 scenario）。
    - 抽 50-80 条 abstracted pattern 到 `data_sources/patterns/seed_pattern_bank.jsonl`。
    - 写统一 utterance schema `prompts/utterance_schema.yaml`。
+   - 跑 real-API smoke test（1 target + 1 judge × 1-2 scenario）。
    - 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4）。
 3. framing 确定后再回到：选 target/judge 模型 → 跑 20-场景 pilot → 扩规模。
 
@@ -260,3 +266,4 @@ Phase shift 2026-05-22 afternoon：在 framing 决策落地之前，主路径暂
 - 决定不替用户选 framing，让 §7 的 6 个开放问题由用户回答后再继续。
 - 强化 `AGENTS.md` 工作流规则：每完成一个完整任务必须更新 memory-bank + 单独 commit；显式定义“完整任务”边界与 per-task closing checklist。
 - 完成 `deviation-bench/paper/table1_benchmark_comparison.md`，作为 introduction / related work 的 benchmark comparison 资产；当前差异化主张收束为“reality-boundary judgment 的 context-retest reliability”。
+- 创建 `memory-bank/next-step.md` 作为第三个必维护 memory-bank 文件，承接可执行队列、阻塞问题、A/B/C 后续路线和 future-agent starting procedure；同步更新 `AGENTS.md`，要求每个 agent 优先依赖和维护三个 memory-bank 文件。

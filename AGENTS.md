@@ -10,6 +10,12 @@ This workspace is for the Deviation Bench research project. Future agents should
 
 ## Required Project Memory
 
+Future agents must rely on and maintain the three memory-bank files as the first source of project state. Before starting substantive work, read:
+
+- `memory-bank/overall-progress.md`
+- `memory-bank/overall-plan.md`
+- `memory-bank/next-step.md`
+
 Maintain these files continuously:
 
 - `memory-bank/overall-progress.md`
@@ -19,6 +25,10 @@ Maintain these files continuously:
 - `memory-bank/overall-plan.md`
   - Update when the plan, milestone status, or current implementation position changes.
   - Keep the current phase and immediate next actions accurate.
+
+- `memory-bank/next-step.md`
+  - Update when the actionable queue, blockers, user decisions, or recommended next task changes.
+  - Keep the immediate next work and later roadmap explicit enough for the next agent to continue without reconstructing state from scattered documents.
 
 - `研究导航.md`
   - Update when directories, important files, datasets, or installed skills change.
@@ -30,6 +40,7 @@ After every completed task (the user-confirmed definition is below):
 
 - Update `memory-bank/overall-progress.md`.
 - Update `memory-bank/overall-plan.md` if the plan, current phase, or next action changed.
+- Update `memory-bank/next-step.md` if the actionable queue, blockers, user decisions, or recommended next task changed.
 - Update `研究导航.md` if directories, important files, datasets, or installed skills changed.
 - Update `AGENTS.md` if the user added persistent requirements or constraints in the task.
 - Commit the completed task to git in a single, focused commit.
@@ -53,7 +64,7 @@ Pure exploration with no artifact does not require a commit. Multiple closely re
 Run this checklist explicitly before declaring the task done in the chat:
 
 1. Identify the produced artifact(s).
-2. Apply the four memory-file updates above as applicable.
+2. Apply the three memory-bank updates plus navigation / AGENTS updates as applicable.
 3. `git add` only the relevant paths (no `-A` / no `.`).
 4. `git commit` with a message that names the task outcome.
 5. Push to `origin/main` before reporting the task as complete.
@@ -106,8 +117,9 @@ The user asked to continue from `todo20260521.txt`, which means:
 Additional persistent workflow requirement:
 
 - After each stage-level result, update the memory bank and commit the work to git.
-- 2026-05-22 强化版：每完成一个完整任务（按上文 "What counts as a completed task" 的定义）必须立即更新 `memory-bank/overall-progress.md`（必要时也更新 `overall-plan.md`、`研究导航.md`、`AGENTS.md`），并以单独的、聚焦的 commit 提交。这是硬性规则，不是建议。跨任务批量补 commit 是不允许的。
+- 2026-05-22 强化版：每完成一个完整任务（按上文 "What counts as a completed task" 的定义）必须立即更新 `memory-bank/overall-progress.md`（必要时也更新 `overall-plan.md`、`next-step.md`、`研究导航.md`、`AGENTS.md`），并以单独的、聚焦的 commit 提交。这是硬性规则，不是建议。跨任务批量补 commit 是不允许的。
 - 2026-05-22 remote 强化版：每个完整任务完成后，必须把对应 commit push 到 `origin/main`。不能只本地 commit 后等待下一轮再推。
+- 2026-05-22 memory-bank 三文件强化版：每个 agent 都要优先依赖并维护 `memory-bank/overall-progress.md`、`memory-bank/overall-plan.md`、`memory-bank/next-step.md`。其中 `next-step.md` 是后续行动队列和更长期路线图，任务完成后若下一步或阻塞状态变化必须更新。
 
 ## Installed Skills
 
@@ -142,6 +154,12 @@ Core research docs:
 Navigation:
 
 - `研究导航.md`
+
+Project memory:
+
+- `memory-bank/overall-progress.md`
+- `memory-bank/overall-plan.md`
+- `memory-bank/next-step.md`
 
 Data root:
 
@@ -215,7 +233,7 @@ As of 2026-05-22:
 - Research framing is drafted.
 - Data/source collection has expanded through the `todo20260521.txt` continuation.
 - Workspace navigation exists.
-- Memory bank exists.
+- Memory bank exists with three required files: `overall-progress.md`, `overall-plan.md`, and `next-step.md`.
 - Local git repository exists on branch `main`.
 - Remote `origin` is `git@github.com:advnljs/vibe-research-tmp.git`.
 - Minimal experiment runner exists.
@@ -227,11 +245,11 @@ As of 2026-05-22:
 
 Recommended next work:
 
-1. Select the first target model and judge model.
-2. Run a real API smoke test on 1-2 scenarios.
-3. Inspect JSON validity, judge labels, and metrics.
-4. Adjust prompt contract or judge rubric if needed.
-5. Run the 20-scenario pilot over 2-3 models.
+1. Read `memory-bank/next-step.md` for the current action queue and framing blockers.
+2. If the user has not answered the framing questions, continue with framing-independent work.
+3. Preferred next artifact: create `deviation-bench/data_sources/patterns/seed_pattern_bank.jsonl` with abstracted, de-identified patterns.
+4. Then write `deviation-bench/prompts/utterance_schema.yaml`.
+5. Run a real API smoke test only after API credentials and target/judge model choices are available.
 
 ## Git Repository
 

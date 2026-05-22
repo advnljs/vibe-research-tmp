@@ -344,6 +344,28 @@ Created:
   - Records task scope, source type, local item scale, multi-source status, context-retest coverage, multi-turn coverage, recovery metric coverage, real-corpus anchoring, language, and the limitation relative to Deviation Bench.
   - Distills the main differentiation claim: Deviation Bench should be positioned as context-retest reliability for reality-boundary judgments, not as another generic mental-health safety benchmark.
 
+### Next-Step Memory File Added
+
+Created:
+
+- `memory-bank/next-step.md`
+  - Defines the actionable handoff queue for future agents.
+  - Records the framing questions that still require user confirmation.
+  - Details the framing-independent work queue: seed pattern bank, utterance schema, real API smoke test, and Section 2 task/design-goals draft.
+  - Adds A/B/C framing-specific roadmaps, data safety rules, completion rules, and the recommended starting procedure for future agents.
+
+Updated:
+
+- `AGENTS.md`
+  - Future agents must now read and maintain all three memory-bank files first: `overall-progress.md`, `overall-plan.md`, and `next-step.md`.
+  - The per-task completion rule now includes `next-step.md` whenever blockers, user decisions, or recommended next work changes.
+
+- `memory-bank/overall-plan.md`
+  - Added `next-step.md` as a Milestone 1 memory deliverable and linked it as the detailed handoff queue.
+
+- `研究导航.md`
+  - Added a Future Agent priority-reading section that points first to `AGENTS.md` and the three memory-bank files.
+
 ## Current Open Items
 
 - 等待用户回答 `目标收缩-工作流深思考.md` §7 的 6 个开放问题（framing / venue / companion / language / 原文使用阈值 / deadline）。
@@ -362,7 +384,9 @@ Created:
 与 framing 无关、可并行的立即动作（来自 `目标收缩-工作流深思考.md` §6）：
 
 1. 已完成：写 Table 1 Benchmark Comparison Table 草稿，比较 weval / Stanford HAI / ELEPHANT 等 prior，给后续 introduction 的 F1 差异化用。
-2. 跑 real-API smoke test（1 target + 1 judge × 1-2 scenario），验证 JSON contract 与 judge 稳定性。
-3. 从 DAIS-C clinical speaker-only + Reddit r/schizophrenia subset 抽 50-80 条 abstracted pattern，落到 `data_sources/patterns/seed_pattern_bank.jsonl`。
-4. 写统一 utterance schema 草稿 `prompts/utterance_schema.yaml`。
+2. 建议下一步：从 DAIS-C clinical speaker-only + Reddit r/schizophrenia subset 抽 50-80 条 abstracted pattern，落到 `data_sources/patterns/seed_pattern_bank.jsonl`。
+3. 写统一 utterance schema 草稿 `prompts/utterance_schema.yaml`。
+4. 跑 real-API smoke test（1 target + 1 judge × 1-2 scenario），验证 JSON contract 与 judge 稳定性。
 5. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4）。
+
+详细行动队列见 `memory-bank/next-step.md`。

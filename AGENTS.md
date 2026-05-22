@@ -26,12 +26,38 @@ Maintain these files continuously:
 - `AGENTS.md`
   - Update when the user adds persistent requirements or constraints.
 
-After every meaningful stage result:
+After every completed task (the user-confirmed definition is below):
 
 - Update `memory-bank/overall-progress.md`.
 - Update `memory-bank/overall-plan.md` if the plan, current phase, or next action changed.
-- Commit the completed stage to git.
+- Update `研究导航.md` if directories, important files, datasets, or installed skills changed.
+- Update `AGENTS.md` if the user added persistent requirements or constraints in the task.
+- Commit the completed task to git in a single, focused commit.
 - Push to the configured remote when the user has requested remote synchronization for the workspace.
+
+This is a hard workflow rule, not a recommendation. Skipping memory-bank updates or skipping the commit leaves the workspace inconsistent for the next session.
+
+### What counts as "a completed task"
+
+A completed task is any unit of work that produces a durable artifact and reaches a stopping point. Examples:
+
+- A new research document or section finalized (e.g., a new analysis file, a paper draft, an evaluation summary).
+- A scoped code change merged into the working tree (e.g., a runner update, a new pipeline, a bug fix that compiles and runs).
+- A finished data acquisition, conversion, or manifest update.
+- A finished planning or decision deliverable (e.g., a target-narrowing decision doc, a roadmap update).
+
+Pure exploration with no artifact does not require a commit. Multiple closely related artifacts produced in one user turn may be bundled into a single commit, but the memory-bank update is still mandatory.
+
+### Per-task closing checklist
+
+Run this checklist explicitly before declaring the task done in the chat:
+
+1. Identify the produced artifact(s).
+2. Apply the four memory-file updates above as applicable.
+3. `git add` only the relevant paths (no `-A` / no `.`).
+4. `git commit` with a message that names the task outcome.
+5. If remote sync is active, push.
+6. Surface the commit hash in the chat reply so the user can audit.
 
 ## Current Research Focus
 
@@ -80,6 +106,7 @@ The user asked to continue from `todo20260521.txt`, which means:
 Additional persistent workflow requirement:
 
 - After each stage-level result, update the memory bank and commit the work to git.
+- 2026-05-22 强化版：每完成一个完整任务（按上文 "What counts as a completed task" 的定义）必须立即更新 `memory-bank/overall-progress.md`（必要时也更新 `overall-plan.md`、`研究导航.md`、`AGENTS.md`），并以单独的、聚焦的 commit 提交。这是硬性规则，不是建议。跨任务批量补 commit 是不允许的。
 
 ## Installed Skills
 

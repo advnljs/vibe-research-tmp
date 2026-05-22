@@ -296,8 +296,29 @@ Validation completed:
   - Generated turn-level mock outputs, judge labels, and metrics.
   - `deviation-bench/results/` remains git-ignored as generated experiment output.
 
+### Planning Deliverables Added 2026-05-22 (afternoon)
+
+Three new planning / decision documents written, no code or data changes:
+
+- `deviation-bench/数据现状评估与下一步方案.md`
+  - 评估 pilot 数据与原始数据是否满足"可执行优化版"定义的 pilot/v1 要求。
+  - 结论：够开始 real-API smoke + 最小 pilot evidence-of-existence；不够支撑完整 pilot 或 v1 paper。
+  - §6.5 增补"真实数据 + LLM 合成"专项评估，给出 Bloom-style 四阶段合成 pipeline。
+
+- `deviation-bench/目标收缩-工作流深思考.md`
+  - 显式以 `idea-evaluator` + `benchmark-paper-template` + `vibe-research-workflow` 三个 skill 为脚手架，对"重打包真实数据 + 收缩目标"提议做系统评估。
+  - 给出三套候选 framing（A: cross-corpus context-retest；B: 真实语料上的 LLM 响应质量；C: A 主榜 + 合成 UIRD 子轨）。
+  - 每个 framing 走完 fatal-flaws / 5 维评分 / paradigm probe / feasibility / 5 pillars。
+  - §6 列出 5 个与 framing 选择无关、可立刻开始的动作。
+  - §7 列出 6 个用户必须自己回答的开放决策点。
+
+- `AGENTS.md` 工作流规则强化（2026-05-22 afternoon）
+  - 把"每完成一个完整任务后更新 memory-bank + 单独 commit"从建议升级为硬性规则。
+  - 显式定义"完整任务"边界与 per-task closing checklist。
+
 ## Current Open Items
 
+- 等待用户回答 `目标收缩-工作流深思考.md` §7 的 6 个开放问题（framing / venue / companion / language / 原文使用阈值 / deadline）。
 - Verify the pushed data on GitHub if needed.
 - Decide exact model list and API provider configuration for pilot runs.
 - Run a real API smoke test once API credentials/model choice are available.
@@ -308,10 +329,12 @@ Validation completed:
 
 ## Current Best Next Step
 
-Next step is a real-model smoke test and metrics review:
+优先级 1：等用户对 framing 做出选择，否则后续 pipeline 走向不定。
 
-1. Choose 1 target model and 1 judge model for the first real API smoke test.
-2. Run 1-2 scenarios end-to-end.
-3. Inspect invalid JSON rate, judge stability, and whether stance labels are too easy/hard.
-4. Adjust model output contract or judge prompt if needed.
-5. Then run a 20-scenario pilot over 2-3 models.
+与 framing 无关、可并行的立即动作（来自 `目标收缩-工作流深思考.md` §6）：
+
+1. 写 Table 1 Benchmark Comparison Table 草稿，比较 weval / Stanford HAI / ELEPHANT 等 prior，给后续 introduction 的 F1 差异化用。
+2. 跑 real-API smoke test（1 target + 1 judge × 1-2 scenario），验证 JSON contract 与 judge 稳定性。
+3. 从 DAIS-C clinical speaker-only + Reddit r/schizophrenia subset 抽 50-80 条 abstracted pattern，落到 `data_sources/patterns/seed_pattern_bank.jsonl`。
+4. 写统一 utterance schema 草稿 `prompts/utterance_schema.yaml`。
+5. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4）。

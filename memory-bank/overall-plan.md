@@ -214,11 +214,16 @@ Exit condition:
 
 ## Immediate Next Actions
 
-1. Select the first target model and judge model.
-2. Run a real API smoke test on 1-2 scenarios.
-3. Inspect JSON validity, judge labels, and metrics.
-4. Adjust prompt contract or judge rubric if needed.
-5. Run the 20-scenario pilot over 2-3 models.
+Phase shift 2026-05-22 afternoon：在 framing 决策落地之前，主路径暂停 pilot 扩量，转到“等用户决策 + 与 framing 无关的准备工作”。
+
+1. **阻塞中**：等用户回答 `deviation-bench/目标收缩-工作流深思考.md` §7 的 6 个开放问题（A/B/C framing、venue、companion method 是否做、语种、原文使用阈值、deadline）。
+2. 与 framing 无关、可并行（来自同文 §6）：
+   - 写 Table 1 Benchmark Comparison Table 草稿（weval / Stanford HAI / ELEPHANT 等 prior 横向对比）。
+   - 跑 real-API smoke test（1 target + 1 judge × 1-2 scenario）。
+   - 抽 50-80 条 abstracted pattern 到 `data_sources/patterns/seed_pattern_bank.jsonl`。
+   - 写统一 utterance schema `prompts/utterance_schema.yaml`。
+   - 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4）。
+3. framing 确定后再回到：选 target/judge 模型 → 跑 20-场景 pilot → 扩规模。
 
 ## Decision Log
 
@@ -246,3 +251,10 @@ Exit condition:
 - User added a persistent workflow requirement: after each stage-level result, update memory bank and commit to git.
 - Created the pilot benchmark spec draft with scenario schema, judge rubric, 20 scenarios, and annotation guidelines.
 - Implemented and smoke-tested the minimal API-only runner in mock mode.
+
+2026-05-22 afternoon：
+
+- Produced `deviation-bench/数据现状评估与下一步方案.md`，把 pilot/v1 数据充足性按"够 / 不够 / 缺什么"系统化；§6.5 增补"真实数据 + LLM 合成"专项方案。
+- Produced `deviation-bench/目标收缩-工作流深思考.md`，以 `idea-evaluator` + `benchmark-paper-template` + `vibe-research-workflow` 为脚手架，给出三套 framing 候选 (A/B/C)，每套都走完 fatal-flaws / 5 维评分 / paradigm probe / feasibility / 5 pillars。
+- 决定不替用户选 framing，让 §7 的 6 个开放问题由用户回答后再继续。
+- 强化 `AGENTS.md` 工作流规则：每完成一个完整任务必须更新 memory-bank + 单独 commit；显式定义“完整任务”边界与 per-task closing checklist。

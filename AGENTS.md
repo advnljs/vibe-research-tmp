@@ -58,6 +58,18 @@ The user requested all of the following:
 - Create a local git repository and push it to `git@github.com:advnljs/vibe-research-tmp.git`.
 - After the initial conservative push, the user requested that downloaded data also be pushed to the remote.
 
+## User Requirements From 2026-05-22
+
+The user asked to continue from `todo20260521.txt`, which means:
+
+- Inspect `deviation-bench/Datasets for a Deviation Bench on Reality-Boundary Language.md`.
+- Check whether relevant data listed there can be legally accessed and download what is appropriate.
+- Think through the idea of obtaining delusion-related content from communities such as Zhihu or Reddit.
+- Prefer existing public datasets and documented access routes before live scraping.
+- Consider whether automated judges can detect delusion-like / reality-boundary language signals in collected text.
+- Convert any real community/clinical signal only into abstracted, fictional, de-identified dialogue scenarios.
+- Keep data/source navigation, progress, plan, and AGENTS updated.
+
 ## Installed Skills
 
 Installed in the workspace root:
@@ -86,6 +98,7 @@ Core research docs:
 - `deviation-bench/Deviation Bench 可执行优化版.md`
 - `deviation-bench/数据生成方式与心理精神病学数据源清单.md`
 - `deviation-bench/Deviation Bench 相关研究深度综述.md`
+- `deviation-bench/Datasets for a Deviation Bench on Reality-Boundary Language.md`
 
 Navigation:
 
@@ -94,6 +107,9 @@ Navigation:
 Data root:
 
 - `deviation-bench/data_sources/`
+- `deviation-bench/data_sources/notes/社区语料获取与妄想相关性判定方案.md`
+- `deviation-bench/data_sources/notes/数据许可与引用.md`
+- `deviation-bench/data_sources/notes/真实语料到场景设计映射.md`
 
 ## Data Handling Rules
 
@@ -103,6 +119,10 @@ Data root:
 - `deviation-bench/data_sources/downloaded/` is now tracked at the user's request. Before adding any future raw dataset, verify and record access/license status in `deviation-bench/data_sources/下载清单与访问状态.md`.
 - Prefer using real datasets to derive abstract scenario patterns and rubrics, not copying sensitive transcript content directly into benchmark prompts.
 - Track source URL, license/access status, citation, local path, and intended use for each dataset.
+- For community data such as Reddit or Zhihu, label text signals only. Do not diagnose posters or represent subreddit/community membership as clinical ground truth.
+- Do not directly publish raw community posts as benchmark prompts. Derive abstract pressure patterns and rewrite them into fictional, de-identified scenarios.
+- Prefer existing public datasets, official APIs, or documented access procedures over ad hoc scraping.
+- If future scraping is considered, record platform terms, privacy risk, redistribution rights, collection date, and de-identification procedure before committing anything.
 
 Current downloaded sources:
 
@@ -111,6 +131,14 @@ Current downloaded sources:
 - Bloom main repo: `deviation-bench/data_sources/downloaded/bloom/`
 - Bloom experiments branch: `deviation-bench/data_sources/downloaded/bloom_experiments_branch/`
 - Weval configs: `deviation-bench/data_sources/downloaded/weval_configs/`
+- AnnoMI: `deviation-bench/data_sources/downloaded/annomi/`
+- MentalChat16K: `deviation-bench/data_sources/downloaded/mentalchat16k/`
+- CounselChat: `deviation-bench/data_sources/downloaded/counselchat/`
+- MDD-5k: `deviation-bench/data_sources/downloaded/mdd_5k/`
+- Reddit Mental Health Dataset r/schizophrenia subset: `deviation-bench/data_sources/downloaded/reddit_mental_health_zenodo/`
+- RedditMentalhealth sample: `deviation-bench/data_sources/downloaded/reddit_mentalhealth_sample/`
+- PDCH public metadata only: `deviation-bench/data_sources/downloaded/pdch_metadata/`
+- EATD-Corpus Git LFS pointer only: `deviation-bench/data_sources/downloaded/eatd_corpus_pointer/`
 
 Restricted or application-based sources to track:
 
@@ -118,6 +146,12 @@ Restricted or application-based sources to track:
 - PsychosisBank Tang Corpus
 - AVATAR Therapy Dialogue Corpus
 - DAIC-WOZ
+- PDCH full ScienceDB dataset
+- MODMA
+- D4
+- HOPE / MEMO
+- Psych8k
+- TalkBank control corpora such as DementiaBank, AphasiaBank, and FluencyBank
 - SMHD and related non-dialogue social-media sources as lower priority
 
 ## Safety Boundary
@@ -137,23 +171,23 @@ Not allowed:
 
 ## Current Implementation Position
 
-As of 2026-05-21:
+As of 2026-05-22:
 
 - Research framing is drafted.
-- Data/source collection has started.
+- Data/source collection has expanded through the `todo20260521.txt` continuation.
 - Workspace navigation exists.
 - Memory bank exists.
 - Local git repository exists on branch `main`.
 - Remote `origin` is `git@github.com:advnljs/vibe-research-tmp.git`.
 - No formal experiment runner exists yet.
 - No pilot benchmark results exist yet.
+- Data manifest and data-use notes exist for the current data wave.
 
 Recommended next work:
 
-1. Create `deviation-bench/data_sources/下载清单与访问状态.md`.
-2. Create `deviation-bench/data_sources/restricted_or_apply/申请清单.md`.
-3. Draft pilot scenario schema, prompt families, recovery turns, judge rubric, and metric calculator design.
-4. Only then implement an API-only pilot runner.
+1. Draft pilot scenario schema, prompt families, recovery turns, judge rubric, and metric calculator design.
+2. Create `deviation-bench/prompts/scenario_schema.yaml`, `deviation-bench/prompts/judge_rubric.md`, and `deviation-bench/prompts/pilot_scenarios.yaml`.
+3. Only then implement an API-only pilot runner.
 
 ## Git Repository
 

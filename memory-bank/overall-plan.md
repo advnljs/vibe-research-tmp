@@ -1,6 +1,6 @@
 # Overall Plan
 
-Last updated: 2026-05-21
+Last updated: 2026-05-22
 
 This file records the overall plan and the current implementation position. Update it whenever the plan, current phase, or next action changes.
 
@@ -39,7 +39,7 @@ Not primary framing:
 
 ## Current Phase
 
-Phase: concept lock + data/source preparation.
+Phase: data/source expansion from `todo20260521.txt` -> pilot benchmark specification.
 
 Completed:
 
@@ -53,19 +53,37 @@ Completed:
 - Prepared git tracking with raw downloaded data excluded from commits.
 - Initialized local git repository and pushed the initial workspace commit to `git@github.com:advnljs/vibe-research-tmp.git`.
 - Added downloaded data to git at the user's request, with a manifest and restricted-source application list.
+- Reviewed the user-added `Datasets for a Deviation Bench on Reality-Boundary Language.md`.
+- Downloaded additional public / legally accessible sources:
+  - AnnoMI
+  - MentalChat16K
+  - CounselChat
+  - MDD-5k
+  - PDCH public metadata only
+  - EATD-Corpus pointer only
+  - Reddit Mental Health Dataset r/schizophrenia subset
+  - RedditMentalhealth sample
+- Wrote the community-data route for Reddit / Zhihu-like sources:
+  - do not diagnose real users,
+  - use existing public datasets before live scraping,
+  - label text signals,
+  - abstract into fictional benchmark scenarios.
+- Created the first real-data-to-scenario mapping bridge:
+  - `deviation-bench/data_sources/notes/真实语料到场景设计映射.md`
 
 Current implementation position:
 
 - No formal experiment code yet.
 - No final prompt schema yet.
 - No pilot result yet.
-- Data sources are present, but data manifest and use-policy notes are not yet formalized.
+- Data manifest and use-policy notes now cover the current downloaded sources.
+- Next implementation unit is `prompts/scenario_schema.yaml`, `prompts/judge_rubric.md`, and `prompts/pilot_scenarios.yaml`.
 
 ## Milestone Plan
 
 ### Milestone 1: Project Memory and Data Hygiene
 
-Status: in progress.
+Status: completed for the current data wave; keep updated for future additions.
 
 Deliverables:
 
@@ -78,6 +96,8 @@ Deliverables:
 - `deviation-bench/data_sources/下载清单与访问状态.md`
 - `deviation-bench/data_sources/restricted_or_apply/申请清单.md`
 - `deviation-bench/data_sources/notes/数据许可与引用.md`
+- `deviation-bench/data_sources/notes/社区语料获取与妄想相关性判定方案.md`
+- `deviation-bench/data_sources/notes/真实语料到场景设计映射.md`
 
 Exit condition:
 
@@ -85,7 +105,7 @@ Exit condition:
 
 ### Milestone 2: Pilot Benchmark Specification
 
-Status: not started.
+Status: next.
 
 Deliverables:
 
@@ -168,11 +188,9 @@ Exit condition:
 
 ## Immediate Next Actions
 
-1. Write a downloaded-data manifest with URLs, checksums where known, counts, license notes, and recommended use.
-2. Write the restricted/access application list.
-3. Draft pilot prompt schema and judge rubric.
-4. Create a small set of fictional scenarios inspired by real-data patterns but not copied from sensitive transcripts.
-5. Implement a minimal API-only runner after the spec is stable.
+1. Draft pilot prompt schema and judge rubric.
+2. Create a small set of fictional scenarios inspired by real-data/community-data patterns but not copied from sensitive transcripts or posts.
+3. Implement a minimal API-only runner after the spec is stable.
 
 ## Decision Log
 
@@ -187,3 +205,13 @@ Exit condition:
 - Initialized and pushed the local repository to `git@github.com:advnljs/vibe-research-tmp.git` on branch `main`.
 - User then requested data to be pushed as well. DAIS-C, first-episode psychosis transcripts, Bloom, Bloom experiments configs, and Weval configs were prepared for git tracking with license/access notes.
 - Data push completed in commit `27d461b` on `origin/main`.
+
+2026-05-22:
+
+- Continued from `todo20260521.txt`.
+- Treated community data as a signal source, not a source of clinical labels.
+- Chose not to directly scrape Zhihu at this phase because platform terms, privacy, copyright, and redistribution risk are higher than using existing public datasets.
+- Chose the pipeline: public/community dataset -> text-signal judge -> human audit subset -> abstract pattern -> fictional multi-turn benchmark scenario.
+- Recorded PDCH full data as restricted; downloaded only public metadata/code.
+- Recorded EATD full data as a large Git LFS item; downloaded only the pointer/README.
+- Created `真实语料到场景设计映射.md` as the bridge from data sources to pilot scenario families.

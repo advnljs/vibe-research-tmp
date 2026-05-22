@@ -1,6 +1,6 @@
 # Overall Progress
 
-Last updated: 2026-05-21
+Last updated: 2026-05-22
 
 This file records completed work and the current state of the Deviation Bench project. Update it after any meaningful research, data, implementation, or planning change.
 
@@ -14,7 +14,7 @@ Deviation Bench has been narrowed from a broad context-induced deviation idea in
 - Compute constraint: low GPU / API-only. The benchmark should not depend on model training, activation extraction, or high-cost inference infrastructure.
 - Safety boundary: induction designs should test reality-grounding failure in controlled, fictional, low-risk settings. They should not be jailbreaks, safety bypasses, or prompts that escalate real-world harm.
 
-## Completed Today
+## Completed 2026-05-21
 
 ### Skills Installed
 
@@ -154,6 +154,89 @@ Completed repository setup for the workspace:
 - Configured remote `origin`: `git@github.com:advnljs/vibe-research-tmp.git`.
 - Initial commit pushed to `origin/main`: `bb86941` (`Initial Deviation Bench research workspace`).
 
+## Completed 2026-05-22
+
+Continued from `todo20260521.txt`.
+
+### New Data Source Review and Downloads
+
+Inspected `deviation-bench/Datasets for a Deviation Bench on Reality-Boundary Language.md` and downloaded the legally accessible / public sources that were useful enough for the current phase.
+
+New local data directories:
+
+- `deviation-bench/data_sources/downloaded/annomi/`
+  - AnnoMI expert-annotated motivational interviewing dialogues.
+  - Files: `AnnoMI-full.csv`, `AnnoMI-simple.csv`, `README.md`.
+  - Use: counseling dialogue structure and validation/reflection style control; not psychosis/delusion ground truth.
+
+- `deviation-bench/data_sources/downloaded/mentalchat16k/`
+  - MentalChat16K from Hugging Face, MIT license.
+  - Files: `Interview_Data_6K.csv`, `Synthetic_Data_10K.csv`, `README.md`.
+  - Use: mental-health assistance format and synthetic generation reference; not raw delusion dialogue.
+
+- `deviation-bench/data_sources/downloaded/counselchat/`
+  - CounselChat from Hugging Face.
+  - Files: `counselchat-data.csv`, `README.md`.
+  - Use: single-turn counseling QA style reference.
+
+- `deviation-bench/data_sources/downloaded/mdd_5k/`
+  - MDD-5k GitHub repository, MIT license.
+  - File count: 1,892.
+  - Use: synthetic diagnostic conversation generation pipeline reference; not real psychosis/delusion corpus.
+
+- `deviation-bench/data_sources/downloaded/pdch_metadata/`
+  - PDCH public metadata / code snapshot only.
+  - Full ScienceDB dataset is restricted and was not downloaded.
+
+- `deviation-bench/data_sources/downloaded/eatd_corpus_pointer/`
+  - EATD-Corpus Git LFS pointer and README only.
+  - Full zip is about 543MB and was not added to the repository.
+
+- `deviation-bench/data_sources/downloaded/reddit_mental_health_zenodo/`
+  - r/schizophrenia subset from Reddit Mental Health Dataset on Zenodo.
+  - Includes 2018, 2019, pre, post feature/text CSVs plus Zenodo metadata.
+  - Use: community reality-boundary language signal source; not clinical diagnosis data.
+
+- `deviation-bench/data_sources/downloaded/reddit_mentalhealth_sample/`
+  - Public sample from `dxlabskku/RedditMentalhealth`.
+  - Use: parser / filtering smoke test only.
+
+Downloaded data root is currently about 206MB. No file larger than 95MB was found in the downloaded tree.
+
+### Data Documentation Updated
+
+Updated:
+
+- `deviation-bench/data_sources/下载清单与访问状态.md`
+  - Added source URLs, access status, license notes, local paths, row/file counts, caveats, and recommended use for the new sources.
+
+- `deviation-bench/data_sources/restricted_or_apply/申请清单.md`
+  - Added PDCH full dataset, MODMA, D4, HOPE/MEMO, Psych8k, and TalkBank control corpora to the application/restricted list.
+
+Created:
+
+- `deviation-bench/data_sources/notes/数据许可与引用.md`
+  - Summarizes citation and use boundaries.
+
+- `deviation-bench/data_sources/notes/社区语料获取与妄想相关性判定方案.md`
+  - Defines a safe route for Reddit / Zhihu-like community data:
+    - use existing public datasets first,
+    - label text signals instead of diagnosing people,
+    - abstract patterns into fictional multi-turn scenarios,
+    - exclude high-risk action/self-harm/stalking content.
+
+- `deviation-bench/data_sources/notes/真实语料到场景设计映射.md`
+  - Maps real/interview/community/counseling/synthetic sources to safe pilot scenario families.
+  - Adds a first draft scenario schema, six scenario families, judge tags, and next prompt-spec files.
+
+Updated:
+
+- `研究导航.md`
+  - Added new data directories and the community-data note to the navigation.
+
+- `AGENTS.md`
+  - Added the 2026-05-22 persistent requirements and community-data handling rules.
+
 ## Current Open Items
 
 - Verify the pushed data on GitHub if needed.
@@ -170,8 +253,9 @@ Completed repository setup for the workspace:
 
 Build the pilot benchmark spec before writing code:
 
-1. Define 20 to 30 fictional, low-risk seed scenarios.
-2. For each scenario, create baseline, induction, and recovery turns.
-3. Write the judge rubric using the stance labels already defined.
-4. Run 2 to 3 models through API with multiple repetitions.
-5. Calculate RDS, IS, RDER, URR, RR, and residual drift.
+1. Create `deviation-bench/prompts/scenario_schema.yaml`.
+2. Create `deviation-bench/prompts/judge_rubric.md`.
+3. Draft 20 to 30 fictional, low-risk seed scenarios in `deviation-bench/prompts/pilot_scenarios.yaml`.
+4. For each scenario, create baseline, induction, and recovery turns.
+5. Run 2 to 3 models through API with multiple repetitions.
+6. Calculate RDS, IS, RDER, URR, RR, and residual drift.

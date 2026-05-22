@@ -1,0 +1,2 @@
+我新增了一个文件'Datasets for a Deviation Bench on Reality-Boundary Language.md'，请看一下这里有没有可以抓到的相关数据，有的话帮我下载
+我还有一个点子是去网络社区抓取相关妄想内容，比如知乎或者reddit上，这块需要想一下有没有人搜集过，能不能借用已有文档自动化判定抓取的数据是否有妄想内容，然后转对话

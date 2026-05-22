@@ -195,18 +195,15 @@ As of 2026-05-22:
 - Data manifest and data-use notes exist for the current data wave.
 - Pilot scenario schema, judge rubric, 20 low-risk fictional scenarios, and annotation draft exist.
 - Minimal API-only runner exists at `deviation-bench/src/deviation_bench_pilot.py`.
-- Result summarizer exists at `deviation-bench/src/summarize_pilot_results.py`.
 - Offline mock validation/smoke test has passed; no real API pilot has been run yet.
-- Full 20-scenario mock run and summary generation have passed.
 
 Recommended next work:
 
 1. Select the first target model and judge model.
 2. Run a real API smoke test on 1-2 scenarios.
-3. Summarize the real smoke output.
-4. Inspect JSON validity, judge labels, and metrics.
-5. Adjust prompt contract or judge rubric if needed.
-6. Run the 20-scenario pilot over 2-3 models.
+3. Inspect JSON validity, judge labels, and metrics.
+4. Adjust prompt contract or judge rubric if needed.
+5. Run the 20-scenario pilot over 2-3 models.
 
 ## Git Repository
 

@@ -80,10 +80,6 @@ Completed:
   - `deviation-bench/src/README.md`
   - `deviation-bench/requirements.txt`
 - Offline validation and mock smoke test passed.
-- Hardened scenario validation and added result summarization:
-  - `deviation-bench/src/summarize_pilot_results.py`
-  - full 20-scenario mock pilot passed.
-  - mock summary JSON/CSV generation passed.
 
 Current implementation position:
 
@@ -91,7 +87,6 @@ Current implementation position:
 - Pilot prompt schema and judge rubric exist.
 - Pilot scenario set exists with 20 fictional low-risk scenarios.
 - Mock smoke output exists locally under ignored `deviation-bench/results/`.
-- Result summarizer exists and has been tested on full mock output.
 - No real API pilot result yet.
 - Data manifest and use-policy notes now cover the current downloaded sources.
 - Next implementation unit is a real API smoke test and any prompt/metric adjustment it reveals.
@@ -180,7 +175,6 @@ Current status:
 - Mock target model and mock judge implemented for offline tests.
 - OpenAI-compatible chat completions path implemented.
 - Metrics are computed per scenario.
-- Summary script computes overall/model/track/family aggregate metrics.
 - Real API run has not been executed yet.
 
 ### Milestone 4: Validate Signal
@@ -222,10 +216,9 @@ Exit condition:
 
 1. Select the first target model and judge model.
 2. Run a real API smoke test on 1-2 scenarios.
-3. Summarize the real smoke output with `summarize_pilot_results.py`.
-4. Inspect JSON validity, judge labels, and metrics.
-5. Adjust prompt contract or judge rubric if needed.
-6. Run the 20-scenario pilot over 2-3 models.
+3. Inspect JSON validity, judge labels, and metrics.
+4. Adjust prompt contract or judge rubric if needed.
+5. Run the 20-scenario pilot over 2-3 models.
 
 ## Decision Log
 
@@ -253,5 +246,3 @@ Exit condition:
 - User added a persistent workflow requirement: after each stage-level result, update memory bank and commit to git.
 - Created the pilot benchmark spec draft with scenario schema, judge rubric, 20 scenarios, and annotation guidelines.
 - Implemented and smoke-tested the minimal API-only runner in mock mode.
-- Pulled `origin/main`; no new remote commits were available.
-- Added stricter scenario validation and a pilot result summarizer; full 20-scenario mock run and summary passed.

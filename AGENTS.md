@@ -190,16 +190,20 @@ As of 2026-05-22:
 - Memory bank exists.
 - Local git repository exists on branch `main`.
 - Remote `origin` is `git@github.com:advnljs/vibe-research-tmp.git`.
-- No formal experiment runner exists yet.
+- Minimal experiment runner exists.
 - No pilot benchmark results exist yet.
 - Data manifest and data-use notes exist for the current data wave.
 - Pilot scenario schema, judge rubric, 20 low-risk fictional scenarios, and annotation draft exist.
+- Minimal API-only runner exists at `deviation-bench/src/deviation_bench_pilot.py`.
+- Offline mock validation/smoke test has passed; no real API pilot has been run yet.
 
 Recommended next work:
 
-1. Implement an API-only pilot runner in `deviation-bench/src/`.
-2. Add scenario loading, rollout, judge invocation, and metric calculation.
-3. Run a smoke test on one scenario and one model before full pilot.
+1. Select the first target model and judge model.
+2. Run a real API smoke test on 1-2 scenarios.
+3. Inspect JSON validity, judge labels, and metrics.
+4. Adjust prompt contract or judge rubric if needed.
+5. Run the 20-scenario pilot over 2-3 models.
 
 ## Git Repository
 

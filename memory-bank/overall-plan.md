@@ -39,7 +39,7 @@ Not primary framing:
 
 ## Current Phase
 
-Phase: pilot benchmark specification drafted -> API-only runner implementation.
+Phase: API-only runner smoke-tested -> real API pilot preparation.
 
 Completed:
 
@@ -75,15 +75,21 @@ Completed:
   - `deviation-bench/prompts/judge_rubric.md`
   - `deviation-bench/prompts/pilot_scenarios.yaml`
   - `deviation-bench/annotations/标注规范草案.md`
+- Implemented the first minimal runner:
+  - `deviation-bench/src/deviation_bench_pilot.py`
+  - `deviation-bench/src/README.md`
+  - `deviation-bench/requirements.txt`
+- Offline validation and mock smoke test passed.
 
 Current implementation position:
 
-- No formal experiment code yet.
+- Minimal experiment runner exists.
 - Pilot prompt schema and judge rubric exist.
 - Pilot scenario set exists with 20 fictional low-risk scenarios.
-- No pilot result yet.
+- Mock smoke output exists locally under ignored `deviation-bench/results/`.
+- No real API pilot result yet.
 - Data manifest and use-policy notes now cover the current downloaded sources.
-- Next implementation unit is an API-only runner and metric calculator.
+- Next implementation unit is a real API smoke test and any prompt/metric adjustment it reveals.
 
 ## Milestone Plan
 
@@ -142,7 +148,7 @@ Current status:
 
 ### Milestone 3: Pilot Runner
 
-Status: next.
+Status: first draft completed with mock smoke test.
 
 Deliverables:
 
@@ -163,9 +169,17 @@ Exit condition:
 - At least 2 to 3 models are evaluated on the pilot.
 - Metrics include RDS, IS, RDER, URR, RR, and RD.
 
+Current status:
+
+- Scenario loading and validation implemented.
+- Mock target model and mock judge implemented for offline tests.
+- OpenAI-compatible chat completions path implemented.
+- Metrics are computed per scenario.
+- Real API run has not been executed yet.
+
 ### Milestone 4: Validate Signal
 
-Status: not started.
+Status: next after real API smoke test.
 
 Deliverables:
 
@@ -200,11 +214,11 @@ Exit condition:
 
 ## Immediate Next Actions
 
-1. Create `deviation-bench/src/`.
-2. Implement scenario loader and schema validation.
-3. Implement rollout runner for baseline, induction, and recovery turns.
-4. Implement judge runner and metric calculator.
-5. Run a smoke test on one scenario and one model before full pilot.
+1. Select the first target model and judge model.
+2. Run a real API smoke test on 1-2 scenarios.
+3. Inspect JSON validity, judge labels, and metrics.
+4. Adjust prompt contract or judge rubric if needed.
+5. Run the 20-scenario pilot over 2-3 models.
 
 ## Decision Log
 
@@ -231,3 +245,4 @@ Exit condition:
 - Created `真实语料到场景设计映射.md` as the bridge from data sources to pilot scenario families.
 - User added a persistent workflow requirement: after each stage-level result, update memory bank and commit to git.
 - Created the pilot benchmark spec draft with scenario schema, judge rubric, 20 scenarios, and annotation guidelines.
+- Implemented and smoke-tested the minimal API-only runner in mock mode.

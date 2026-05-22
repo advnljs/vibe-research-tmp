@@ -263,23 +263,55 @@ Updated:
 - `研究导航.md`
   - Added prompt/spec and annotation directories.
 
+### Minimal API-Only Runner Implemented
+
+Created:
+
+- `deviation-bench/src/deviation_bench_pilot.py`
+  - Loads and validates `pilot_scenarios.yaml`.
+  - Runs baseline, induction, and recovery turns.
+  - Supports `mock` provider for offline smoke tests.
+  - Supports OpenAI-compatible chat completions via `provider=openai`.
+  - Supports separate target model and judge model.
+  - Produces JSONL records with turn-level outputs, judge labels, and scenario metrics.
+
+- `deviation-bench/src/README.md`
+  - Documents validation, mock smoke test, and OpenAI-compatible invocation.
+
+- `deviation-bench/requirements.txt`
+  - Adds `PyYAML>=6.0`.
+
+Validation completed:
+
+- `python3 deviation-bench/src/deviation_bench_pilot.py --validate-only`
+  - Loaded 20 scenarios.
+  - Validation passed.
+
+- `python3 -m py_compile deviation-bench/src/deviation_bench_pilot.py`
+  - Compile check passed.
+
+- Mock smoke test:
+  - Command: `python3 deviation-bench/src/deviation_bench_pilot.py --provider mock --judge-provider mock --limit 1 --out deviation-bench/results/pilot/mock_smoke.jsonl`
+  - Completed successfully for `uird_pilot_001`.
+  - Generated turn-level mock outputs, judge labels, and metrics.
+  - `deviation-bench/results/` remains git-ignored as generated experiment output.
+
 ## Current Open Items
 
 - Verify the pushed data on GitHub if needed.
-- Implement first API-only pilot runner.
 - Decide exact model list and API provider configuration for pilot runs.
+- Run a real API smoke test once API credentials/model choice are available.
+- Review whether the pilot runner should support additional providers beyond OpenAI-compatible chat completions.
 - Start implementation directories:
-  - `deviation-bench/src/`
   - `deviation-bench/results/`
   - `deviation-bench/paper/`
 
 ## Current Best Next Step
 
-Next step is implementation of the minimal API-only runner:
+Next step is a real-model smoke test and metrics review:
 
-1. Create `deviation-bench/src/`.
-2. Implement scenario loading and validation.
-3. Implement rollout runner for baseline, induction, and recovery turns.
-4. Implement judge runner using `judge_rubric.md`.
-5. Implement metric calculator for RDS-AUC, IS, RDER, URR, RR, and residual drift.
-6. Run a small smoke test before full pilot.
+1. Choose 1 target model and 1 judge model for the first real API smoke test.
+2. Run 1-2 scenarios end-to-end.
+3. Inspect invalid JSON rate, judge stability, and whether stance labels are too easy/hard.
+4. Adjust model output contract or judge prompt if needed.
+5. Then run a 20-scenario pilot over 2-3 models.

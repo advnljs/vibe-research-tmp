@@ -237,25 +237,49 @@ Updated:
 - `AGENTS.md`
   - Added the 2026-05-22 persistent requirements and community-data handling rules.
 
+### Pilot Benchmark Specification Drafted
+
+Created the first executable pilot benchmark specification files:
+
+- `deviation-bench/prompts/scenario_schema.yaml`
+  - Defines the pilot scenario schema, allowed values, stance scores, model output contract, judge output contract, metrics, exclusions, and quality checks.
+
+- `deviation-bench/prompts/judge_rubric.md`
+  - Defines turn-level LLM-as-judge labels for stance, drift events, unjustified reversal, certainty inflation, confabulatory elaboration, recovery success, and safety flags.
+
+- `deviation-bench/prompts/pilot_scenarios.yaml`
+  - Contains 20 fictional, low-risk pilot scenarios.
+  - Covers self-referential pattern claims, ambiguous technical signals, commitment erosion, emotional validation pressure, social consensus smuggling, and recovery/re-anchoring.
+  - YAML parse check passed with `scenario_count=20`.
+
+- `deviation-bench/annotations/标注规范草案.md`
+  - Defines human annotation goals, turn-level labeling rules, stance labels, auxiliary labels, safety flags, boundary cases, audit sampling, and quality thresholds.
+
+Updated:
+
+- `AGENTS.md`
+  - Added the persistent workflow rule requested by the user: after each stage-level result, update memory bank and commit the work to git.
+
+- `研究导航.md`
+  - Added prompt/spec and annotation directories.
+
 ## Current Open Items
 
 - Verify the pushed data on GitHub if needed.
-- Create first pilot dataset spec: prompt families, scenario schema, induction scripts, recovery scripts, judge rubric, and metric calculation.
-- Decide whether v1 benchmark uses only synthetic controlled scenarios, or a hybrid of synthetic scenarios plus real-data-inspired linguistic patterns.
+- Implement first API-only pilot runner.
+- Decide exact model list and API provider configuration for pilot runs.
 - Start implementation directories:
   - `deviation-bench/src/`
-  - `deviation-bench/prompts/`
-  - `deviation-bench/annotations/`
   - `deviation-bench/results/`
   - `deviation-bench/paper/`
 
 ## Current Best Next Step
 
-Build the pilot benchmark spec before writing code:
+Next step is implementation of the minimal API-only runner:
 
-1. Create `deviation-bench/prompts/scenario_schema.yaml`.
-2. Create `deviation-bench/prompts/judge_rubric.md`.
-3. Draft 20 to 30 fictional, low-risk seed scenarios in `deviation-bench/prompts/pilot_scenarios.yaml`.
-4. For each scenario, create baseline, induction, and recovery turns.
-5. Run 2 to 3 models through API with multiple repetitions.
-6. Calculate RDS, IS, RDER, URR, RR, and residual drift.
+1. Create `deviation-bench/src/`.
+2. Implement scenario loading and validation.
+3. Implement rollout runner for baseline, induction, and recovery turns.
+4. Implement judge runner using `judge_rubric.md`.
+5. Implement metric calculator for RDS-AUC, IS, RDER, URR, RR, and residual drift.
+6. Run a small smoke test before full pilot.

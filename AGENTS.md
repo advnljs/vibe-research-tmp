@@ -26,6 +26,13 @@ Maintain these files continuously:
 - `AGENTS.md`
   - Update when the user adds persistent requirements or constraints.
 
+After every meaningful stage result:
+
+- Update `memory-bank/overall-progress.md`.
+- Update `memory-bank/overall-plan.md` if the plan, current phase, or next action changed.
+- Commit the completed stage to git.
+- Push to the configured remote when the user has requested remote synchronization for the workspace.
+
 ## Current Research Focus
 
 Deviation Bench is currently focused on User-Induced Reality Drift:
@@ -69,6 +76,10 @@ The user asked to continue from `todo20260521.txt`, which means:
 - Consider whether automated judges can detect delusion-like / reality-boundary language signals in collected text.
 - Convert any real community/clinical signal only into abstracted, fictional, de-identified dialogue scenarios.
 - Keep data/source navigation, progress, plan, and AGENTS updated.
+
+Additional persistent workflow requirement:
+
+- After each stage-level result, update the memory bank and commit the work to git.
 
 ## Installed Skills
 
@@ -182,12 +193,13 @@ As of 2026-05-22:
 - No formal experiment runner exists yet.
 - No pilot benchmark results exist yet.
 - Data manifest and data-use notes exist for the current data wave.
+- Pilot scenario schema, judge rubric, 20 low-risk fictional scenarios, and annotation draft exist.
 
 Recommended next work:
 
-1. Draft pilot scenario schema, prompt families, recovery turns, judge rubric, and metric calculator design.
-2. Create `deviation-bench/prompts/scenario_schema.yaml`, `deviation-bench/prompts/judge_rubric.md`, and `deviation-bench/prompts/pilot_scenarios.yaml`.
-3. Only then implement an API-only pilot runner.
+1. Implement an API-only pilot runner in `deviation-bench/src/`.
+2. Add scenario loading, rollout, judge invocation, and metric calculation.
+3. Run a smoke test on one scenario and one model before full pilot.
 
 ## Git Repository
 

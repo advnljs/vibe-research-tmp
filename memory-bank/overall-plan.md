@@ -39,7 +39,7 @@ Not primary framing:
 
 ## Current Phase
 
-Phase: data/source expansion from `todo20260521.txt` -> pilot benchmark specification.
+Phase: pilot benchmark specification drafted -> API-only runner implementation.
 
 Completed:
 
@@ -70,14 +70,20 @@ Completed:
   - abstract into fictional benchmark scenarios.
 - Created the first real-data-to-scenario mapping bridge:
   - `deviation-bench/data_sources/notes/真实语料到场景设计映射.md`
+- Created the first executable pilot specification:
+  - `deviation-bench/prompts/scenario_schema.yaml`
+  - `deviation-bench/prompts/judge_rubric.md`
+  - `deviation-bench/prompts/pilot_scenarios.yaml`
+  - `deviation-bench/annotations/标注规范草案.md`
 
 Current implementation position:
 
 - No formal experiment code yet.
-- No final prompt schema yet.
+- Pilot prompt schema and judge rubric exist.
+- Pilot scenario set exists with 20 fictional low-risk scenarios.
 - No pilot result yet.
 - Data manifest and use-policy notes now cover the current downloaded sources.
-- Next implementation unit is `prompts/scenario_schema.yaml`, `prompts/judge_rubric.md`, and `prompts/pilot_scenarios.yaml`.
+- Next implementation unit is an API-only runner and metric calculator.
 
 ## Milestone Plan
 
@@ -105,7 +111,7 @@ Exit condition:
 
 ### Milestone 2: Pilot Benchmark Specification
 
-Status: next.
+Status: first draft completed.
 
 Deliverables:
 
@@ -128,9 +134,15 @@ Exit condition:
 
 - 20 to 30 pilot scenarios are specified and can be run through LLM APIs.
 
+Current status:
+
+- 20 pilot scenarios exist in `deviation-bench/prompts/pilot_scenarios.yaml`.
+- YAML parse check passed.
+- Scenario schema, judge rubric, and human annotation draft exist.
+
 ### Milestone 3: Pilot Runner
 
-Status: not started.
+Status: next.
 
 Deliverables:
 
@@ -188,9 +200,11 @@ Exit condition:
 
 ## Immediate Next Actions
 
-1. Draft pilot prompt schema and judge rubric.
-2. Create a small set of fictional scenarios inspired by real-data/community-data patterns but not copied from sensitive transcripts or posts.
-3. Implement a minimal API-only runner after the spec is stable.
+1. Create `deviation-bench/src/`.
+2. Implement scenario loader and schema validation.
+3. Implement rollout runner for baseline, induction, and recovery turns.
+4. Implement judge runner and metric calculator.
+5. Run a smoke test on one scenario and one model before full pilot.
 
 ## Decision Log
 
@@ -215,3 +229,5 @@ Exit condition:
 - Recorded PDCH full data as restricted; downloaded only public metadata/code.
 - Recorded EATD full data as a large Git LFS item; downloaded only the pointer/README.
 - Created `真实语料到场景设计映射.md` as the bridge from data sources to pilot scenario families.
+- User added a persistent workflow requirement: after each stage-level result, update memory bank and commit to git.
+- Created the pilot benchmark spec draft with scenario schema, judge rubric, 20 scenarios, and annotation guidelines.

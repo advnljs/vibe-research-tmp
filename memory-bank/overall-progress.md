@@ -158,6 +158,24 @@ Completed repository setup for the workspace:
 
 Continued from `todo20260521.txt`.
 
+### Remote Pull and Workflow Rule Update
+
+Pulled latest remote state from `origin/main`:
+
+- Command: `git pull --ff-only origin main`
+- Result: fast-forwarded from `fc2bbbb` to `bdc42f2`.
+- New remote documents pulled:
+  - `deviation-bench/数据现状评估与下一步方案.md`
+  - `deviation-bench/目标收缩-工作流深思考.md`
+
+Updated `AGENTS.md` per the user's new persistent workflow requirement:
+
+- Every completed task must now end with:
+  - memory-bank updates,
+  - a focused git commit,
+  - push to `origin/main`.
+- It is no longer enough to commit locally and defer remote push.
+
 ### New Data Source Review and Downloads
 
 Inspected `deviation-bench/Datasets for a Deviation Bench on Reality-Boundary Language.md` and downloaded the legally accessible / public sources that were useful enough for the current phase.

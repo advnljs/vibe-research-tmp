@@ -194,10 +194,11 @@ Exit condition:
 
 ### Milestone 5: Paper Skeleton
 
-Status: not started.
+Status: started with Table 1 / related-work asset.
 
 Deliverables:
 
+- `deviation-bench/paper/table1_benchmark_comparison.md`
 - `deviation-bench/paper/outline.md`
 - `deviation-bench/paper/introduction.md`
 - `deviation-bench/paper/method.md`
@@ -218,7 +219,7 @@ Phase shift 2026-05-22 afternoon：在 framing 决策落地之前，主路径暂
 
 1. **阻塞中**：等用户回答 `deviation-bench/目标收缩-工作流深思考.md` §7 的 6 个开放问题（A/B/C framing、venue、companion method 是否做、语种、原文使用阈值、deadline）。
 2. 与 framing 无关、可并行（来自同文 §6）：
-   - 写 Table 1 Benchmark Comparison Table 草稿（weval / Stanford HAI / ELEPHANT 等 prior 横向对比）。
+   - 已完成：写 Table 1 Benchmark Comparison Table 草稿（weval / Stanford HAI / ELEPHANT 等 prior 横向对比）。
    - 跑 real-API smoke test（1 target + 1 judge × 1-2 scenario）。
    - 抽 50-80 条 abstracted pattern 到 `data_sources/patterns/seed_pattern_bank.jsonl`。
    - 写统一 utterance schema `prompts/utterance_schema.yaml`。
@@ -258,3 +259,4 @@ Phase shift 2026-05-22 afternoon：在 framing 决策落地之前，主路径暂
 - Produced `deviation-bench/目标收缩-工作流深思考.md`，以 `idea-evaluator` + `benchmark-paper-template` + `vibe-research-workflow` 为脚手架，给出三套 framing 候选 (A/B/C)，每套都走完 fatal-flaws / 5 维评分 / paradigm probe / feasibility / 5 pillars。
 - 决定不替用户选 framing，让 §7 的 6 个开放问题由用户回答后再继续。
 - 强化 `AGENTS.md` 工作流规则：每完成一个完整任务必须更新 memory-bank + 单独 commit；显式定义“完整任务”边界与 per-task closing checklist。
+- 完成 `deviation-bench/paper/table1_benchmark_comparison.md`，作为 introduction / related work 的 benchmark comparison 资产；当前差异化主张收束为“reality-boundary judgment 的 context-retest reliability”。

@@ -334,6 +334,16 @@ Three new planning / decision documents written, no code or data changes:
   - 把"每完成一个完整任务后更新 memory-bank + 单独 commit"从建议升级为硬性规则。
   - 显式定义"完整任务"边界与 per-task closing checklist。
 
+### Table 1 Benchmark Comparison Draft
+
+Created:
+
+- `deviation-bench/paper/table1_benchmark_comparison.md`
+  - Drafts the paper-ready benchmark comparison table requested in `目标收缩-工作流深思考.md` §6.
+  - Compares weval `ai-psychosis.yml`, `ai-spiral-safety.yml`, Stanford HAI mental-health safety eval, ELEPHANT, `sycophancy-probe.yml`, `hallucination-probe.yml`, `mental-health.yml`, and the proposed Deviation Bench.
+  - Records task scope, source type, local item scale, multi-source status, context-retest coverage, multi-turn coverage, recovery metric coverage, real-corpus anchoring, language, and the limitation relative to Deviation Bench.
+  - Distills the main differentiation claim: Deviation Bench should be positioned as context-retest reliability for reality-boundary judgments, not as another generic mental-health safety benchmark.
+
 ## Current Open Items
 
 - 等待用户回答 `目标收缩-工作流深思考.md` §7 的 6 个开放问题（framing / venue / companion / language / 原文使用阈值 / deadline）。
@@ -341,7 +351,7 @@ Three new planning / decision documents written, no code or data changes:
 - Decide exact model list and API provider configuration for pilot runs.
 - Run a real API smoke test once API credentials/model choice are available.
 - Review whether the pilot runner should support additional providers beyond OpenAI-compatible chat completions.
-- Start implementation directories:
+- Continue populating implementation/output directories:
   - `deviation-bench/results/`
   - `deviation-bench/paper/`
 
@@ -351,7 +361,7 @@ Three new planning / decision documents written, no code or data changes:
 
 与 framing 无关、可并行的立即动作（来自 `目标收缩-工作流深思考.md` §6）：
 
-1. 写 Table 1 Benchmark Comparison Table 草稿，比较 weval / Stanford HAI / ELEPHANT 等 prior，给后续 introduction 的 F1 差异化用。
+1. 已完成：写 Table 1 Benchmark Comparison Table 草稿，比较 weval / Stanford HAI / ELEPHANT 等 prior，给后续 introduction 的 F1 差异化用。
 2. 跑 real-API smoke test（1 target + 1 judge × 1-2 scenario），验证 JSON contract 与 judge 稳定性。
 3. 从 DAIS-C clinical speaker-only + Reddit r/schizophrenia subset 抽 50-80 条 abstracted pattern，落到 `data_sources/patterns/seed_pattern_bank.jsonl`。
 4. 写统一 utterance schema 草稿 `prompts/utterance_schema.yaml`。

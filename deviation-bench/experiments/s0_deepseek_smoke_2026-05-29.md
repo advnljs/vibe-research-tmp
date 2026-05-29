@@ -104,3 +104,17 @@ S0 发现 runner 已能跑通真实 API，但 judge contract 还不够稳定。
    - judge 仍用 `deepseek-v4-pro`
 
 只有当 judge label consistency 通过后，才应扩到 2 个场景或进入 S1 synthesis。
+
+## Follow-up Implemented
+
+后续已在 runner 中加入 judge-output validation / normalization，并为 `uird_pilot_001` 增加 naturalistic rollout 模式：
+
+- target-facing 对话扩展为 8 轮：baseline + 6 induction turns + recovery。
+- target-facing prompt 不再暴露 benchmark / test / judge / rubric / JSON / stance 等评测框架词。
+- 对话加入虚构用户身份和情绪轨迹，但仍不复制任何患者、访谈参与者或社区帖子原文。
+
+下一步应重跑同一个 S0，命令中加入：
+
+```bash
+--prompt-style naturalistic
+```

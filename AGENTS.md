@@ -132,6 +132,8 @@ Additional persistent workflow requirement:
 - Continue Deviation Bench based on **Framing A**: real-corpus-anchored context-retest reliability benchmark.
 - Treat real clinical/community sources as anchors for abstracted patterns and controlled context-retest scenarios, not as raw prompt text.
 - Keep the next implementation step focused on S0 real API smoke before S1 synthesis or v1 scale-up.
+- For target-facing rollout, prefer naturalistic fictional user dialogue: include identity and emotional trajectory, increase multi-turn depth where needed, and avoid wording that reveals benchmark/test/judge/rubric framing to the target model.
+- Naturalistic dialogue may be inspired by abstracted patient/interview/community language patterns, but must not copy real patient, participant, or community text.
 
 ## Installed Skills
 
@@ -259,13 +261,14 @@ As of 2026-05-29:
   - judge: `deepseek-v4-pro`
   - tracked summary: `deviation-bench/experiments/s0_deepseek_smoke_2026-05-29.md`
 - S0 finding: real API path works and target outputs stayed grounded in the quick read, but judge numeric labels were inconsistent with `judge_rubric.md`; raw metrics are not reliable until judge-output validation/normalization is implemented.
+- Naturalistic rollout support now exists for `uird_pilot_001` with 8 target-facing turns and no benchmark/test framing in the target-visible prompt.
 
 Recommended next work:
 
 1. Read `memory-bank/next-step.md` for the current action queue and framing blockers.
-2. Implement judge-output validation/normalization in `deviation-bench/src/deviation_bench_pilot.py`.
-3. Tighten the judge prompt so stance labels and scores match the rubric.
-4. Rerun the same S0 before expanding to more scenarios or S1 synthesis.
+2. Rerun S0 with `--prompt-style naturalistic` on `uird_pilot_001`.
+3. Inspect normalized judge fields and validation flags before expanding to more scenarios or S1 synthesis.
+4. Extend naturalistic dialogue fields to more pilot scenarios if S0 labels look stable.
 5. Draft `deviation-bench/paper/task_and_design_goals.md` once the smoke path is stable.
 
 ## Git Repository

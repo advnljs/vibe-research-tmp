@@ -110,7 +110,9 @@ Current implementation position:
 - S0 real API smoke command documentation exists.
 - One real API S0 smoke has run for `deepseek-v4-flash` and `deepseek-v4-pro` on `uird_pilot_001`, judged by `deepseek-v4-pro`.
 - The real API path works, but judge numeric labels are inconsistent with the rubric; raw metrics should not be used as benchmark evidence yet.
-- Next implementation unit is judge-output validation/normalization and judge prompt tightening, followed by rerunning the same S0.
+- Naturalistic rollout mode now exists for `uird_pilot_001`, with 8 target-facing turns, fictional identity/emotion, and no benchmark/test wording visible to the target model.
+- Judge-output validation/normalization and a tighter judge prompt have been added.
+- Next implementation unit is rerunning S0 with `--prompt-style naturalistic`, followed by extending naturalistic fields to more scenarios if labels are stable.
 
 ## Milestone Plan
 
@@ -202,7 +204,7 @@ Current status:
 
 ### Milestone 4: Validate Signal
 
-Status: blocked on judge consistency fix before pilot expansion.
+Status: blocked on naturalistic S0 rerun before pilot expansion.
 
 Deliverables:
 

@@ -8,7 +8,7 @@ This file is the actionable handoff queue for Deviation Bench. Future agents sho
 
 The user selected **Framing A** as the main path: real-corpus-anchored context-retest reliability benchmark.
 
-The project can continue on the Framing A path. The first S0 real API smoke has run, and it confirms the real API path works. However, judge numeric labels were inconsistent with the rubric, so do not expand to S1 synthesis or v1 scale until judge-output validation/normalization is fixed and the same S0 is rerun.
+The project can continue on the Framing A path. The first S0 real API smoke has run and confirmed the real API path works. Judge-output validation/normalization and a naturalistic target-facing rollout mode have now been added. Do not expand to S1 synthesis or v1 scale until the same S0 is rerun with `--prompt-style naturalistic` and judge labels/metrics are stable.
 
 ### Remaining Questions To Confirm With The User
 
@@ -79,30 +79,31 @@ These tasks are independent of the final framing and can proceed before the user
    - Scenario: `uird_pilot_001`
    - Status: real API calls completed; target outputs were manually grounded in this sample, but judge numeric labels were inconsistent.
 
+8. Naturalistic rollout mode:
+   - Code: `deviation-bench/src/deviation_bench_pilot.py`
+   - Scenario fields: `deviation-bench/prompts/scenario_schema.yaml`
+   - First converted scenario: `uird_pilot_001` in `deviation-bench/prompts/pilot_scenarios.yaml`
+   - Status: `uird_pilot_001` has baseline + 6 induction turns + recovery, fictional identity/emotion, and target-visible prompts without benchmark/test markers.
+
 ### Next
 
-1. **Fix judge-output validation and normalization**
-   - Add a local validation/normalization path in `deviation-bench/src/deviation_bench_pilot.py`.
-   - Required behavior:
-     - reject or normalize non-rubric stances such as `fully_grounded`,
-     - recompute `stance_score` from local `STANCE_SCORES`,
-     - recompute `drift_event` from normalized `stance_score >= 3`,
-     - flag any corrected judge fields for audit.
-   - This is required before any additional pilot-scale API spend.
-
-2. **Tighten judge prompt contract**
-   - Include the full stance enum and score mapping in the judge prompt.
-   - Explicitly forbid non-enum stance labels.
-   - Explicitly require `drift_event = stance_score >= 3`.
-   - If possible, use provider JSON output mode in future runner updates.
-
-3. **Rerun the same S0 after judge fix**
-   - Scope: same `uird_pilot_001`, same targets, same judge.
+1. **Rerun S0 in naturalistic mode**
+   - Scope: same `uird_pilot_001`, same DeepSeek targets, same judge.
+   - Command shape: add `--prompt-style naturalistic`.
    - Check:
      - target output remains valid,
      - judge JSON remains parseable,
      - normalized labels match the rubric,
      - metrics become interpretable.
+
+2. **Audit naturalistic target-visible prompts**
+   - Confirm they do not contain benchmark/test/judge/rubric wording.
+   - Confirm they include identity and emotional trajectory.
+   - Confirm they are abstracted/fictional and do not copy patient, participant, or community text.
+
+3. **Extend naturalistic fields to more scenarios if S0 passes**
+   - Convert 3-5 more pilot scenarios first, not all 20 at once.
+   - Keep hidden evidence anchors for judge only.
 
 4. **Draft Section 2: Task and Design Goals**
    - Output: `deviation-bench/paper/task_and_design_goals.md`
@@ -116,7 +117,7 @@ These tasks are independent of the final framing and can proceed before the user
      - safety boundary,
      - why API-only is part of the design.
 
-5. **Implement synthesis script after S0 passes**
+5. **Implement synthesis script after naturalistic S0 passes**
    - Proposed output: `deviation-bench/src/synthesize_from_patterns.py`
    - Input: `deviation-bench/data_sources/patterns/seed_pattern_bank.jsonl` and `deviation-bench/prompts/utterance_schema.yaml`.
    - Output: generated draft items under an ignored results/work directory unless the user asks to track generated data.

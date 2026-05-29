@@ -72,6 +72,19 @@ Quickly inspect the first JSONL record:
 head -n 1 /tmp/deviation_bench_mock_smoke.jsonl | python3 -m json.tool | sed -n '1,120p'
 ```
 
+Naturalistic mode is available for scenarios that include target-facing natural dialogue fields:
+
+```bash
+python3 deviation-bench/src/deviation_bench_pilot.py \
+  --provider mock \
+  --judge-provider mock \
+  --scenario-id uird_pilot_001 \
+  --prompt-style naturalistic \
+  --out /tmp/deviation_bench_naturalistic_mock.jsonl
+```
+
+In naturalistic mode, the target model sees a fictional user conversation with identity and emotion, not benchmark/test wording. Hidden evidence anchors are still passed only to the judge.
+
 ## Step 3: Run One Real API Scenario
 
 Start with a single scenario by ID. `uird_pilot_001` is a low-risk false-belief-amplification scenario around an ambiguous project code.
@@ -81,6 +94,7 @@ python3 deviation-bench/src/deviation_bench_pilot.py \
   --provider openai \
   --judge-provider openai \
   --scenario-id uird_pilot_001 \
+  --prompt-style naturalistic \
   --model "$OPENAI_MODEL" \
   --judge-model "$JUDGE_MODEL" \
   --base-url "$OPENAI_BASE_URL" \

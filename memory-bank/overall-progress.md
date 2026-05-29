@@ -489,6 +489,41 @@ Implication:
 - Real API path works, but raw metrics are not reliable yet.
 - Next implementation step should be judge-output validation/normalization and a tighter judge prompt before running more scenarios.
 
+### Naturalistic Rollout Mode
+
+Updated:
+
+- `deviation-bench/src/deviation_bench_pilot.py`
+  - Added `--prompt-style structured|naturalistic`.
+  - Naturalistic mode sends target models a fictional, ordinary user conversation rather than benchmark/test-formatted prompts.
+  - Hidden evidence anchors remain available to the judge only.
+  - Added judge-output normalization:
+    - non-rubric stance labels are normalized and flagged,
+    - `stance_score` is recomputed from local `STANCE_SCORES`,
+    - `drift_event` is recomputed from normalized score,
+    - recovery success is normalized by turn type and score.
+
+- `deviation-bench/prompts/scenario_schema.yaml`
+  - Added optional naturalistic fields: `naturalistic_model_instruction`, `naturalistic_profile`, `naturalistic_opening`, `naturalistic_turns`, `naturalistic_recovery_turn`, and target prompt visibility policy.
+  - Increased induction-turn schema capacity to support up to 7 turns.
+  - Added checks for no target prompt exposure of benchmark/test framing and no copied patient/community transcript language.
+
+- `deviation-bench/prompts/pilot_scenarios.yaml`
+  - Added naturalistic rollout content for `uird_pilot_001`.
+  - Target-facing episode now has 8 turns total: baseline, 6 induction turns, and recovery.
+  - Added fictional identity and emotional trajectory: project assistant, poor sleep/stress, fear of being dismissed, need for validation.
+  - Language style is only abstractly inspired by DAIS-C, first-episode psychosis friendship interviews, and Reddit `r/schizophrenia` patterns; no raw text is copied.
+
+- `deviation-bench/src/README.md`
+  - Added naturalistic mock command and real API command example using `--prompt-style naturalistic`.
+
+Validation completed:
+
+- Scenario validation still passes: 20 scenarios loaded.
+- Structured mock smoke still passes.
+- Naturalistic mock smoke passes for `uird_pilot_001`.
+- Naturalistic target-visible prompts for `uird_pilot_001` contain 8 turns and do not contain benchmark/test markers such as `benchmark`, `测试`, `评测`, `stance`, `JSON`, `可选答案`, or `已知事实`.
+
 ### Correction: Misrouted Component Instruction
 
 Corrected:
@@ -512,7 +547,7 @@ Corrected:
 
 ## Current Best Next Step
 
-优先级 1：修 judge-output validation / normalization 和 judge prompt。S0 已证明真实 API path 可跑通，但 judge 数值字段不可靠，不能直接扩规模。
+优先级 1：用 `--prompt-style naturalistic` 重跑 S0。上一轮 S0 已证明真实 API path 可跑通；现在 runner 已有 judge normalization 和自然对话模式，需要确认新模式下 judge labels 与 metrics 是否稳定。
 
 已完成的 Framing-A 主线准备动作：
 
@@ -522,7 +557,8 @@ Corrected:
 4. 已完成：写统一 utterance schema 草稿 `prompts/utterance_schema.yaml`，并写 LLM 数据合成/API token 预估方案。
 5. 已完成：把 `src/README.md` 扩展为 S0 real API smoke 命令文档。
 6. 已完成：跑 S0 real API smoke（`deepseek-v4-flash` / `deepseek-v4-pro` targets，`deepseek-v4-pro` judge，1 scenario）。
-7. 建议下一步：实现 judge-output validation/normalization，并收紧 judge prompt 后重跑同一 S0。
-8. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
+7. 已完成：实现 judge-output validation/normalization，并为 `uird_pilot_001` 增加自然对话模式。
+8. 建议下一步：用 DeepSeek targets + `deepseek-v4-pro` judge 重跑 `uird_pilot_001 --prompt-style naturalistic`。
+9. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
 
 详细行动队列见 `memory-bank/next-step.md`。

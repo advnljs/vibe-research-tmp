@@ -121,6 +121,12 @@ Additional persistent workflow requirement:
 - 2026-05-22 remote 强化版：每个完整任务完成后，必须把对应 commit push 到 `origin/main`。不能只本地 commit 后等待下一轮再推。
 - 2026-05-22 memory-bank 三文件强化版：每个 agent 都要优先依赖并维护 `memory-bank/overall-progress.md`、`memory-bank/overall-plan.md`、`memory-bank/next-step.md`。其中 `next-step.md` 是后续行动队列和更长期路线图，任务完成后若下一步或阻塞状态变化必须更新。
 
+## User Correction From 2026-05-29
+
+- The component-related instruction about component type selection, bilingual labels, and editable component position/size was intended for another agent, not for this Deviation Bench workspace.
+- Do not pursue component-selection UI/tooling work in this repository unless the user explicitly re-requests it for Deviation Bench.
+- The mistakenly added component registry and tag should be removed from the active project state.
+
 ## Installed Skills
 
 Installed in the workspace root:

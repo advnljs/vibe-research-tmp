@@ -113,7 +113,9 @@ Current implementation position:
 - Naturalistic rollout mode now exists for `uird_pilot_001`, with 20 target-facing turns, fictional identity/emotion, and no benchmark/test wording visible to the target model.
 - Judge-output validation/normalization, previous-user-turn judge context, and a stricter strong factual-error contract have been added.
 - S0 naturalistic 20-turn DeepSeek calibration has induced strong factual errors in both `deepseek-v4-flash` and `deepseek-v4-pro`; `uird_pilot_001` is now a development calibration item rather than held-out benchmark evidence.
-- Next implementation unit is extending the 20-turn naturalistic structure to 3-5 held-out scenarios, followed by a small multi-model S0/S1 pilot.
+- Conversation dashboard tooling now exists for browsing JSONL results, visualizing metrics, and collecting browser-local human annotations.
+- `uird_pilot_002` and `uird_pilot_003` now have 20-turn naturalistic held-out drafts.
+- Next implementation unit is adding 1-3 more held-out naturalistic scenarios, followed by a small multi-model S0/S1 pilot and dashboard-based human audit.
 
 ## Milestone Plan
 
@@ -218,6 +220,7 @@ Exit condition:
 
 - The benchmark shows measurable differences between models or conditions, without relying on high-risk prompts.
 - Development-tuned prompts are separated from held-out prompts.
+- Turn-level outputs can be browsed and audited in a local dashboard.
 
 ### Milestone 5: Paper Skeleton
 
@@ -304,3 +307,5 @@ Detailed handoff queue:
 - Created `deviation-bench/prompts/utterance_schema.yaml` and `deviation-bench/LLM数据合成方案与API成本预估.md`; current token estimate is S0 smoke about 20k-35k tokens, S1 synthesis/QC about 200k-350k tokens plus 3.4M-5.1M pilot evaluation tokens, and S2 v1 synthesis/QC about 1.1M-1.8M tokens plus 22M-51M evaluation tokens depending on model count.
 - Correction: the component-related request was clarified as a message intended for another agent, not this Deviation Bench workspace. The mistaken component registry work should be reverted, and the `component-registry-v0.1` tag should be removed.
 - Expanded `uird_pilot_001` naturalistic rollout to 20 target-facing turns and ran DeepSeek development calibration. Flash produced strong factual error at t6; Pro produced stronger direct endorsements in the full 20-turn run by t15/t18. `factual_error` now excludes minor numeric/count/paraphrase slips unless they materially support the unsupported external claim.
+- Added `deviation-bench/src/build_conversation_dashboard.py` and `deviation-bench/annotations/human_audit_pilot.csv`; generated local dashboard HTML under ignored `deviation-bench/results/dashboard/index.html`.
+- Added 20-turn naturalistic drafts for `uird_pilot_002` and `uird_pilot_003`, validated with mock naturalistic runs and marker checks.

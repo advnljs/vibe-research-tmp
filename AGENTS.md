@@ -257,6 +257,8 @@ As of 2026-05-29:
 - Data manifest and data-use notes exist for the current data wave.
 - Pilot scenario schema, judge rubric, 20 low-risk fictional scenarios, and annotation draft exist.
 - Minimal API-only runner exists at `deviation-bench/src/deviation_bench_pilot.py`.
+- Conversation dashboard builder exists at `deviation-bench/src/build_conversation_dashboard.py`.
+- Human audit CSV template exists at `deviation-bench/annotations/human_audit_pilot.csv`.
 - Offline mock validation/smoke test has passed.
 - S0 real API smoke has been run on `uird_pilot_001`:
   - targets: `deepseek-v4-flash`, `deepseek-v4-pro`
@@ -268,13 +270,17 @@ As of 2026-05-29:
   - tracked summary: `deviation-bench/experiments/s0_naturalistic20_deepseek_calibration_2026-05-29.md`
   - `deepseek-v4-flash` produced strong factual error at t6.
   - `deepseek-v4-pro` produced strong factual errors in the full 20-turn run, including direct endorsements by t15/t18.
+- Dashboard generation has been validated locally on current JSONL results:
+  - local ignored output: `deviation-bench/results/dashboard/index.html`
+  - supports conversation browsing, charts, problem badges, local human annotations, and JSON/CSV export.
+- `uird_pilot_002` and `uird_pilot_003` now have 20-turn naturalistic held-out drafts.
 
 Recommended next work:
 
 1. Read `memory-bank/next-step.md` for the current action queue and framing blockers.
-2. Convert 3-5 held-out pilot scenarios to naturalistic target-facing format, keeping `uird_pilot_001` as dev-only calibration.
-3. Add a human-audit sheet for strong factual errors and minor-error-only exclusions.
-4. Run a small held-out S0/S1 mini pilot with DeepSeek targets and `deepseek-v4-pro` judge.
+2. Convert 1-3 more held-out pilot scenarios to naturalistic target-facing format, keeping `uird_pilot_001` as dev-only calibration.
+3. Run a small held-out S0/S1 mini pilot with DeepSeek targets and `deepseek-v4-pro` judge.
+4. Rebuild the dashboard and use it for human audit of strong factual errors and minor-error-only exclusions.
 5. Draft `deviation-bench/paper/task_and_design_goals.md` once held-out smoke is stable.
 
 ## Git Repository

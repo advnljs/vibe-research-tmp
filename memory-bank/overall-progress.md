@@ -551,6 +551,41 @@ Interpretation:
 - `uird_pilot_001` should now be treated as a development calibration item, not held-out benchmark evidence.
 - The next benchmark step should freeze this dev item, then construct 3-5 held-out naturalistic scenarios with the same strong factual-error standard.
 
+### Conversation Dashboard and Held-out Scenario Preparation
+
+Created:
+
+- `deviation-bench/src/build_conversation_dashboard.py`
+  - Reads one or more JSONL result files or globs.
+  - Writes a self-contained static HTML dashboard.
+  - Shows overview KPIs, model/scenario factual-error charts, stance distribution, model issue heatmap, conversation list, turn-level timeline, judge rationale, and problem badges.
+  - Supports browser-local human annotations with export to JSON or CSV.
+
+- `deviation-bench/annotations/human_audit_pilot.csv`
+  - Header template matching dashboard CSV export.
+
+Generated locally:
+
+- `deviation-bench/results/dashboard/index.html`
+  - Built from current ignored JSONL results.
+  - Not tracked because it embeds raw model outputs from `deviation-bench/results/`.
+
+Updated:
+
+- `deviation-bench/src/README.md`
+  - Added dashboard generation command and output description.
+- `deviation-bench/annotations/标注规范草案.md`
+  - Added strict `factual_error` annotation guidance and dashboard export fields.
+- `deviation-bench/prompts/pilot_scenarios.yaml`
+  - Added 20-turn naturalistic held-out drafts for `uird_pilot_002` and `uird_pilot_003`.
+
+Validation completed:
+
+- `build_conversation_dashboard.py` compiles.
+- Dashboard generation completed on 11 local JSONL paths with 10 parsed conversations and 0 load errors; one JSONL file is empty from an interrupted run.
+- Scenario validation still passes.
+- Naturalistic mock runs for `uird_pilot_002` and `uird_pilot_003` each produce 20 turns with no target-visible benchmark/test markers.
+
 ### Correction: Misrouted Component Instruction
 
 Corrected:
@@ -567,6 +602,7 @@ Corrected:
 - Framing A has been selected; remaining open decisions are UIRD subtrack status, venue, language scope, raw text boundary, companion baseline, timeline, and API budget.
 - Verify the pushed data on GitHub if needed.
 - Freeze the current 20-turn `uird_pilot_001` as a development calibration item before expanding pilot runs.
+- Use `build_conversation_dashboard.py` to inspect future pilot JSONL results and collect human annotations.
 - Review whether the pilot runner should support additional providers beyond OpenAI-compatible chat completions.
 - Continue populating implementation/output directories:
   - `deviation-bench/results/`
@@ -574,7 +610,7 @@ Corrected:
 
 ## Current Best Next Step
 
-优先级 1：把 20 轮 naturalistic 结构迁移到 3-5 个 held-out pilot 场景。`uird_pilot_001` 已被用于 prompt/data 构造校准，不应直接作为最终主结果。
+优先级 1：继续把 20 轮 naturalistic 结构迁移到 held-out pilot 场景。`uird_pilot_002` 和 `uird_pilot_003` 已有 naturalistic drafts；下一步补 `uird_pilot_011` 或另一个非数字/非 app 场景，然后用 dashboard 做人工复核。
 
 已完成的 Framing-A 主线准备动作：
 
@@ -586,7 +622,9 @@ Corrected:
 6. 已完成：跑 S0 real API smoke（`deepseek-v4-flash` / `deepseek-v4-pro` targets，`deepseek-v4-pro` judge，1 scenario）。
 7. 已完成：实现 judge-output validation/normalization，并为 `uird_pilot_001` 增加自然对话模式。
 8. 已完成：把 `uird_pilot_001` 扩展到 20 轮 naturalistic rollout，并用 DeepSeek flash/pro 做开发校准，诱导出强事实错误。
-9. 建议下一步：将同一结构迁移到 3-5 个 held-out 场景并固定强事实错误复核表。
-10. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
+9. 已完成：增加 JSONL conversation dashboard 脚本和 human audit CSV 模板，可浏览对话、查看图表并本地标注问题。
+10. 已完成：为 `uird_pilot_002` / `uird_pilot_003` 添加 20 轮 naturalistic held-out drafts。
+11. 建议下一步：补第 3-5 个 held-out 场景，然后跑 DeepSeek held-out mini pilot，并用 dashboard 做人工复核。
+12. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
 
 详细行动队列见 `memory-bank/next-step.md`。

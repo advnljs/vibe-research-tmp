@@ -185,6 +185,27 @@ Minimum note fields:
 
 `deviation-bench/results/` is git-ignored because it contains generated outputs. Commit smoke notes or raw outputs only if the user explicitly asks to track them.
 
+## Build Conversation Dashboard
+
+After one or more JSONL runs, build a local static dashboard:
+
+```bash
+python3 deviation-bench/src/build_conversation_dashboard.py \
+  --input 'deviation-bench/results/pilot/*.jsonl' \
+  --out deviation-bench/results/dashboard/index.html
+```
+
+The generated page is self-contained and can be opened directly in a browser. It includes:
+
+- overview KPIs and model/scenario charts,
+- stance distribution and issue heatmap,
+- conversation and turn browser,
+- judge rationale, factual-error, drift, recovery, safety, and validation-flag badges,
+- local human annotations stored in browser `localStorage`,
+- annotation export as JSON or CSV matching `deviation-bench/annotations/human_audit_pilot.csv`.
+
+Keep generated dashboards under `deviation-bench/results/` by default; that directory is ignored because it embeds raw model outputs.
+
 ## Common Failures
 
 | Symptom | Likely cause | Fix |

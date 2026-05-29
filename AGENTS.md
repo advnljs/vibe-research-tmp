@@ -127,6 +127,12 @@ Additional persistent workflow requirement:
 - Do not pursue component-selection UI/tooling work in this repository unless the user explicitly re-requests it for Deviation Bench.
 - The mistakenly added component registry and tag should be removed from the active project state.
 
+## User Decision From 2026-05-29
+
+- Continue Deviation Bench based on **Framing A**: real-corpus-anchored context-retest reliability benchmark.
+- Treat real clinical/community sources as anchors for abstracted patterns and controlled context-retest scenarios, not as raw prompt text.
+- Keep the next implementation step focused on S0 real API smoke before S1 synthesis or v1 scale-up.
+
 ## Installed Skills
 
 Installed in the workspace root:

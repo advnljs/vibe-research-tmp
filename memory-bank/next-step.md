@@ -6,29 +6,26 @@ This file is the actionable handoff queue for Deviation Bench. Future agents sho
 
 ## Current Decision State
 
-The project is paused on the main research path until the user confirms the target framing. Do not expand the pilot or rewrite the research direction until the following decisions are answered.
+The user selected **Framing A** as the main path: real-corpus-anchored context-retest reliability benchmark.
 
-### Questions To Confirm With The User
+The project can continue on the Framing A path. The next implementation unit is S0 real API smoke. Do not expand to S1 synthesis or v1 scale until S0 confirms the runner, judge JSON, labels, and metrics are usable.
+
+### Remaining Questions To Confirm With The User
 
 Ask these first if the user has not already answered them:
 
-1. **Framing**: choose A / B / C / another framing.
-   - A: real-corpus-anchored context-retest reliability benchmark.
-   - B: LLM response-quality benchmark on reality-boundary utterances.
-   - C: A as main leaderboard + small synthetic multi-turn UIRD subtrack.
-2. **UIRD multi-turn status**: main contribution / auxiliary subtrack / postpone.
-3. **Target venue**: NeurIPS D&B / ACL Findings / EMNLP / workshop / undecided.
-4. **Language scope**: English / Chinese / Chinese+English.
-5. **Raw text boundary** for DAIS-C and First-Episode Psychosis data:
+1. **UIRD multi-turn status**: auxiliary subtrack / discussion bridge / postpone.
+2. **Target venue**: NeurIPS D&B / ACL Findings / EMNLP / workshop / undecided.
+3. **Language scope**: English / Chinese / Chinese+English.
+4. **Raw text boundary** for DAIS-C and First-Episode Psychosis data:
    - fully abstracted patterns only,
    - short paraphrased fragments,
    - limited original snippets with a strict threshold.
-6. **Companion method**: yes / no / lightweight prompt baseline only.
-7. **Submission timeline and API budget**: needed to decide whether Framing C is realistic.
+5. **Companion method**: no / lightweight prompt baseline only.
+6. **Submission timeline and API budget**: needed to size the pilot and v1.
 
-Recommended default if the user asks for a pragmatic path:
+Current recommended defaults:
 
-- Choose **Framing A** for the first publishable benchmark.
 - Keep **multi-turn UIRD as an auxiliary subtrack** or discussion bridge.
 - Use **English as the main benchmark language**, with Chinese retained as a secondary or pilot split.
 - Use **abstracted patterns only** from sensitive real data.
@@ -69,6 +66,11 @@ These tasks are independent of the final framing and can proceed before the user
    - Output: `deviation-bench/LLM数据合成方案与API成本预估.md`
    - Purpose: define when API keys are needed, staged synthesis/evaluation workflow, token budgets, session counts, and default conversation lengths.
    - Recommendation: do S0 real API smoke before S1/S2 synthesis expansion.
+
+6. S0 real API smoke command documentation:
+   - Output: `deviation-bench/src/README.md`
+   - Purpose: document Framing-A-aligned S0 smoke goal, API key handling, validation, mock run, one-scenario real API run, two-scenario real API run, result inspection, smoke notes, and common failures.
+   - Status: first pass complete; no real API call has been run yet.
 
 ### Next
 

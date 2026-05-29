@@ -443,6 +443,23 @@ Validation completed:
 - Existing `scenario_schema.yaml` still parses.
 - `seed_pattern_bank.jsonl` still parses with 60 records and no copied-source-text records.
 
+### Framing A Selection and S0 Smoke Documentation
+
+User decision:
+
+- The project should continue based on **Framing A**: real-corpus-anchored context-retest reliability benchmark.
+
+Updated:
+
+- `deviation-bench/src/README.md`
+  - Expanded into a Framing-A-aligned S0 real API smoke guide.
+  - Documents S0 goals, recommended 1-2 scenario scope, API key environment variables, validation command, offline mock command, one-scenario real API command, two-scenario real API command, result inspection snippet, smoke-note fields, and common failures.
+
+Validation completed:
+
+- Scenario validation still passes: 20 scenarios loaded.
+- Offline mock smoke still passes for 1 scenario.
+
 ### Correction: Misrouted Component Instruction
 
 Corrected:
@@ -456,7 +473,7 @@ Corrected:
 
 ## Current Open Items
 
-- 等待用户回答 `目标收缩-工作流深思考.md` §7 的 6 个开放问题（framing / venue / companion / language / 原文使用阈值 / deadline）。
+- Framing A has been selected; remaining open decisions are UIRD subtrack status, venue, language scope, raw text boundary, companion baseline, timeline, and API budget.
 - Verify the pushed data on GitHub if needed.
 - Decide exact model list and API provider configuration for pilot runs.
 - Run a real API smoke test once API credentials/model choice are available.
@@ -467,15 +484,16 @@ Corrected:
 
 ## Current Best Next Step
 
-优先级 1：等用户对 framing 做出选择，否则后续 pipeline 走向不定。
+优先级 1：按 Framing A 跑 S0 real API smoke，先验证 runner、judge JSON、labels 和 metrics，再进入合成或扩规模。
 
-与 framing 无关、可并行的立即动作（来自 `目标收缩-工作流深思考.md` §6）：
+已完成的 Framing-A 主线准备动作：
 
 1. 已完成：写 Table 1 Benchmark Comparison Table 草稿，比较 weval / Stanford HAI / ELEPHANT 等 prior，给后续 introduction 的 F1 差异化用。
 2. 已完成：写 Benchmark gap / prior comparison addendum，补充 gap statement、RQ、G1-G4 与 reviewer 风险防守。
 3. 已完成：从 DAIS-C / first-episode psychosis friendship / Reddit r/schizophrenia 抽象 60 条 seed patterns，落到 `data_sources/patterns/seed_pattern_bank.jsonl`。
 4. 已完成：写统一 utterance schema 草稿 `prompts/utterance_schema.yaml`，并写 LLM 数据合成/API token 预估方案。
-5. 建议下一步：跑 real-API smoke test（1 target + 1 judge × 1-2 scenario），验证 JSON contract 与 judge 稳定性。
-6. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
+5. 已完成：把 `src/README.md` 扩展为 S0 real API smoke 命令文档。
+6. 建议下一步：跑 real-API smoke test（1 target + 1 judge × 1-2 scenario），验证 JSON contract 与 judge 稳定性。
+7. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
 
 详细行动队列见 `memory-bank/next-step.md`。

@@ -16,6 +16,7 @@ The core question:
 
 Primary framing:
 
+- Framing A: real-corpus-anchored context-retest reliability benchmark
 - Context-induced deviation
 - Social judgment deviation
 - Context-retest reliability / situation-retest reliability
@@ -39,7 +40,7 @@ Not primary framing:
 
 ## Current Phase
 
-Phase: API-only runner smoke-tested + benchmark gap comparison drafted + seed pattern bank + utterance schema created -> real API smoke preparation.
+Phase: Framing A selected + API-only runner smoke-tested + benchmark gap comparison drafted + seed pattern bank + utterance schema created -> real API smoke ready.
 
 Completed:
 
@@ -88,6 +89,8 @@ Completed:
 - Created the unified utterance/source schema and LLM synthesis budget plan:
   - `deviation-bench/prompts/utterance_schema.yaml`
   - `deviation-bench/LLM数据合成方案与API成本预估.md`
+- Expanded the runner README into an S0 real API smoke command guide aligned with Framing A:
+  - `deviation-bench/src/README.md`
 
 Current implementation position:
 
@@ -101,6 +104,7 @@ Current implementation position:
 - First abstracted seed pattern bank exists with 60 no-raw-text pattern records.
 - Unified utterance schema exists and maps the seed pattern bank to future scenario construction.
 - LLM data synthesis plan exists with token/session estimates for S0/S1/S2.
+- S0 real API smoke command documentation exists.
 - Next implementation unit is a real API smoke test, followed by synthesis script implementation if smoke passes.
 
 ## Milestone Plan

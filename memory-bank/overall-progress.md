@@ -564,6 +564,10 @@ Created:
 - `deviation-bench/annotations/human_audit_pilot.csv`
   - Header template matching dashboard CSV export.
 
+- `deviation-bench/scripts/start_dashboard.sh`
+  - Builds the dashboard and serves it with Python's local static HTTP server.
+  - Supports `--host`, `--port`, `--input`, and `--out`.
+
 Generated locally:
 
 - `deviation-bench/results/dashboard/index.html`
@@ -583,6 +587,7 @@ Validation completed:
 
 - `build_conversation_dashboard.py` compiles.
 - Dashboard generation completed on 11 local JSONL paths with 10 parsed conversations and 0 load errors; one JSONL file is empty from an interrupted run.
+- Dashboard was started locally and verified at `http://127.0.0.1:8767/`.
 - Scenario validation still passes.
 - Naturalistic mock runs for `uird_pilot_002` and `uird_pilot_003` each produce 20 turns with no target-visible benchmark/test markers.
 

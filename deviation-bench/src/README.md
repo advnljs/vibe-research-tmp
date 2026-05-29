@@ -195,6 +195,12 @@ python3 deviation-bench/src/build_conversation_dashboard.py \
   --out deviation-bench/results/dashboard/index.html
 ```
 
+Or build and serve it in one step:
+
+```bash
+deviation-bench/scripts/start_dashboard.sh --port 8765
+```
+
 The generated page is self-contained and can be opened directly in a browser. It includes:
 
 - overview KPIs and model/scenario charts,

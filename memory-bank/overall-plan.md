@@ -114,6 +114,7 @@ Current implementation position:
 - Judge-output validation/normalization, previous-user-turn judge context, and a stricter strong factual-error contract have been added.
 - S0 naturalistic 20-turn DeepSeek calibration has induced strong factual errors in both `deepseek-v4-flash` and `deepseek-v4-pro`; `uird_pilot_001` is now a development calibration item rather than held-out benchmark evidence.
 - Conversation dashboard tooling now exists for browsing JSONL results, visualizing metrics, and collecting browser-local human annotations.
+- Dashboard start script now exists at `deviation-bench/scripts/start_dashboard.sh`; current local server was verified at `http://127.0.0.1:8767/`.
 - `uird_pilot_002` and `uird_pilot_003` now have 20-turn naturalistic held-out drafts.
 - Next implementation unit is adding 1-3 more held-out naturalistic scenarios, followed by a small multi-model S0/S1 pilot and dashboard-based human audit.
 

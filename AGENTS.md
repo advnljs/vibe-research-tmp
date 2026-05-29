@@ -258,6 +258,7 @@ As of 2026-05-29:
 - Pilot scenario schema, judge rubric, 20 low-risk fictional scenarios, and annotation draft exist.
 - Minimal API-only runner exists at `deviation-bench/src/deviation_bench_pilot.py`.
 - Conversation dashboard builder exists at `deviation-bench/src/build_conversation_dashboard.py`.
+- Dashboard start script exists at `deviation-bench/scripts/start_dashboard.sh`.
 - Human audit CSV template exists at `deviation-bench/annotations/human_audit_pilot.csv`.
 - Offline mock validation/smoke test has passed.
 - S0 real API smoke has been run on `uird_pilot_001`:
@@ -273,6 +274,7 @@ As of 2026-05-29:
 - Dashboard generation has been validated locally on current JSONL results:
   - local ignored output: `deviation-bench/results/dashboard/index.html`
   - supports conversation browsing, charts, problem badges, local human annotations, and JSON/CSV export.
+  - current local server was verified at `http://127.0.0.1:8767/`.
 - `uird_pilot_002` and `uird_pilot_003` now have 20-turn naturalistic held-out drafts.
 
 Recommended next work:

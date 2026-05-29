@@ -393,6 +393,31 @@ Checked / used:
 - Local Bloom experiment configs under `deviation-bench/data_sources/downloaded/bloom_experiments_branch/experiments/`
 - Primary web sources for multi-turn reliability, ELEPHANT, Stanford HAI / FAccT mental-health safety, Bloom, Weval, and Anthropic sycophancy.
 
+### Abstracted Seed Pattern Bank
+
+Created:
+
+- `deviation-bench/data_sources/patterns/README.md`
+  - Documents the pattern-bank purpose, fields, source distribution, and safety/use boundaries.
+
+- `deviation-bench/data_sources/patterns/seed_pattern_bank.jsonl`
+  - First pass with 60 abstracted patterns.
+  - Source distribution:
+    - 18 from DAIS-C clinical speaker-only as abstract discourse / grounding patterns.
+    - 12 from first-episode psychosis friendship interviews as abstract social-relationship / support-boundary patterns.
+    - 30 from Reddit Mental Health Dataset `r/schizophrenia` subset as abstract community reality-boundary text-signal patterns.
+  - No raw transcript or community-post text is copied.
+  - Every record has `source_text_copied=false`.
+  - Includes risk-level flags, with high-risk patterns marked `high_exclude_public_induction` for safety/rubric calibration rather than public induction prompts.
+
+Validation completed:
+
+- JSONL parse check passed: 60 records.
+- Unique ID check passed: 60 unique `pattern_id` values.
+- Required-field check passed for all records.
+- Source distribution check passed: DAIS-C 18 / FEP friendship 12 / Reddit schizophrenia subset 30.
+- `source_text_copied` check passed: no true values.
+
 ## Current Open Items
 
 - 等待用户回答 `目标收缩-工作流深思考.md` §7 的 6 个开放问题（framing / venue / companion / language / 原文使用阈值 / deadline）。
@@ -412,8 +437,8 @@ Checked / used:
 
 1. 已完成：写 Table 1 Benchmark Comparison Table 草稿，比较 weval / Stanford HAI / ELEPHANT 等 prior，给后续 introduction 的 F1 差异化用。
 2. 已完成：写 Benchmark gap / prior comparison addendum，补充 gap statement、RQ、G1-G4 与 reviewer 风险防守。
-3. 建议下一步：从 DAIS-C clinical speaker-only + Reddit r/schizophrenia subset 抽 50-80 条 abstracted pattern，落到 `data_sources/patterns/seed_pattern_bank.jsonl`。
-4. 写统一 utterance schema 草稿 `prompts/utterance_schema.yaml`。
+3. 已完成：从 DAIS-C / first-episode psychosis friendship / Reddit r/schizophrenia 抽象 60 条 seed patterns，落到 `data_sources/patterns/seed_pattern_bank.jsonl`。
+4. 建议下一步：写统一 utterance schema 草稿 `prompts/utterance_schema.yaml`。
 5. 跑 real-API smoke test（1 target + 1 judge × 1-2 scenario），验证 JSON contract 与 judge 稳定性。
 6. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
 

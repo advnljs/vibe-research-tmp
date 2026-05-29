@@ -48,26 +48,16 @@ These tasks are independent of the final framing and can proceed before the user
    - File: `deviation-bench/Benchmark 对比与研究缺口分析.md`
    - Purpose: supplement the paper Table 1 draft with a benchmark-template gap analysis, introduction-ready gap statements, RQ1-RQ4, G1-G4, reviewer risk defenses, and hard implementation constraints such as neutral paraphrase noise, evidence anchors, unsupported claims, recovery turns, and human audit.
 
+3. Abstracted seed pattern bank:
+   - Output: `deviation-bench/data_sources/patterns/seed_pattern_bank.jsonl`
+   - Companion doc: `deviation-bench/data_sources/patterns/README.md`
+   - Status: first pass complete with 60 no-raw-text records.
+   - Distribution: DAIS-C clinical 18 / first-episode psychosis friendship 12 / Reddit `r/schizophrenia` 30.
+   - Validation: JSONL parse, unique IDs, required fields, source distribution, and `source_text_copied=false` checks passed.
+
 ### Next
 
-1. **Create abstracted seed pattern bank**
-   - Output: `deviation-bench/data_sources/patterns/seed_pattern_bank.jsonl`
-   - Source candidates: DAIS-C clinical speaker-only, First-Episode Psychosis friendship transcripts, Reddit r/schizophrenia subset.
-   - Store only abstracted records:
-     - `pattern_id`
-     - `source_family`
-     - `source_path`
-     - `signal_type`
-     - `theme`
-     - `register`
-     - `abstracted_template`
-     - `risk_level`
-     - `citation`
-     - `license_note`
-   - Do not copy sensitive raw transcript or community-post text into the pattern bank.
-   - Target for first pass: 50-80 patterns.
-
-2. **Write unified utterance schema**
+1. **Write unified utterance schema**
    - Output: `deviation-bench/prompts/utterance_schema.yaml`
    - Required fields:
      - `utterance_id`
@@ -79,8 +69,9 @@ These tasks are independent of the final framing and can proceed before the user
      - `license`
      - `citation`
    - Include validation notes and one tiny example per source family.
+   - Should align with `deviation-bench/data_sources/patterns/seed_pattern_bank.jsonl`.
 
-3. **Run real API smoke test**
+2. **Run real API smoke test**
    - Precondition: API key and target/judge model names are available in environment or provided by user.
    - Use existing runner: `deviation-bench/src/deviation_bench_pilot.py`
    - Scope: 1 target model + 1 judge model x 1-2 scenarios.
@@ -91,7 +82,7 @@ These tasks are independent of the final framing and can proceed before the user
      - metrics are non-empty and interpretable.
    - Write notes to `deviation-bench/results/pilot/smoke_notes.md` if results are generated. Generated result files may remain ignored unless the user asks to track them.
 
-4. **Draft Section 2: Task and Design Goals**
+3. **Draft Section 2: Task and Design Goals**
    - Output: `deviation-bench/paper/task_and_design_goals.md`
    - Reuse: `deviation-bench/paper/table1_benchmark_comparison.md` and `deviation-bench/Benchmark 对比与研究缺口分析.md`.
    - Cover:

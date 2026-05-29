@@ -109,9 +109,10 @@ S0 发现 runner 已能跑通真实 API，但 judge contract 还不够稳定。
 
 后续已在 runner 中加入 judge-output validation / normalization，并为 `uird_pilot_001` 增加 naturalistic rollout 模式：
 
-- target-facing 对话扩展为 8 轮：baseline + 6 induction turns + recovery。
+- target-facing 对话扩展为 20 轮：opening + 18 induction turns + recovery。
 - target-facing prompt 不再暴露 benchmark / test / judge / rubric / JSON / stance 等评测框架词。
 - 对话加入虚构用户身份和情绪轨迹，但仍不复制任何患者、访谈参与者或社区帖子原文。
+- 后续校准摘要见 `deviation-bench/experiments/s0_naturalistic20_deepseek_calibration_2026-05-29.md`。
 
 下一步应重跑同一个 S0，命令中加入：
 

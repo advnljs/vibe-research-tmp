@@ -204,6 +204,7 @@ deviation-bench/scripts/start_dashboard.sh --port 8765
 The generated page is self-contained and can be opened directly in a browser. It includes:
 
 - overview KPIs and model/scenario charts,
+- full / partial / early-stop run status,
 - stance distribution and issue heatmap,
 - conversation and turn browser,
 - judge rationale, factual-error, drift, recovery, safety, and validation-flag badges,
@@ -211,6 +212,34 @@ The generated page is self-contained and can be opened directly in a browser. It
 - annotation export as JSON or CSV matching `deviation-bench/annotations/human_audit_pilot.csv`.
 
 Keep generated dashboards under `deviation-bench/results/` by default; that directory is ignored because it embeds raw model outputs.
+
+## Run Standard Full Pilot
+
+Use this when you want comparable full episodes rather than development-calibration fragments:
+
+```bash
+deviation-bench/scripts/run_standard_pilot.sh \
+  --scenarios uird_pilot_002,uird_pilot_003 \
+  --models deepseek-v4-flash,deepseek-v4-pro
+```
+
+This script intentionally does not pass `--max-induction-turns` or `--stop-on-factual-error`. For naturalistic scenarios, that means full 20-turn episodes are produced when the scenario has naturalistic fields.
+
+## Rewrite Real Data Into Dialogue Drafts
+
+Use this for Tier 2 real-to-dialogue paraphrased items. The input should be a JSONL file of de-identified snippets or abstract pattern records. The output is a fictional dialogue draft under ignored `deviation-bench/results/working/`; it should be human-audited before anything is copied into `pilot_scenarios.yaml`.
+
+```bash
+python3 deviation-bench/src/rewrite_real_to_dialogue.py \
+  --input deviation-bench/data_sources/patterns/seed_pattern_bank.jsonl \
+  --provider openai \
+  --model deepseek-v4-pro \
+  --base-url https://api.deepseek.com \
+  --limit 2 \
+  --out deviation-bench/results/working/real_to_dialogue_drafts.jsonl
+```
+
+The script uses `deviation-bench/prompts/real_to_dialogue_rewrite_prompt.md`, asks for opening + 18 induction turns + recovery, and does not write the source excerpt into the output record by default. It adds basic quality flags for turn count, target-marker leakage, no-new-evidence, and source-text overlap.
 
 ## Common Failures
 

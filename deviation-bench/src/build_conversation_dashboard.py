@@ -129,6 +129,36 @@ def summarize_turns(turns: list[dict[str, Any]]) -> dict[str, Any]:
     }
 
 
+def expected_turn_count(record: dict[str, Any], prompt_style: str) -> int | None:
+    if prompt_style == "structured":
+        return 5
+    if prompt_style == "naturalistic":
+        return 20
+    turns = record.get("turns") or []
+    return len(turns) if turns else None
+
+
+def run_status(record: dict[str, Any], prompt_style: str) -> dict[str, Any]:
+    turns = record.get("turns") or []
+    turn_count = len(turns)
+    expected = expected_turn_count(record, prompt_style)
+    stopped_early = record.get("stopped_early")
+    if stopped_early:
+        status = "early_stop"
+    elif expected is not None and turn_count < expected:
+        status = "partial"
+    elif expected is not None and turn_count == expected:
+        status = "full"
+    else:
+        status = "unknown"
+    return {
+        "status": status,
+        "turn_count": turn_count,
+        "expected_turn_count": expected,
+        "stopped_early": stopped_early,
+    }
+
+
 def normalize_conversation(raw: dict[str, Any], source_file: Path, line_no: int) -> dict[str, Any]:
     record = raw.get("record") if isinstance(raw.get("record"), dict) else raw
     turns = record.get("turns") or []
@@ -138,6 +168,10 @@ def normalize_conversation(raw: dict[str, Any], source_file: Path, line_no: int)
     prompt_style = raw.get("prompt_style") or record.get("prompt_style") or "unknown_style"
     conv_id = f"{source_file.stem}:{line_no}:{scenario_id}:{model}:{prompt_style}"
     summary = summarize_turns(turns)
+    status = run_status(record, prompt_style)
+    source_inspiration = record.get("source_inspiration") or {}
+    source_family = source_inspiration.get("source_family") if isinstance(source_inspiration, dict) else None
+    copied_text = source_inspiration.get("copied_text") if isinstance(source_inspiration, dict) else None
     return {
         "id": conv_id,
         "source_file": safe_relative(source_file),
@@ -150,8 +184,14 @@ def normalize_conversation(raw: dict[str, Any], source_file: Path, line_no: int)
         "scenario_id": scenario_id,
         "track": record.get("track", "unknown_track"),
         "family": record.get("family", "unknown_family"),
+        "domain": record.get("domain", "unknown_domain"),
+        "safety_level": record.get("safety_level", "unknown_safety"),
+        "source_family": source_family or "unknown_source",
+        "source_copied_text": copied_text,
+        "unsupported_claim": record.get("unsupported_claim"),
         "prompt_style": prompt_style,
-        "stopped_early": record.get("stopped_early"),
+        "run_status": status,
+        "stopped_early": status["stopped_early"],
         "metrics": metrics,
         "summary": summary,
         "turns": turns,
@@ -166,6 +206,9 @@ def load_conversations(paths: list[Path]) -> tuple[list[dict[str, Any]], list[di
             lines = path.read_text(encoding="utf-8").splitlines()
         except OSError as exc:
             errors.append({"source_file": safe_relative(path), "line_no": None, "error": str(exc)})
+            continue
+        if not any(line.strip() for line in lines):
+            errors.append({"source_file": safe_relative(path), "line_no": None, "error": "empty_jsonl"})
             continue
         for line_no, line in enumerate(lines, start=1):
             if not line.strip():
@@ -452,6 +495,8 @@ HTML_TEMPLATE = r"""<!doctype html>
         conversation.judge_model,
         conversation.track,
         conversation.family,
+        conversation.domain,
+        conversation.source_family,
         conversation.source_file,
         ...conversation.turns.flatMap(turn => [turn.turn_id, turn.user_prompt, turn.model_output, turn.judge?.rationale]),
       ].join(" ").toLowerCase();
@@ -532,9 +577,15 @@ HTML_TEMPLATE = r"""<!doctype html>
 
     function renderKpis(convs) {
       const agg = aggregate(convs);
+      const statusCounts = new Map();
+      for (const conversation of convs) {
+        const status = conversation.run_status?.status || "unknown";
+        statusCounts.set(status, (statusCounts.get(status) || 0) + 1);
+      }
       const html = [
         ["Conversations", convs.length, "loaded after filters"],
         ["Turns", agg.turns.length, "target/judge pairs"],
+        ["Full runs", statusCounts.get("full") || 0, `${statusCounts.get("partial") || 0} partial · ${statusCounts.get("early_stop") || 0} early-stop`],
         ["Factual error", pct(agg.turns.length ? agg.factualTurns.length / agg.turns.length : 0), `${agg.factualTurns.length} turns`],
         ["Recovery success", pct(agg.recoveryTurns.length ? agg.recoverySuccess / agg.recoveryTurns.length : 0), `${agg.recoverySuccess}/${agg.recoveryTurns.length}`],
       ].map(([label, value, caption]) => `<div class="kpi"><strong>${esc(value)}</strong><span>${esc(label)} · ${esc(caption)}</span></div>`).join("");
@@ -607,7 +658,10 @@ HTML_TEMPLATE = r"""<!doctype html>
       if (!convs.some(c => c.id === state.selectedId)) state.selectedId = convs[0].id;
       document.getElementById("conversation-list").innerHTML = convs.map(conversation => {
         const summary = conversation.summary || {};
+        const status = conversation.run_status?.status || "unknown";
+        const statusClass = status === "full" ? "green" : status === "early_stop" ? "red" : status === "partial" ? "amber" : "teal";
         const badges = [
+          `<span class="badge ${statusClass}">${esc(status)}</span>`,
           summary.factual_error_count ? `<span class="badge red">factual ${summary.factual_error_count}</span>` : `<span class="badge green">no factual</span>`,
           summary.drift_count ? `<span class="badge amber">drift ${summary.drift_count}</span>` : `<span class="badge green">grounded</span>`,
           summary.recovery_success === false ? `<span class="badge red">recovery fail</span>` : summary.recovery_success === true ? `<span class="badge teal">recovery ok</span>` : "",
@@ -616,7 +670,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         return `
           <button class="conversation-item ${conversation.id === state.selectedId ? "active" : ""}" data-conv-id="${esc(conversation.id)}" type="button">
             <div class="item-title"><span>${esc(conversation.scenario_id)}</span><span class="subtle">${esc(conversation.model)}</span></div>
-            <div class="item-grid"><span>${esc(conversation.prompt_style)}</span><span>${summary.turn_count || 0} turns</span><span>max ${summary.max_stance_score ?? 0}</span></div>
+            <div class="item-grid"><span>${esc(conversation.prompt_style)}</span><span>${summary.turn_count || 0}/${conversation.run_status?.expected_turn_count || "?"} turns</span><span>max ${summary.max_stance_score ?? 0}</span></div>
             <div class="badge-row">${badges}</div>
           </button>
         `;
@@ -767,7 +821,10 @@ HTML_TEMPLATE = r"""<!doctype html>
             <div class="meta-line">
               <span>${esc(conversation.track)}</span>
               <span>${esc(conversation.family)}</span>
+              <span>${esc(conversation.domain)}</span>
               <span>${esc(conversation.prompt_style)}</span>
+              <span>${esc(conversation.source_family)}</span>
+              <span>${esc(conversation.run_status?.status || "unknown")}: ${esc(conversation.run_status?.turn_count || 0)}/${esc(conversation.run_status?.expected_turn_count || "?")} turns</span>
               <span>${esc(conversation.source_file)}</span>
             </div>
           </div>

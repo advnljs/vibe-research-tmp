@@ -602,12 +602,57 @@ Corrected:
 - Removed the component-tooling references from the active memory/navigation state.
 - The tag `component-registry-v0.1` should be deleted locally and remotely as part of this correction.
 
+### Run-Status Dashboard and Real-to-Dialogue Tier 2 Plan
+
+Updated:
+
+- `deviation-bench/src/build_conversation_dashboard.py`
+  - Dashboard now distinguishes `full`, `partial`, and `early_stop` result records.
+  - Naturalistic runs are treated as expected 20-turn episodes; structured runs are treated as expected 5-turn episodes.
+  - Empty JSONL files are surfaced as load errors instead of silently disappearing.
+  - Conversation metadata now includes domain, safety level, source family, copied-text flag, unsupported claim, and actual/expected turn counts.
+
+- `deviation-bench/src/deviation_bench_pilot.py`
+  - Result records now carry scenario provenance fields needed by the dashboard: domain, language, safety level, source inspiration, and unsupported claim.
+
+- `deviation-bench/scripts/run_standard_pilot.sh`
+  - New helper script for comparable full held-out runs.
+  - Defaults to `uird_pilot_002,uird_pilot_003` over `deepseek-v4-flash,deepseek-v4-pro`, judged by `deepseek-v4-pro`.
+  - Intentionally does not pass `--max-induction-turns` or `--stop-on-factual-error`.
+
+- `deviation-bench/data_sources/notes/真实数据贴近度与半真实评测方案.md`
+  - Documents why current local dashboard only has a few conversations with inconsistent turns: it is a mix of smoke runs, truncated calibration runs, early-stop runs, full runs, and one empty interrupted JSONL.
+  - Defines Tier 0 synthetic, Tier 1 real-pattern anchored, Tier 2 real-to-dialogue paraphrased, Tier 3 licensed-verbatim-internal, and Tier 4 raw-real-public.
+  - Recommends Tier 1 + Tier 2 for making benchmark items closer to real data while avoiding raw-real public prompts.
+
+- `deviation-bench/prompts/real_to_dialogue_rewrite_prompt.md`
+  - New LLM rewrite prompt for converting de-identified real-data snippets or abstract source patterns into fictional 20-turn dialogue episodes.
+  - Requires opening + 18 induction turns + recovery, no target-visible benchmark/test framing, no copied source phrases, low-risk content, and `adds_new_evidence=false` for induction turns.
+
+- `deviation-bench/src/rewrite_real_to_dialogue.py`
+  - New OpenAI-compatible rewrite script.
+  - Reads JSONL seeds with `deidentified_excerpt`, `abstracted_text`, or `abstracted_template`.
+  - Writes fictional dialogue drafts to ignored `deviation-bench/results/working/` by default.
+  - Does not write source excerpts into output records by default.
+  - Adds basic target-marker, turn-count, no-new-evidence, and source-overlap quality flags.
+  - Includes a mock provider for offline validation and an OpenAI-compatible provider for DeepSeek/API use.
+
+Validation completed:
+
+- Python compile check passed for `deviation_bench_pilot.py`, `build_conversation_dashboard.py`, and `rewrite_real_to_dialogue.py`.
+- Shell syntax check passed for `run_standard_pilot.sh` and `start_dashboard.sh`.
+- Mock real-to-dialogue conversion from `seed_pattern_bank.jsonl` produced a 20-turn draft with 18 induction turns, no target marker hits, `source_overlap_flag=false`, and `source_text_not_written=true`.
+- Dashboard rebuild completed on current local JSONL files with 10 parsed conversations and 1 empty-file load error.
+- Existing dashboard server remains reachable at `http://127.0.0.1:8767/`.
+
 ## Current Open Items
 
 - Framing A has been selected; remaining open decisions are UIRD subtrack status, venue, language scope, raw text boundary, companion baseline, timeline, and API budget.
 - Verify the pushed data on GitHub if needed.
 - Freeze the current 20-turn `uird_pilot_001` as a development calibration item before expanding pilot runs.
 - Use `build_conversation_dashboard.py` to inspect future pilot JSONL results and collect human annotations.
+- Use `run_standard_pilot.sh` for held-out full episodes so dashboard comparisons are not mixed with smoke/calibration fragments.
+- Use `rewrite_real_to_dialogue.py` to create 1-2 Tier 2 real-to-dialogue held-out drafts from de-identified DAIS-C / first-episode friendship snippets or abstract patterns, then manually audit before copying into `pilot_scenarios.yaml`.
 - Review whether the pilot runner should support additional providers beyond OpenAI-compatible chat completions.
 - Continue populating implementation/output directories:
   - `deviation-bench/results/`
@@ -615,7 +660,9 @@ Corrected:
 
 ## Current Best Next Step
 
-优先级 1：继续把 20 轮 naturalistic 结构迁移到 held-out pilot 场景。`uird_pilot_002` 和 `uird_pilot_003` 已有 naturalistic drafts；下一步补 `uird_pilot_011` 或另一个非数字/非 app 场景，然后用 dashboard 做人工复核。
+优先级 1：先用 `run_standard_pilot.sh` 跑 `uird_pilot_002` / `uird_pilot_003` 的 full held-out mini pilot，避免继续混合 partial / early-stop calibration 结果。
+
+优先级 2：用 `rewrite_real_to_dialogue.py` 从 DAIS-C / first-episode friendship 的去标识化片段或现有 seed patterns 生成 1-2 个 Tier 2 real-to-dialogue 草稿，人工复核后再放入 held-out scenario。
 
 已完成的 Framing-A 主线准备动作：
 
@@ -629,7 +676,10 @@ Corrected:
 8. 已完成：把 `uird_pilot_001` 扩展到 20 轮 naturalistic rollout，并用 DeepSeek flash/pro 做开发校准，诱导出强事实错误。
 9. 已完成：增加 JSONL conversation dashboard 脚本和 human audit CSV 模板，可浏览对话、查看图表并本地标注问题。
 10. 已完成：为 `uird_pilot_002` / `uird_pilot_003` 添加 20 轮 naturalistic held-out drafts。
-11. 建议下一步：补第 3-5 个 held-out 场景，然后跑 DeepSeek held-out mini pilot，并用 dashboard 做人工复核。
-12. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
+11. 已完成：dashboard 增加 full / partial / early-stop run status，解释当前对话数量少和 turns 不一致的原因。
+12. 已完成：加入标准 full pilot 启动脚本 `run_standard_pilot.sh`。
+13. 已完成：加入 Tier 2 real-to-dialogue 改写 prompt 和脚本，可用 LLM 把真实数据或真实数据摘要改成虚构多轮对话格式。
+14. 建议下一步：跑 DeepSeek held-out full mini pilot，并用 dashboard 做人工复核。
+15. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
 
 详细行动队列见 `memory-bank/next-step.md`。

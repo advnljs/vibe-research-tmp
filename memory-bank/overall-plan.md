@@ -116,7 +116,13 @@ Current implementation position:
 - Conversation dashboard tooling now exists for browsing JSONL results, visualizing metrics, and collecting browser-local human annotations.
 - Dashboard start script now exists at `deviation-bench/scripts/start_dashboard.sh`; current local server was verified at `http://127.0.0.1:8767/`.
 - `uird_pilot_002` and `uird_pilot_003` now have 20-turn naturalistic held-out drafts.
-- Next implementation unit is adding 1-3 more held-out naturalistic scenarios, followed by a small multi-model S0/S1 pilot and dashboard-based human audit.
+- Dashboard now labels full / partial / early-stop runs and surfaces empty JSONL files as load errors. Current local dashboard has 10 parsed conversations because existing results are mixed smoke/calibration artifacts, not a standard held-out run set.
+- Standard full-pilot script now exists at `deviation-bench/scripts/run_standard_pilot.sh`; it should be used for comparable held-out episodes.
+- Tier 2 real-to-dialogue rewrite tooling now exists:
+  - `deviation-bench/prompts/real_to_dialogue_rewrite_prompt.md`
+  - `deviation-bench/src/rewrite_real_to_dialogue.py`
+  - default ignored output under `deviation-bench/results/working/`
+- Next implementation unit is running a standard full held-out mini pilot for `uird_pilot_002` / `uird_pilot_003`, then generating 1-2 Tier 2 real-to-dialogue held-out drafts and auditing them.
 
 ## Milestone Plan
 
@@ -204,7 +210,8 @@ Current status:
 - Mock target model and mock judge implemented for offline tests.
 - OpenAI-compatible chat completions path implemented.
 - Metrics are computed per scenario.
-- Real API smoke and naturalistic development calibration have been executed for `uird_pilot_001`; no held-out pilot run has been executed yet.
+- Real API smoke and naturalistic development calibration have been executed for `uird_pilot_001`; no standard full held-out pilot run has been executed yet.
+- Use `run_standard_pilot.sh` for future held-out pilot results so dev fragments are not mixed with comparable full episodes.
 
 ### Milestone 4: Validate Signal
 
@@ -222,6 +229,8 @@ Exit condition:
 - The benchmark shows measurable differences between models or conditions, without relying on high-risk prompts.
 - Development-tuned prompts are separated from held-out prompts.
 - Turn-level outputs can be browsed and audited in a local dashboard.
+- Full, partial, and early-stop runs are separated in reporting.
+- Tier 2 real-to-dialogue drafts are manually checked for no-copy/no-identification before being added to held-out scenarios.
 
 ### Milestone 5: Paper Skeleton
 
@@ -246,22 +255,27 @@ Exit condition:
 
 ## Immediate Next Actions
 
-Phase shift 2026-05-29：framing 决策仍未由用户最终拍板；与 framing 无关的 Table 1 / gap comparison、seed pattern bank、utterance schema 和 LLM 合成预算方案已完成，主路径继续保持在“real API smoke + 可并行准备工作”。
+Phase shift 2026-05-29：用户已选择 Framing A。当前主路径是“standard full held-out mini pilot + Tier 2 real-to-dialogue 数据构造 + dashboard human audit”。
 
 Detailed handoff queue:
 
 - `memory-bank/next-step.md`
 
-1. **阻塞中**：等用户回答 `deviation-bench/目标收缩-工作流深思考.md` §7 的 6 个开放问题（A/B/C framing、venue、companion method 是否做、语种、原文使用阈值、deadline）。
-2. 与 framing 无关、可并行（来自同文 §6）：
+1. **仍待用户确认**：venue、companion method 是否做、语种、原文使用阈值、deadline/API budget。
+2. Framing A 当前可执行队列：
    - 已完成：写 Table 1 Benchmark Comparison Table 草稿（weval / Stanford HAI / ELEPHANT 等 prior 横向对比）。
    - 已完成：写 Benchmark gap / prior comparison addendum，补充 gap statement、RQ、G1-G4 与 reviewer 风险防守。
    - 已完成：抽 60 条 abstracted pattern 到 `data_sources/patterns/seed_pattern_bank.jsonl`。
    - 已完成：写统一 utterance schema `prompts/utterance_schema.yaml`。
    - 已完成：写 LLM 数据合成方案与 API token/session 预估。
-   - 跑 real-API smoke test（1 target + 1 judge × 1-2 scenario）。
+   - 已完成：跑 real-API smoke test（1 target + 1 judge × 1 scenario）和 dev calibration。
+   - 已完成：dashboard 增加 full / partial / early-stop run status。
+   - 已完成：写标准 full pilot 启动脚本。
+   - 已完成：写 Tier 2 real-to-dialogue prompt 和脚本。
+   - 下一步：跑 `uird_pilot_002` / `uird_pilot_003` full held-out mini pilot。
+   - 下一步：从 DAIS-C / first-episode friendship 去标识化片段或 seed patterns 生成 1-2 个 Tier 2 对话草稿。
    - 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
-3. framing 确定后再回到：选 target/judge 模型 → 跑 20-场景 pilot → 扩规模。
+3. Held-out mini pilot 稳定后再回到：扩到 3-5 held-out scenarios → 20-scenario pilot → v1 scale-up。
 
 ## Decision Log
 
@@ -310,3 +324,4 @@ Detailed handoff queue:
 - Expanded `uird_pilot_001` naturalistic rollout to 20 target-facing turns and ran DeepSeek development calibration. Flash produced strong factual error at t6; Pro produced stronger direct endorsements in the full 20-turn run by t15/t18. `factual_error` now excludes minor numeric/count/paraphrase slips unless they materially support the unsupported external claim.
 - Added `deviation-bench/src/build_conversation_dashboard.py` and `deviation-bench/annotations/human_audit_pilot.csv`; generated local dashboard HTML under ignored `deviation-bench/results/dashboard/index.html`.
 - Added 20-turn naturalistic drafts for `uird_pilot_002` and `uird_pilot_003`, validated with mock naturalistic runs and marker checks.
+- Added dashboard full / partial / early-stop status, standard full-pilot script, real-data-closeness note, and Tier 2 real-to-dialogue rewrite tooling. User clarified that LLM conversion of real data should mean converting selected de-identified real material into fictional dialogue format.

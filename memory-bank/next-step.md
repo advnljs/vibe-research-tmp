@@ -1,6 +1,6 @@
 # Next Step
 
-Last updated: 2026-05-22
+Last updated: 2026-05-29
 
 This file is the actionable handoff queue for Deviation Bench. Future agents should read it together with `memory-bank/overall-progress.md` and `memory-bank/overall-plan.md` before doing substantive work.
 
@@ -43,6 +43,10 @@ These tasks are independent of the final framing and can proceed before the user
 1. Table 1 benchmark comparison draft:
    - File: `deviation-bench/paper/table1_benchmark_comparison.md`
    - Purpose: differentiate Deviation Bench from weval AI psychosis, AI spiral, Stanford HAI, ELEPHANT, sycophancy, hallucination, and mental-health blueprints.
+
+2. Benchmark gap / prior comparison addendum:
+   - File: `deviation-bench/Benchmark 对比与研究缺口分析.md`
+   - Purpose: supplement the paper Table 1 draft with a benchmark-template gap analysis, introduction-ready gap statements, RQ1-RQ4, G1-G4, reviewer risk defenses, and hard implementation constraints such as neutral paraphrase noise, evidence anchors, unsupported claims, recovery turns, and human audit.
 
 ### Next
 
@@ -89,6 +93,7 @@ These tasks are independent of the final framing and can proceed before the user
 
 4. **Draft Section 2: Task and Design Goals**
    - Output: `deviation-bench/paper/task_and_design_goals.md`
+   - Reuse: `deviation-bench/paper/table1_benchmark_comparison.md` and `deviation-bench/Benchmark 对比与研究缺口分析.md`.
    - Cover:
      - task definition,
      - G1 Coverage,
@@ -199,4 +204,3 @@ At the end of each completed task:
 3. Run `git status --short --branch`.
 4. If the user has not answered the framing questions, ask only the missing questions or continue with the framing-independent queue.
 5. Prefer the next framing-independent task unless the user gives a specific direction.
-

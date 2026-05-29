@@ -1,6 +1,6 @@
 # Overall Plan
 
-Last updated: 2026-05-22
+Last updated: 2026-05-29
 
 This file records the overall plan and the current implementation position. Update it whenever the plan, current phase, or next action changes.
 
@@ -39,7 +39,7 @@ Not primary framing:
 
 ## Current Phase
 
-Phase: API-only runner smoke-tested -> real API pilot preparation.
+Phase: API-only runner smoke-tested + benchmark gap comparison drafted -> real API pilot preparation.
 
 Completed:
 
@@ -80,6 +80,8 @@ Completed:
   - `deviation-bench/src/README.md`
   - `deviation-bench/requirements.txt`
 - Offline validation and mock smoke test passed.
+- Drafted the Table 1 style benchmark gap / prior comparison:
+  - `deviation-bench/Benchmark 对比与研究缺口分析.md`
 
 Current implementation position:
 
@@ -89,6 +91,7 @@ Current implementation position:
 - Mock smoke output exists locally under ignored `deviation-bench/results/`.
 - No real API pilot result yet.
 - Data manifest and use-policy notes now cover the current downloaded sources.
+- Table 1 style prior comparison and paper gap statement draft now exist.
 - Next implementation unit is a real API smoke test and any prompt/metric adjustment it reveals.
 
 ## Milestone Plan
@@ -217,7 +220,7 @@ Exit condition:
 
 ## Immediate Next Actions
 
-Phase shift 2026-05-22 afternoon：在 framing 决策落地之前，主路径暂停 pilot 扩量，转到“等用户决策 + 与 framing 无关的准备工作”。
+Phase shift 2026-05-29：framing 决策仍未由用户最终拍板；与 framing 无关的 Table 1 / gap comparison 已完成，主路径继续保持在“real API smoke + 可并行准备工作”。
 
 Detailed handoff queue:
 
@@ -226,10 +229,11 @@ Detailed handoff queue:
 1. **阻塞中**：等用户回答 `deviation-bench/目标收缩-工作流深思考.md` §7 的 6 个开放问题（A/B/C framing、venue、companion method 是否做、语种、原文使用阈值、deadline）。
 2. 与 framing 无关、可并行（来自同文 §6）：
    - 已完成：写 Table 1 Benchmark Comparison Table 草稿（weval / Stanford HAI / ELEPHANT 等 prior 横向对比）。
+   - 已完成：写 Benchmark gap / prior comparison addendum，补充 gap statement、RQ、G1-G4 与 reviewer 风险防守。
    - 抽 50-80 条 abstracted pattern 到 `data_sources/patterns/seed_pattern_bank.jsonl`。
    - 写统一 utterance schema `prompts/utterance_schema.yaml`。
    - 跑 real-API smoke test（1 target + 1 judge × 1-2 scenario）。
-   - 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4）。
+   - 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
 3. framing 确定后再回到：选 target/judge 模型 → 跑 20-场景 pilot → 扩规模。
 
 ## Decision Log
@@ -267,3 +271,9 @@ Detailed handoff queue:
 - 强化 `AGENTS.md` 工作流规则：每完成一个完整任务必须更新 memory-bank + 单独 commit；显式定义“完整任务”边界与 per-task closing checklist。
 - 完成 `deviation-bench/paper/table1_benchmark_comparison.md`，作为 introduction / related work 的 benchmark comparison 资产；当前差异化主张收束为“reality-boundary judgment 的 context-retest reliability”。
 - 创建 `memory-bank/next-step.md` 作为第三个必维护 memory-bank 文件，承接可执行队列、阻塞问题、A/B/C 后续路线和 future-agent starting procedure；同步更新 `AGENTS.md`，要求每个 agent 优先依赖和维护三个 memory-bank 文件。
+
+2026-05-29：
+
+- Produced `deviation-bench/Benchmark 对比与研究缺口分析.md`，将 Deviation Bench 与 Weval、Stanford HAI / FAccT、Bloom、ELEPHANT、Anthropic sycophancy、multi-turn reliability 和 hallucination probes 做 Table 1 式对比。
+- 决定后续 introduction 的主防守点应是 context-retest reliability of reality-grounded judgment，而不是 AI psychosis、therapy safety、generic sycophancy 或 ordinary hallucination。
+- 将 neutral paraphrase noise、evidence anchor、unsupported claim、recovery turn、人审 audit 明确列为后续实现的硬约束。

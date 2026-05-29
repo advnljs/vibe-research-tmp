@@ -1,6 +1,6 @@
 # Overall Progress
 
-Last updated: 2026-05-22
+Last updated: 2026-05-29
 
 This file records completed work and the current state of the Deviation Bench project. Update it after any meaningful research, data, implementation, or planning change.
 
@@ -366,6 +366,33 @@ Updated:
 - `研究导航.md`
   - Added a Future Agent priority-reading section that points first to `AGENTS.md` and the three memory-bank files.
 
+### Benchmark Gap and Prior Comparison Addendum
+
+Created:
+
+- `deviation-bench/Benchmark 对比与研究缺口分析.md`
+  - Uses `benchmark-paper-template` gap-analysis and benchmark-design framing.
+  - Compares Deviation Bench against closest prior families:
+    - Weval `ai-psychosis`, `ai-spiral-safety`, `mental-health`, `sycophancy-probe`
+    - Stanford HAI / FAccT mental-health safety evaluation
+    - Bloom delusional-sycophancy
+    - ELEPHANT social sycophancy
+    - Anthropic sycophancy work
+    - multi-turn reliability work such as `LLMs Get Lost In Multi-Turn Conversation`
+    - hallucination/factuality probes
+    - counseling / mental-health dialogue datasets
+  - Drafts a Table 1 style comparison showing why Deviation Bench should be framed as context-retest reliability of reality-grounded judgment, not as another AI-psychosis, therapy-safety, hallucination, or generic sycophancy benchmark.
+  - Drafts English and Chinese gap statements for the paper introduction.
+  - Defines RQ1-RQ4 around RDS curves, induction-pattern differences, recovery reliability, and neutral paraphrase noise.
+  - Records reviewer risks and defenses for overlap, prompt sensitivity, data ethics, judge validity, and scope creep.
+  - Adds implementation constraints: every new scenario needs evidence anchors, unsupported claims, recovery turns, neutral paraphrase controls, and no copied real clinical/community text in public prompts.
+
+Checked / used:
+
+- Local Weval blueprints under `deviation-bench/data_sources/downloaded/weval_configs/blueprints/`
+- Local Bloom experiment configs under `deviation-bench/data_sources/downloaded/bloom_experiments_branch/experiments/`
+- Primary web sources for multi-turn reliability, ELEPHANT, Stanford HAI / FAccT mental-health safety, Bloom, Weval, and Anthropic sycophancy.
+
 ## Current Open Items
 
 - 等待用户回答 `目标收缩-工作流深思考.md` §7 的 6 个开放问题（framing / venue / companion / language / 原文使用阈值 / deadline）。
@@ -384,9 +411,10 @@ Updated:
 与 framing 无关、可并行的立即动作（来自 `目标收缩-工作流深思考.md` §6）：
 
 1. 已完成：写 Table 1 Benchmark Comparison Table 草稿，比较 weval / Stanford HAI / ELEPHANT 等 prior，给后续 introduction 的 F1 差异化用。
-2. 建议下一步：从 DAIS-C clinical speaker-only + Reddit r/schizophrenia subset 抽 50-80 条 abstracted pattern，落到 `data_sources/patterns/seed_pattern_bank.jsonl`。
-3. 写统一 utterance schema 草稿 `prompts/utterance_schema.yaml`。
-4. 跑 real-API smoke test（1 target + 1 judge × 1-2 scenario），验证 JSON contract 与 judge 稳定性。
-5. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4）。
+2. 已完成：写 Benchmark gap / prior comparison addendum，补充 gap statement、RQ、G1-G4 与 reviewer 风险防守。
+3. 建议下一步：从 DAIS-C clinical speaker-only + Reddit r/schizophrenia subset 抽 50-80 条 abstracted pattern，落到 `data_sources/patterns/seed_pattern_bank.jsonl`。
+4. 写统一 utterance schema 草稿 `prompts/utterance_schema.yaml`。
+5. 跑 real-API smoke test（1 target + 1 judge × 1-2 scenario），验证 JSON contract 与 judge 稳定性。
+6. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
 
 详细行动队列见 `memory-bank/next-step.md`。

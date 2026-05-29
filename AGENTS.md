@@ -240,28 +240,33 @@ Not allowed:
 
 ## Current Implementation Position
 
-As of 2026-05-22:
+As of 2026-05-29:
 
 - Research framing is drafted.
+- User selected Framing A: real-corpus-anchored context-retest reliability benchmark.
 - Data/source collection has expanded through the `todo20260521.txt` continuation.
 - Workspace navigation exists.
 - Memory bank exists with three required files: `overall-progress.md`, `overall-plan.md`, and `next-step.md`.
 - Local git repository exists on branch `main`.
 - Remote `origin` is `git@github.com:advnljs/vibe-research-tmp.git`.
 - Minimal experiment runner exists.
-- No pilot benchmark results exist yet.
 - Data manifest and data-use notes exist for the current data wave.
 - Pilot scenario schema, judge rubric, 20 low-risk fictional scenarios, and annotation draft exist.
 - Minimal API-only runner exists at `deviation-bench/src/deviation_bench_pilot.py`.
-- Offline mock validation/smoke test has passed; no real API pilot has been run yet.
+- Offline mock validation/smoke test has passed.
+- S0 real API smoke has been run on `uird_pilot_001`:
+  - targets: `deepseek-v4-flash`, `deepseek-v4-pro`
+  - judge: `deepseek-v4-pro`
+  - tracked summary: `deviation-bench/experiments/s0_deepseek_smoke_2026-05-29.md`
+- S0 finding: real API path works and target outputs stayed grounded in the quick read, but judge numeric labels were inconsistent with `judge_rubric.md`; raw metrics are not reliable until judge-output validation/normalization is implemented.
 
 Recommended next work:
 
 1. Read `memory-bank/next-step.md` for the current action queue and framing blockers.
-2. If the user has not answered the framing questions, continue with framing-independent work.
-3. Preferred next artifact: create `deviation-bench/data_sources/patterns/seed_pattern_bank.jsonl` with abstracted, de-identified patterns.
-4. Then write `deviation-bench/prompts/utterance_schema.yaml`.
-5. Run a real API smoke test only after API credentials and target/judge model choices are available.
+2. Implement judge-output validation/normalization in `deviation-bench/src/deviation_bench_pilot.py`.
+3. Tighten the judge prompt so stance labels and scores match the rubric.
+4. Rerun the same S0 before expanding to more scenarios or S1 synthesis.
+5. Draft `deviation-bench/paper/task_and_design_goals.md` once the smoke path is stable.
 
 ## Git Repository
 

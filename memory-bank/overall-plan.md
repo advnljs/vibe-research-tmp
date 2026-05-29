@@ -91,6 +91,9 @@ Completed:
   - `deviation-bench/LLM数据合成方案与API成本预估.md`
 - Expanded the runner README into an S0 real API smoke command guide aligned with Framing A:
   - `deviation-bench/src/README.md`
+- Ran the first S0 real API smoke and wrote a tracked experiment summary:
+  - `deviation-bench/experiments/README.md`
+  - `deviation-bench/experiments/s0_deepseek_smoke_2026-05-29.md`
 
 Current implementation position:
 
@@ -105,7 +108,9 @@ Current implementation position:
 - Unified utterance schema exists and maps the seed pattern bank to future scenario construction.
 - LLM data synthesis plan exists with token/session estimates for S0/S1/S2.
 - S0 real API smoke command documentation exists.
-- Next implementation unit is a real API smoke test, followed by synthesis script implementation if smoke passes.
+- One real API S0 smoke has run for `deepseek-v4-flash` and `deepseek-v4-pro` on `uird_pilot_001`, judged by `deepseek-v4-pro`.
+- The real API path works, but judge numeric labels are inconsistent with the rubric; raw metrics should not be used as benchmark evidence yet.
+- Next implementation unit is judge-output validation/normalization and judge prompt tightening, followed by rerunning the same S0.
 
 ## Milestone Plan
 
@@ -197,7 +202,7 @@ Current status:
 
 ### Milestone 4: Validate Signal
 
-Status: next after real API smoke test.
+Status: blocked on judge consistency fix before pilot expansion.
 
 Deliverables:
 

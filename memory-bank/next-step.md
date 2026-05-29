@@ -8,7 +8,7 @@ This file is the actionable handoff queue for Deviation Bench. Future agents sho
 
 The user selected **Framing A** as the main path: real-corpus-anchored context-retest reliability benchmark.
 
-The project can continue on the Framing A path. The next implementation unit is S0 real API smoke. Do not expand to S1 synthesis or v1 scale until S0 confirms the runner, judge JSON, labels, and metrics are usable.
+The project can continue on the Framing A path. The first S0 real API smoke has run, and it confirms the real API path works. However, judge numeric labels were inconsistent with the rubric, so do not expand to S1 synthesis or v1 scale until judge-output validation/normalization is fixed and the same S0 is rerun.
 
 ### Remaining Questions To Confirm With The User
 
@@ -70,23 +70,41 @@ These tasks are independent of the final framing and can proceed before the user
 6. S0 real API smoke command documentation:
    - Output: `deviation-bench/src/README.md`
    - Purpose: document Framing-A-aligned S0 smoke goal, API key handling, validation, mock run, one-scenario real API run, two-scenario real API run, result inspection, smoke notes, and common failures.
-   - Status: first pass complete; no real API call has been run yet.
+   - Status: first pass complete.
+
+7. S0 DeepSeek real API smoke:
+   - Output: `deviation-bench/experiments/s0_deepseek_smoke_2026-05-29.md`
+   - Targets: `deepseek-v4-flash`, `deepseek-v4-pro`
+   - Judge: `deepseek-v4-pro`
+   - Scenario: `uird_pilot_001`
+   - Status: real API calls completed; target outputs were manually grounded in this sample, but judge numeric labels were inconsistent.
 
 ### Next
 
-1. **Run real API smoke test**
-   - Precondition: API key and target/judge model names are available in environment or provided by user.
-   - Use existing runner: `deviation-bench/src/deviation_bench_pilot.py`
-   - Scope: 1 target model + 1 judge model x 1-2 scenarios.
-   - Check:
-     - target output is valid enough for judging,
-     - judge returns parseable JSON,
-     - turn-level labels make sense,
-     - metrics are non-empty and interpretable.
-   - Write notes to `deviation-bench/results/pilot/smoke_notes.md` if results are generated. Generated result files may remain ignored unless the user asks to track them.
-   - Default budget from the synthesis plan: about 20k-35k tokens for 1-2 scenarios.
+1. **Fix judge-output validation and normalization**
+   - Add a local validation/normalization path in `deviation-bench/src/deviation_bench_pilot.py`.
+   - Required behavior:
+     - reject or normalize non-rubric stances such as `fully_grounded`,
+     - recompute `stance_score` from local `STANCE_SCORES`,
+     - recompute `drift_event` from normalized `stance_score >= 3`,
+     - flag any corrected judge fields for audit.
+   - This is required before any additional pilot-scale API spend.
 
-2. **Draft Section 2: Task and Design Goals**
+2. **Tighten judge prompt contract**
+   - Include the full stance enum and score mapping in the judge prompt.
+   - Explicitly forbid non-enum stance labels.
+   - Explicitly require `drift_event = stance_score >= 3`.
+   - If possible, use provider JSON output mode in future runner updates.
+
+3. **Rerun the same S0 after judge fix**
+   - Scope: same `uird_pilot_001`, same targets, same judge.
+   - Check:
+     - target output remains valid,
+     - judge JSON remains parseable,
+     - normalized labels match the rubric,
+     - metrics become interpretable.
+
+4. **Draft Section 2: Task and Design Goals**
    - Output: `deviation-bench/paper/task_and_design_goals.md`
    - Reuse: `deviation-bench/paper/table1_benchmark_comparison.md` and `deviation-bench/Benchmark 对比与研究缺口分析.md`.
    - Cover:
@@ -98,7 +116,7 @@ These tasks are independent of the final framing and can proceed before the user
      - safety boundary,
      - why API-only is part of the design.
 
-3. **Implement synthesis script after S0 passes**
+5. **Implement synthesis script after S0 passes**
    - Proposed output: `deviation-bench/src/synthesize_from_patterns.py`
    - Input: `deviation-bench/data_sources/patterns/seed_pattern_bank.jsonl` and `deviation-bench/prompts/utterance_schema.yaml`.
    - Output: generated draft items under an ignored results/work directory unless the user asks to track generated data.

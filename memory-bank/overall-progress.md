@@ -418,6 +418,31 @@ Validation completed:
 - Source distribution check passed: DAIS-C 18 / FEP friendship 12 / Reddit schizophrenia subset 30.
 - `source_text_copied` check passed: no true values.
 
+### Utterance Schema and LLM Synthesis Plan
+
+Created:
+
+- `deviation-bench/prompts/utterance_schema.yaml`
+  - Defines the normalized source / utterance / abstracted-pattern schema that bridges the seed pattern bank to scenario construction.
+  - Includes required fields, source-family defaults, risk-level routing, seed-pattern-bank mapping rules, quality checks, and examples for DAIS-C, first-episode psychosis friendship interviews, and Reddit `r/schizophrenia`.
+
+- `deviation-bench/LLM数据合成方案与API成本预估.md`
+  - Gives a full API-key / LLM data-synthesis plan.
+  - Defines synthesis API sessions vs evaluation sessions.
+  - Estimates token use and session counts for S0 smoke, S1 pilot synthesis, and S2 v1 synthesis/evaluation.
+  - Recommends not jumping to full v1 synthesis before real API smoke and judge validation.
+
+Updated:
+
+- `.gitignore`
+  - Added local secret patterns: `.env`, `.env.*`, `*_key.txt`, `*key*.txt`.
+
+Validation completed:
+
+- YAML parse check passed for `utterance_schema.yaml`.
+- Existing `scenario_schema.yaml` still parses.
+- `seed_pattern_bank.jsonl` still parses with 60 records and no copied-source-text records.
+
 ## Current Open Items
 
 - 等待用户回答 `目标收缩-工作流深思考.md` §7 的 6 个开放问题（framing / venue / companion / language / 原文使用阈值 / deadline）。
@@ -438,8 +463,8 @@ Validation completed:
 1. 已完成：写 Table 1 Benchmark Comparison Table 草稿，比较 weval / Stanford HAI / ELEPHANT 等 prior，给后续 introduction 的 F1 差异化用。
 2. 已完成：写 Benchmark gap / prior comparison addendum，补充 gap statement、RQ、G1-G4 与 reviewer 风险防守。
 3. 已完成：从 DAIS-C / first-episode psychosis friendship / Reddit r/schizophrenia 抽象 60 条 seed patterns，落到 `data_sources/patterns/seed_pattern_bank.jsonl`。
-4. 建议下一步：写统一 utterance schema 草稿 `prompts/utterance_schema.yaml`。
-5. 跑 real-API smoke test（1 target + 1 judge × 1-2 scenario），验证 JSON contract 与 judge 稳定性。
+4. 已完成：写统一 utterance schema 草稿 `prompts/utterance_schema.yaml`，并写 LLM 数据合成/API token 预估方案。
+5. 建议下一步：跑 real-API smoke test（1 target + 1 judge × 1-2 scenario），验证 JSON contract 与 judge 稳定性。
 6. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
 
 详细行动队列见 `memory-bank/next-step.md`。

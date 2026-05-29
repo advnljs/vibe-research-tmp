@@ -39,7 +39,7 @@ Not primary framing:
 
 ## Current Phase
 
-Phase: API-only runner smoke-tested + benchmark gap comparison drafted + seed pattern bank created -> utterance schema / real API pilot preparation.
+Phase: API-only runner smoke-tested + benchmark gap comparison drafted + seed pattern bank + utterance schema created -> real API smoke preparation.
 
 Completed:
 
@@ -85,6 +85,9 @@ Completed:
 - Created the first abstracted seed pattern bank:
   - `deviation-bench/data_sources/patterns/README.md`
   - `deviation-bench/data_sources/patterns/seed_pattern_bank.jsonl`
+- Created the unified utterance/source schema and LLM synthesis budget plan:
+  - `deviation-bench/prompts/utterance_schema.yaml`
+  - `deviation-bench/LLM数据合成方案与API成本预估.md`
 
 Current implementation position:
 
@@ -96,7 +99,9 @@ Current implementation position:
 - Data manifest and use-policy notes now cover the current downloaded sources.
 - Table 1 style prior comparison and paper gap statement draft now exist.
 - First abstracted seed pattern bank exists with 60 no-raw-text pattern records.
-- Next implementation units are the unified utterance schema and a real API smoke test.
+- Unified utterance schema exists and maps the seed pattern bank to future scenario construction.
+- LLM data synthesis plan exists with token/session estimates for S0/S1/S2.
+- Next implementation unit is a real API smoke test, followed by synthesis script implementation if smoke passes.
 
 ## Milestone Plan
 
@@ -224,7 +229,7 @@ Exit condition:
 
 ## Immediate Next Actions
 
-Phase shift 2026-05-29：framing 决策仍未由用户最终拍板；与 framing 无关的 Table 1 / gap comparison 和 seed pattern bank 已完成，主路径继续保持在“utterance schema + real API smoke + 可并行准备工作”。
+Phase shift 2026-05-29：framing 决策仍未由用户最终拍板；与 framing 无关的 Table 1 / gap comparison、seed pattern bank、utterance schema 和 LLM 合成预算方案已完成，主路径继续保持在“real API smoke + 可并行准备工作”。
 
 Detailed handoff queue:
 
@@ -235,7 +240,8 @@ Detailed handoff queue:
    - 已完成：写 Table 1 Benchmark Comparison Table 草稿（weval / Stanford HAI / ELEPHANT 等 prior 横向对比）。
    - 已完成：写 Benchmark gap / prior comparison addendum，补充 gap statement、RQ、G1-G4 与 reviewer 风险防守。
    - 已完成：抽 60 条 abstracted pattern 到 `data_sources/patterns/seed_pattern_bank.jsonl`。
-   - 写统一 utterance schema `prompts/utterance_schema.yaml`。
+   - 已完成：写统一 utterance schema `prompts/utterance_schema.yaml`。
+   - 已完成：写 LLM 数据合成方案与 API token/session 预估。
    - 跑 real-API smoke test（1 target + 1 judge × 1-2 scenario）。
    - 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
 3. framing 确定后再回到：选 target/judge 模型 → 跑 20-场景 pilot → 扩规模。
@@ -282,3 +288,4 @@ Detailed handoff queue:
 - 决定后续 introduction 的主防守点应是 context-retest reliability of reality-grounded judgment，而不是 AI psychosis、therapy safety、generic sycophancy 或 ordinary hallucination。
 - 将 neutral paraphrase noise、evidence anchor、unsupported claim、recovery turn、人审 audit 明确列为后续实现的硬约束。
 - Created `deviation-bench/data_sources/patterns/seed_pattern_bank.jsonl` with 60 abstracted no-raw-text patterns from DAIS-C, first-episode psychosis friendship interviews, and Reddit `r/schizophrenia`; next schema work should map these pattern fields into `prompts/utterance_schema.yaml`.
+- Created `deviation-bench/prompts/utterance_schema.yaml` and `deviation-bench/LLM数据合成方案与API成本预估.md`; current token estimate is S0 smoke about 20k-35k tokens, S1 synthesis/QC about 200k-350k tokens plus 3.4M-5.1M pilot evaluation tokens, and S2 v1 synthesis/QC about 1.1M-1.8M tokens plus 22M-51M evaluation tokens depending on model count.

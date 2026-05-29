@@ -55,23 +55,20 @@ These tasks are independent of the final framing and can proceed before the user
    - Distribution: DAIS-C clinical 18 / first-episode psychosis friendship 12 / Reddit `r/schizophrenia` 30.
    - Validation: JSONL parse, unique IDs, required fields, source distribution, and `source_text_copied=false` checks passed.
 
+4. Unified utterance schema:
+   - Output: `deviation-bench/prompts/utterance_schema.yaml`
+   - Purpose: normalize source / utterance / abstracted-pattern fields before scenario construction.
+   - Status: first pass complete with source-family defaults, risk-level routing, seed-pattern-bank mapping, quality checks, and examples.
+   - Validation: YAML parse check passed.
+
+5. LLM data synthesis and API budget plan:
+   - Output: `deviation-bench/LLM数据合成方案与API成本预估.md`
+   - Purpose: define when API keys are needed, staged synthesis/evaluation workflow, token budgets, session counts, and default conversation lengths.
+   - Recommendation: do S0 real API smoke before S1/S2 synthesis expansion.
+
 ### Next
 
-1. **Write unified utterance schema**
-   - Output: `deviation-bench/prompts/utterance_schema.yaml`
-   - Required fields:
-     - `utterance_id`
-     - `source`
-     - `source_type`
-     - `language`
-     - `abstracted_text`
-     - `signal_type`
-     - `license`
-     - `citation`
-   - Include validation notes and one tiny example per source family.
-   - Should align with `deviation-bench/data_sources/patterns/seed_pattern_bank.jsonl`.
-
-2. **Run real API smoke test**
+1. **Run real API smoke test**
    - Precondition: API key and target/judge model names are available in environment or provided by user.
    - Use existing runner: `deviation-bench/src/deviation_bench_pilot.py`
    - Scope: 1 target model + 1 judge model x 1-2 scenarios.
@@ -81,8 +78,9 @@ These tasks are independent of the final framing and can proceed before the user
      - turn-level labels make sense,
      - metrics are non-empty and interpretable.
    - Write notes to `deviation-bench/results/pilot/smoke_notes.md` if results are generated. Generated result files may remain ignored unless the user asks to track them.
+   - Default budget from the synthesis plan: about 20k-35k tokens for 1-2 scenarios.
 
-3. **Draft Section 2: Task and Design Goals**
+2. **Draft Section 2: Task and Design Goals**
    - Output: `deviation-bench/paper/task_and_design_goals.md`
    - Reuse: `deviation-bench/paper/table1_benchmark_comparison.md` and `deviation-bench/Benchmark 对比与研究缺口分析.md`.
    - Cover:
@@ -93,6 +91,12 @@ These tasks are independent of the final framing and can proceed before the user
      - G4 Quality,
      - safety boundary,
      - why API-only is part of the design.
+
+3. **Implement synthesis script after S0 passes**
+   - Proposed output: `deviation-bench/src/synthesize_from_patterns.py`
+   - Input: `deviation-bench/data_sources/patterns/seed_pattern_bank.jsonl` and `deviation-bench/prompts/utterance_schema.yaml`.
+   - Output: generated draft items under an ignored results/work directory unless the user asks to track generated data.
+   - Follow the staged budget in `deviation-bench/LLM数据合成方案与API成本预估.md`.
 
 ## Framing-Specific Roadmaps
 

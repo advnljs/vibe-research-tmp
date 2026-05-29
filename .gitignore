@@ -13,6 +13,12 @@ __pycache__/
 .venv/
 venv/
 
+# Local secrets / API keys
+.env
+.env.*
+*_key.txt
+*key*.txt
+
 # Downloaded datasets are intentionally tracked in this repository at the user's request.
 # Embedded .git directories from cloned third-party repos are not tracked by Git.
 

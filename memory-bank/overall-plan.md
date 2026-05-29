@@ -39,7 +39,7 @@ Not primary framing:
 
 ## Current Phase
 
-Phase: API-only runner smoke-tested + benchmark gap comparison drafted + seed pattern bank + utterance schema created -> real API smoke preparation.
+Phase: API-only runner smoke-tested + benchmark gap comparison drafted + seed pattern bank + utterance schema + component registry created -> real API smoke preparation.
 
 Completed:
 
@@ -88,6 +88,9 @@ Completed:
 - Created the unified utterance/source schema and LLM synthesis budget plan:
   - `deviation-bench/prompts/utterance_schema.yaml`
   - `deviation-bench/LLM数据合成方案与API成本预估.md`
+- Created the first component tooling registry:
+  - `deviation-bench/tooling/README.md`
+  - `deviation-bench/tooling/component_registry.yaml`
 
 Current implementation position:
 
@@ -101,6 +104,7 @@ Current implementation position:
 - First abstracted seed pattern bank exists with 60 no-raw-text pattern records.
 - Unified utterance schema exists and maps the seed pattern bank to future scenario construction.
 - LLM data synthesis plan exists with token/session estimates for S0/S1/S2.
+- Component tooling registry exists with zh/en component type labels, English fallback for non-Chinese locales, and layout editability fields for future UI work.
 - Next implementation unit is a real API smoke test, followed by synthesis script implementation if smoke passes.
 
 ## Milestone Plan
@@ -229,7 +233,7 @@ Exit condition:
 
 ## Immediate Next Actions
 
-Phase shift 2026-05-29：framing 决策仍未由用户最终拍板；与 framing 无关的 Table 1 / gap comparison、seed pattern bank、utterance schema 和 LLM 合成预算方案已完成，主路径继续保持在“real API smoke + 可并行准备工作”。
+Phase shift 2026-05-29：framing 决策仍未由用户最终拍板；与 framing 无关的 Table 1 / gap comparison、seed pattern bank、utterance schema、LLM 合成预算方案和组件 tooling registry 已完成，主路径继续保持在“real API smoke + 可并行准备工作”。
 
 Detailed handoff queue:
 
@@ -242,6 +246,8 @@ Detailed handoff queue:
    - 已完成：抽 60 条 abstracted pattern 到 `data_sources/patterns/seed_pattern_bank.jsonl`。
    - 已完成：写统一 utterance schema `prompts/utterance_schema.yaml`。
    - 已完成：写 LLM 数据合成方案与 API token/session 预估。
+   - 已完成：写组件 tooling registry，组件类型选择框可映射中英文 label，其他语言回退英文。
+   - 已记录后续 UI TODO：组件位置和大小可修改。
    - 跑 real-API smoke test（1 target + 1 judge × 1-2 scenario）。
    - 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
 3. framing 确定后再回到：选 target/judge 模型 → 跑 20-场景 pilot → 扩规模。
@@ -289,3 +295,4 @@ Detailed handoff queue:
 - 将 neutral paraphrase noise、evidence anchor、unsupported claim、recovery turn、人审 audit 明确列为后续实现的硬约束。
 - Created `deviation-bench/data_sources/patterns/seed_pattern_bank.jsonl` with 60 abstracted no-raw-text patterns from DAIS-C, first-episode psychosis friendship interviews, and Reddit `r/schizophrenia`; next schema work should map these pattern fields into `prompts/utterance_schema.yaml`.
 - Created `deviation-bench/prompts/utterance_schema.yaml` and `deviation-bench/LLM数据合成方案与API成本预估.md`; current token estimate is S0 smoke about 20k-35k tokens, S1 synthesis/QC about 200k-350k tokens plus 3.4M-5.1M pilot evaluation tokens, and S2 v1 synthesis/QC about 1.1M-1.8M tokens plus 22M-51M evaluation tokens depending on model count.
+- Created `deviation-bench/tooling/component_registry.yaml` for future tooling/UI component types; component type selectors should use zh/en labels with English fallback for non-Chinese locales, and future UI work should support editable component position and size.

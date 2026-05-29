@@ -66,6 +66,12 @@ These tasks are independent of the final framing and can proceed before the user
    - Purpose: define when API keys are needed, staged synthesis/evaluation workflow, token budgets, session counts, and default conversation lengths.
    - Recommendation: do S0 real API smoke before S1/S2 synthesis expansion.
 
+6. Component tooling registry:
+   - Output: `deviation-bench/tooling/component_registry.yaml`
+   - Companion doc: `deviation-bench/tooling/README.md`
+   - Purpose: define component type options for future tooling/UI, including zh/en labels and English fallback for other languages.
+   - Status: first pass complete with 23 component types, category labels, layout defaults, movable/resizable flags, and position/size-editing TODO recorded.
+
 ### Next
 
 1. **Run real API smoke test**
@@ -97,6 +103,13 @@ These tasks are independent of the final framing and can proceed before the user
    - Input: `deviation-bench/data_sources/patterns/seed_pattern_bank.jsonl` and `deviation-bench/prompts/utterance_schema.yaml`.
    - Output: generated draft items under an ignored results/work directory unless the user asks to track generated data.
    - Follow the staged budget in `deviation-bench/LLM数据合成方案与API成本预估.md`.
+
+4. **Prepare future tooling/UI component editor**
+   - Use `deviation-bench/tooling/component_registry.yaml` as the single source of truth for component type selection.
+   - Component type dropdown labels:
+     - Chinese locale: `labels.zh`
+     - English and all other locales: `labels.en`
+   - Required future UI behavior: component position and size can be edited and persisted via `x`, `y`, `width`, `height`, `locked`, and `visible`.
 
 ## Framing-Specific Roadmaps
 

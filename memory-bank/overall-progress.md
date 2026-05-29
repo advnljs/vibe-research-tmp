@@ -443,6 +443,24 @@ Validation completed:
 - Existing `scenario_schema.yaml` still parses.
 - `seed_pattern_bank.jsonl` still parses with 60 records and no copied-source-text records.
 
+### Component Tooling Registry
+
+Created:
+
+- `deviation-bench/tooling/README.md`
+  - Documents the shared tooling registry directory and future UI TODOs.
+  - Records the user-requested TODO that component position and size should be editable.
+
+- `deviation-bench/tooling/component_registry.yaml`
+  - Defines 23 component types for future Deviation Bench tooling/UI.
+  - Provides bilingual component type labels for selection controls: Chinese locales use Chinese labels; English and other languages fall back to English.
+  - Records default layout state for each component: `x`, `y`, `width`, `height`, `locked`, and `visible`.
+  - Marks components as movable and resizable so future UI work can support position/size editing.
+
+Validation completed:
+
+- YAML parse check passed for `component_registry.yaml`.
+
 ## Current Open Items
 
 - 等待用户回答 `目标收缩-工作流深思考.md` §7 的 6 个开放问题（framing / venue / companion / language / 原文使用阈值 / deadline）。
@@ -450,6 +468,8 @@ Validation completed:
 - Decide exact model list and API provider configuration for pilot runs.
 - Run a real API smoke test once API credentials/model choice are available.
 - Review whether the pilot runner should support additional providers beyond OpenAI-compatible chat completions.
+- Future tooling/UI update: implement component type selection from `deviation-bench/tooling/component_registry.yaml`, with zh/en labels and English fallback for other languages.
+- Future tooling/UI update: support component position and size editing via persistent `x`, `y`, `width`, `height`, `locked`, and `visible` layout state.
 - Continue populating implementation/output directories:
   - `deviation-bench/results/`
   - `deviation-bench/paper/`
@@ -464,7 +484,8 @@ Validation completed:
 2. 已完成：写 Benchmark gap / prior comparison addendum，补充 gap statement、RQ、G1-G4 与 reviewer 风险防守。
 3. 已完成：从 DAIS-C / first-episode psychosis friendship / Reddit r/schizophrenia 抽象 60 条 seed patterns，落到 `data_sources/patterns/seed_pattern_bank.jsonl`。
 4. 已完成：写统一 utterance schema 草稿 `prompts/utterance_schema.yaml`，并写 LLM 数据合成/API token 预估方案。
-5. 建议下一步：跑 real-API smoke test（1 target + 1 judge × 1-2 scenario），验证 JSON contract 与 judge 稳定性。
-6. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
+5. 已完成：新增组件 tooling registry，支持组件类型中英文 label 映射，并记录组件位置/大小可修改 TODO。
+6. 建议下一步：跑 real-API smoke test（1 target + 1 judge × 1-2 scenario），验证 JSON contract 与 judge 稳定性。
+7. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
 
 详细行动队列见 `memory-bank/next-step.md`。

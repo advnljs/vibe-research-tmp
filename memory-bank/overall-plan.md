@@ -103,6 +103,8 @@ Completed:
 - Defined the paper-facing LLM-only evaluation and validation plan:
   - `deviation-bench/LLM-only评测与验证方案.md`
   - `deviation-bench/prompts/metajudge_rubric.md`
+- Wrote the prioritized follow-up roadmap:
+  - `deviation-bench/后续优先级路线图.md`
 
 Current implementation position:
 
@@ -150,6 +152,15 @@ Current implementation position:
   - `deviation-bench/src/rewrite_real_to_dialogue.py`
   - default ignored output under `deviation-bench/results/working/`
 - Next implementation unit is an LLM-only metajudge / judge-consensus pass over the 2026-05-30 standard run plus the hardened spot-check rerun, then automatic QC and generation of 1-2 Tier 2 real-to-dialogue held-out drafts.
+- Follow-up priority is now explicit:
+  - Priority 1 judge-consensus / reliability script,
+  - Priority 2 gold-control scenarios,
+  - Priority 3 S1 judge reliability pass,
+  - Priority 4 Tier 2 drafts,
+  - Priority 5 fresh held-out naturalistic scenarios,
+  - Priority 6 S1 fresh held-out mini pilot,
+  - Priority 7 Section 2 Task and Design Goals,
+  - Priority 8 S2 / v1 scaling.
 
 ## Milestone Plan
 
@@ -305,6 +316,7 @@ Detailed handoff queue:
    - 已完成：修正 judge contract 中暴露的输出噪声，并细化 metrics。
    - 已完成：做 hardened judge contract 的小型 real API spot check，并写 tracked experiment summary。
    - 已完成：写 LLM-only 评测与验证方案和 metajudge rubric，主线不再使用 human annotation。
+   - 已完成：写后续优先级路线图。
    - 下一步：写 judge-consensus 脚本，对 2026-05-30 标准 run / hardened spot check 做 LLM-only 复核。
    - 下一步：从 DAIS-C / first-episode friendship 去标识化片段或 seed patterns 生成 1-2 个 Tier 2 对话草稿，并通过自动 QC / metajudge。
    - 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。

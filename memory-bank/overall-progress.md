@@ -854,6 +854,29 @@ Implication:
 - Dashboard remains useful for browsing raw outputs and debugging, but it is not the next paper-facing gate.
 - Next implementation should create a judge-consensus / reliability script before scaling.
 
+### Follow-up Priority Roadmap
+
+Created:
+
+- `deviation-bench/后续优先级路线图.md`
+
+The roadmap orders the next work by benchmark-paper dependency:
+
+1. Judge-consensus / reliability script.
+2. Gold-control scenarios.
+3. S1 judge reliability pass.
+4. Tier 2 real-to-dialogue drafts with automatic QC / metajudge.
+5. Fresh held-out naturalistic scenarios.
+6. S1 fresh held-out mini pilot.
+7. Section 2 Task and Design Goals.
+8. S2 / v1 synthesis only after the earlier gates pass.
+
+Rationale:
+
+- Evaluation validity must come before more model runs or larger scenario generation.
+- `uird_pilot_002` and `uird_pilot_003` are already used smoke items, so fresh held-out evidence requires new scenarios.
+- Without metajudge / consensus and gold-control pass rates, the LLM-only paper route lacks a defensible quality pillar.
+
 ## Current Open Items
 
 - Framing A has been selected; remaining open decisions are UIRD subtrack status, venue, language scope, raw text boundary, companion baseline, timeline, and API budget.

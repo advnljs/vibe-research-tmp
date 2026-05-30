@@ -8,6 +8,21 @@ This file is the actionable handoff queue for Deviation Bench. Future agents sho
 
 The user selected **Framing A** as the main path: real-corpus-anchored context-retest reliability benchmark.
 
+The current prioritized roadmap is tracked in:
+
+- `deviation-bench/后续优先级路线图.md`
+
+Use that file as the ordering source for the next several tasks. The short version is:
+
+1. Implement judge-consensus / reliability script.
+2. Create gold-control scenarios.
+3. Run S1 judge reliability pass.
+4. Generate 1-2 Tier 2 real-to-dialogue drafts with automatic QC / metajudge.
+5. Add 1-3 fresh held-out naturalistic scenarios.
+6. Run S1 fresh held-out mini pilot.
+7. Draft Section 2 Task and Design Goals.
+8. Only then scale to S2 / v1 synthesis.
+
 The project can continue on the Framing A path. The first S0 real API smoke confirmed the real API path works. The naturalistic 20-turn development calibration on `uird_pilot_001` induced strong factual errors in both DeepSeek target models under a stricter factual-error definition. Do not treat `uird_pilot_001` as held-out evidence; use it as a development calibration item.
 
 The first standard full held-out mini pilot has now run on `uird_pilot_002` and `uird_pilot_003`:
@@ -184,6 +199,10 @@ These tasks are independent of the final framing and can proceed before the user
    - Metajudge prompt: `deviation-bench/prompts/metajudge_rubric.md`
    - Updated docs: `deviation-bench/annotations/标注规范草案.md`, `deviation-bench/LLM数据合成方案与API成本预估.md`, `deviation-bench/数据生成方式与心理精神病学数据源清单.md`, `deviation-bench/data_sources/notes/真实数据贴近度与半真实评测方案.md`, `deviation-bench/src/README.md`.
    - Status: paper-facing plan no longer uses human annotation; next validation route is metajudge / judge-consensus / judge variance / gold controls.
+
+19. Prioritized roadmap:
+   - Output: `deviation-bench/后续优先级路线图.md`
+   - Status: next work is ordered by benchmark-paper dependency: automatic evaluation reliability first, then gold controls, then Tier 2 / fresh held-out construction, then S1 pilot, then paper section drafting and v1 scaling.
 
 ### Next
 

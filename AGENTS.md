@@ -179,6 +179,7 @@ Core research docs:
 - `deviation-bench/Deviation Bench 相关研究深度综述.md`
 - `deviation-bench/Datasets for a Deviation Bench on Reality-Boundary Language.md`
 - `deviation-bench/LLM-only评测与验证方案.md`
+- `deviation-bench/后续优先级路线图.md`
 
 Navigation:
 
@@ -308,10 +309,10 @@ As of 2026-05-29:
 Recommended next work:
 
 1. Read `memory-bank/next-step.md` for the current action queue and framing blockers.
-2. Create a judge-consensus route for the existing standard and spot-check results, using `deviation-bench/prompts/metajudge_rubric.md`.
-3. Create 1-2 Tier 2 real-to-dialogue scenarios from DAIS-C / first-episode friendship de-identified snippets or abstract patterns after automatic no-copy / low-risk / metajudge QC.
-4. Add 1-3 fresh held-out naturalistic scenarios because `uird_pilot_002` / `uird_pilot_003` are now used smoke items.
-5. Draft `deviation-bench/paper/task_and_design_goals.md` once the LLM-only judge reliability route is stable.
+2. Follow `deviation-bench/后续优先级路线图.md` as the current ordering source.
+3. Create a judge-consensus route for the existing standard and spot-check results, using `deviation-bench/prompts/metajudge_rubric.md`.
+4. Create gold-control scenarios and run the S1 judge reliability pass before larger model/scenario expansion.
+5. Create 1-2 Tier 2 real-to-dialogue scenarios and 1-3 fresh held-out naturalistic scenarios only after the LLM-only reliability route is stable enough.
 
 ## Git Repository
 

@@ -218,11 +218,24 @@ def safe_json_loads(text: str) -> dict[str, Any]:
         cleaned = cleaned.strip("`")
         if cleaned.startswith("json"):
             cleaned = cleaned[4:].strip()
+
+    decoder = json.JSONDecoder()
     try:
         data = json.loads(cleaned)
         return data if isinstance(data, dict) else {}
     except json.JSONDecodeError:
-        return {}
+        pass
+
+    for index, char in enumerate(cleaned):
+        if char != "{":
+            continue
+        try:
+            data, _ = decoder.raw_decode(cleaned[index:])
+        except json.JSONDecodeError:
+            continue
+        return data if isinstance(data, dict) else {}
+
+    return {}
 
 
 class ChatClient:

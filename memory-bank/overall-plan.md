@@ -1,6 +1,6 @@
 # Overall Plan
 
-Last updated: 2026-05-29
+Last updated: 2026-05-30
 
 This file records the overall plan and the current implementation position. Update it whenever the plan, current phase, or next action changes.
 
@@ -40,7 +40,7 @@ Not primary framing:
 
 ## Current Phase
 
-Phase: Framing A selected + API-only runner smoke-tested + benchmark gap comparison drafted + seed pattern bank + utterance schema created -> real API smoke ready.
+Phase: Framing A selected + standard held-out mini pilot completed -> human audit, judge hardening, Tier 2 real-to-dialogue drafts, and fresh held-out scenario expansion.
 
 Completed:
 
@@ -94,6 +94,8 @@ Completed:
 - Ran the first S0 real API smoke and wrote a tracked experiment summary:
   - `deviation-bench/experiments/README.md`
   - `deviation-bench/experiments/s0_deepseek_smoke_2026-05-29.md`
+- Ran the first standard full held-out mini pilot and wrote a tracked experiment summary:
+  - `deviation-bench/experiments/s0_standard_heldout_mini_pilot_deepseek_2026-05-30.md`
 
 Current implementation position:
 
@@ -101,7 +103,7 @@ Current implementation position:
 - Pilot prompt schema and judge rubric exist.
 - Pilot scenario set exists with 20 fictional low-risk scenarios.
 - Mock smoke output exists locally under ignored `deviation-bench/results/`.
-- Real API smoke and development calibration results exist for `uird_pilot_001`; no held-out pilot result exists yet.
+- Real API smoke and development calibration results exist for `uird_pilot_001`; standard full held-out mini-pilot results now exist for `uird_pilot_002` and `uird_pilot_003`.
 - Data manifest and use-policy notes now cover the current downloaded sources.
 - Table 1 style prior comparison and paper gap statement draft now exist.
 - First abstracted seed pattern bank exists with 60 no-raw-text pattern records.
@@ -118,11 +120,16 @@ Current implementation position:
 - `uird_pilot_002` and `uird_pilot_003` now have 20-turn naturalistic held-out drafts.
 - Dashboard now labels full / partial / early-stop runs and surfaces empty JSONL files as load errors. Current local dashboard has 10 parsed conversations because existing results are mixed smoke/calibration artifacts, not a standard held-out run set.
 - Standard full-pilot script now exists at `deviation-bench/scripts/run_standard_pilot.sh`; it should be used for comparable held-out episodes.
+- Standard full-pilot run completed for `uird_pilot_002` and `uird_pilot_003` over `deepseek-v4-flash` and `deepseek-v4-pro`, judged by `deepseek-v4-pro`.
+- The standard run produced 4 parseable full 20-turn episodes with 0 dashboard load errors and no early stops.
+- Held-out smoke signal was observed outside `uird_pilot_001`: all 4 episodes had judge-labeled drift / factual-error turns; `deepseek-v4-pro` recovered in both scenarios, while `deepseek-v4-flash` did not.
+- Runner JSON parsing has been hardened so judge responses with short non-JSON prefix/suffix text can still be parsed when they contain a valid JSON object.
+- Judge-contract issues remain before claims-oriented scaling: non-recovery `recovery_success` fields, inconsistent `safety_flags` types, and unclear `unjustified_reversal_rate` use on false-belief tracks.
 - Tier 2 real-to-dialogue rewrite tooling now exists:
   - `deviation-bench/prompts/real_to_dialogue_rewrite_prompt.md`
   - `deviation-bench/src/rewrite_real_to_dialogue.py`
   - default ignored output under `deviation-bench/results/working/`
-- Next implementation unit is running a standard full held-out mini pilot for `uird_pilot_002` / `uird_pilot_003`, then generating 1-2 Tier 2 real-to-dialogue held-out drafts and auditing them.
+- Next implementation unit is dashboard-assisted human audit of the 2026-05-30 standard run, judge-contract tightening, and generation of 1-2 Tier 2 real-to-dialogue held-out drafts.
 
 ## Milestone Plan
 
@@ -210,12 +217,13 @@ Current status:
 - Mock target model and mock judge implemented for offline tests.
 - OpenAI-compatible chat completions path implemented.
 - Metrics are computed per scenario.
-- Real API smoke and naturalistic development calibration have been executed for `uird_pilot_001`; no standard full held-out pilot run has been executed yet.
+- Real API smoke and naturalistic development calibration have been executed for `uird_pilot_001`.
+- A standard full held-out mini pilot has been executed for `uird_pilot_002` / `uird_pilot_003` with `deepseek-v4-flash` and `deepseek-v4-pro`.
 - Use `run_standard_pilot.sh` for future held-out pilot results so dev fragments are not mixed with comparable full episodes.
 
 ### Milestone 4: Validate Signal
 
-Status: development calibration signal observed; next blocked on held-out scenario construction before benchmark claims.
+Status: development calibration signal and first held-out mini-pilot signal observed; next blocked on human audit, judge-contract hardening, and fresh held-out scenario construction before benchmark claims.
 
 Deliverables:
 
@@ -255,7 +263,7 @@ Exit condition:
 
 ## Immediate Next Actions
 
-Phase shift 2026-05-29：用户已选择 Framing A。当前主路径是“standard full held-out mini pilot + Tier 2 real-to-dialogue 数据构造 + dashboard human audit”。
+Phase shift 2026-05-30：用户已选择 Framing A。当前主路径是“dashboard human audit + judge contract hardening + Tier 2 real-to-dialogue 数据构造 + fresh held-out scenario expansion”。
 
 Detailed handoff queue:
 
@@ -272,10 +280,12 @@ Detailed handoff queue:
    - 已完成：dashboard 增加 full / partial / early-stop run status。
    - 已完成：写标准 full pilot 启动脚本。
    - 已完成：写 Tier 2 real-to-dialogue prompt 和脚本。
-   - 下一步：跑 `uird_pilot_002` / `uird_pilot_003` full held-out mini pilot。
+   - 已完成：跑 `uird_pilot_002` / `uird_pilot_003` full held-out mini pilot，并写 tracked experiment summary。
+   - 下一步：用 dashboard 人审 2026-05-30 标准 run 的 high-score / factual-error / recovery-failure turns。
+   - 下一步：修正 judge contract 中暴露的输出噪声。
    - 下一步：从 DAIS-C / first-episode friendship 去标识化片段或 seed patterns 生成 1-2 个 Tier 2 对话草稿。
    - 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
-3. Held-out mini pilot 稳定后再回到：扩到 3-5 held-out scenarios → 20-scenario pilot → v1 scale-up。
+3. 人审和 judge hardening 稳定后再回到：新增 1-3 fresh held-out scenarios → 20-scenario pilot → v1 scale-up。
 
 ## Decision Log
 
@@ -325,3 +335,12 @@ Detailed handoff queue:
 - Added `deviation-bench/src/build_conversation_dashboard.py` and `deviation-bench/annotations/human_audit_pilot.csv`; generated local dashboard HTML under ignored `deviation-bench/results/dashboard/index.html`.
 - Added 20-turn naturalistic drafts for `uird_pilot_002` and `uird_pilot_003`, validated with mock naturalistic runs and marker checks.
 - Added dashboard full / partial / early-stop status, standard full-pilot script, real-data-closeness note, and Tier 2 real-to-dialogue rewrite tooling. User clarified that LLM conversion of real data should mean converting selected de-identified real material into fictional dialogue format.
+
+2026-05-30：
+
+- Ran the standard full held-out mini pilot on `uird_pilot_002` and `uird_pilot_003` with `deepseek-v4-flash` / `deepseek-v4-pro`, judged by `deepseek-v4-pro`.
+- The run produced 4 full 20-turn JSONL records, no early stops, and a dashboard rebuild with 4 conversations / 0 load errors.
+- Wrote `deviation-bench/experiments/s0_standard_heldout_mini_pilot_deepseek_2026-05-30.md` as the tracked summary; raw JSONL remains ignored under `deviation-bench/results/pilot/standard/`.
+- Hardened `safe_json_loads` after the judge returned a valid JSON object with a short non-JSON prefix.
+- Treat `uird_pilot_002` and `uird_pilot_003` as used held-out smoke items from now on; do not reuse them as fresh unseen evidence after further tuning.
+- Before claims-oriented scaling, prioritize dashboard human audit and judge-contract fixes for `recovery_success`, `safety_flags`, and `unjustified_reversal_rate` semantics.

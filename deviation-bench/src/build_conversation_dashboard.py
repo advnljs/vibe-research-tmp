@@ -25,6 +25,16 @@ STANCE_ORDER = [
     "action_oriented_escalation",
 ]
 
+ALLOWED_SAFETY_FLAGS = {
+    "self_harm",
+    "violence_or_retaliation",
+    "stalking_or_identification",
+    "medical_legal_financial_action",
+    "real_person_targeting",
+    "privacy_intrusion",
+    "jailbreak_or_safety_bypass",
+}
+
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description="Build a self-contained Deviation Bench conversation dashboard.")
@@ -86,11 +96,20 @@ def metric_float(value: Any) -> float | None:
     return None
 
 
+def split_safety_and_issue_flags(judge: dict[str, Any]) -> tuple[list[str], list[str]]:
+    raw_safety = normalize_flags(judge.get("safety_flags"))
+    safety_flags = [flag for flag in raw_safety if flag in ALLOWED_SAFETY_FLAGS]
+    issue_flags = normalize_flags(judge.get("judge_issue_flags"))
+    issue_flags.extend(flag for flag in raw_safety if flag not in ALLOWED_SAFETY_FLAGS)
+    return sorted(set(safety_flags)), sorted(set(issue_flags))
+
+
 def summarize_turns(turns: list[dict[str, Any]]) -> dict[str, Any]:
     drift_turns: list[str] = []
     factual_turns: list[str] = []
     validation_flags: list[str] = []
     safety_flags: list[str] = []
+    issue_flags: list[str] = []
     stance_counts = {stance: 0 for stance in STANCE_ORDER}
     max_score = 0
 
@@ -108,7 +127,9 @@ def summarize_turns(turns: list[dict[str, Any]]) -> dict[str, Any]:
         if judge.get("factual_error"):
             factual_turns.append(turn_id)
         validation_flags.extend(normalize_flags(judge.get("judge_validation_flags")))
-        safety_flags.extend(normalize_flags(judge.get("safety_flags")))
+        turn_safety_flags, turn_issue_flags = split_safety_and_issue_flags(judge)
+        safety_flags.extend(turn_safety_flags)
+        issue_flags.extend(turn_issue_flags)
 
     recovery_turn = next((turn for turn in turns if turn.get("turn_id") == "recovery"), None)
     recovery_success = None
@@ -123,6 +144,7 @@ def summarize_turns(turns: list[dict[str, Any]]) -> dict[str, Any]:
         "first_factual_error_turn": factual_turns[0] if factual_turns else None,
         "validation_flag_count": len(validation_flags),
         "safety_flag_count": len(safety_flags),
+        "issue_flag_count": len(issue_flags),
         "recovery_success": recovery_success,
         "max_stance_score": max_score,
         "stance_counts": stance_counts,
@@ -413,6 +435,15 @@ HTML_TEMPLATE = r"""<!doctype html>
     const conversations = payload.conversations || [];
     const stanceOrder = payload.stance_order || [];
     const annotationPrefix = "deviation-dashboard-annotation-v1:";
+    const allowedSafetyFlags = new Set([
+      "self_harm",
+      "violence_or_retaliation",
+      "stalking_or_identification",
+      "medical_legal_financial_action",
+      "real_person_targeting",
+      "privacy_intrusion",
+      "jailbreak_or_safety_bypass",
+    ]);
     const state = {
       search: "",
       model: "all",
@@ -475,7 +506,7 @@ HTML_TEMPLATE = r"""<!doctype html>
       if (issue === "drift") return Boolean(judge.drift_event);
       if (issue === "factual") return Boolean(judge.factual_error);
       if (issue === "recovery") return turn.turn_id === "recovery" && judge.recovery_success === false;
-      if (issue === "safety") return normalizeFlags(judge.safety_flags).length > 0;
+      if (issue === "safety") return splitSafetyAndIssueFlags(judge).safety.length > 0;
       if (issue === "validation") return normalizeFlags(judge.judge_validation_flags).length > 0;
       return true;
     }
@@ -486,6 +517,20 @@ HTML_TEMPLATE = r"""<!doctype html>
       if (Array.isArray(value)) return value.filter(Boolean).map(String);
       if (typeof value === "object") return Object.entries(value).filter(([, enabled]) => enabled).map(([key]) => String(key));
       return [String(value)];
+    }
+
+    function splitSafetyAndIssueFlags(judge) {
+      const rawSafety = normalizeFlags(judge?.safety_flags);
+      const safety = [];
+      const issue = normalizeFlags(judge?.judge_issue_flags);
+      for (const flag of rawSafety) {
+        if (allowedSafetyFlags.has(flag)) safety.push(flag);
+        else issue.push(flag);
+      }
+      return {
+        safety: Array.from(new Set(safety)).sort(),
+        issue: Array.from(new Set(issue)).sort(),
+      };
     }
 
     function conversationText(conversation) {
@@ -693,6 +738,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         ["first drift", summary.first_drift_turn],
         ["max stance", summary.max_stance_score],
         ["validation flags", summary.validation_flag_count],
+        ["issue flags", summary.issue_flag_count],
       ];
       return fields.map(([label, value]) => `<div class="metric"><span>${esc(label)}</span><strong>${esc(fmt(value))}</strong></div>`).join("");
     }
@@ -707,7 +753,9 @@ HTML_TEMPLATE = r"""<!doctype html>
       if (judge.unjustified_reversal) badges.push(`<span class="badge red">reversal</span>`);
       if (judge.certainty_inflation) badges.push(`<span class="badge amber">certainty</span>`);
       if (turn.turn_id === "recovery" && judge.recovery_success === false) badges.push(`<span class="badge red">recovery fail</span>`);
-      for (const flag of normalizeFlags(judge.safety_flags)) badges.push(`<span class="badge red">safety: ${esc(flag)}</span>`);
+      const splitFlags = splitSafetyAndIssueFlags(judge);
+      for (const flag of splitFlags.safety) badges.push(`<span class="badge red">safety: ${esc(flag)}</span>`);
+      for (const flag of splitFlags.issue) badges.push(`<span class="badge purple">issue: ${esc(flag)}</span>`);
       for (const flag of normalizeFlags(judge.judge_validation_flags)) badges.push(`<span class="badge teal">judge: ${esc(flag)}</span>`);
       return badges.join("");
     }

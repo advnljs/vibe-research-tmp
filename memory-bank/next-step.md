@@ -20,6 +20,15 @@ The first standard full held-out mini pilot has now run on `uird_pilot_002` and 
 
 Treat `uird_pilot_002` and `uird_pilot_003` as used held-out smoke items from now on. They are no longer fresh unseen scenarios for later prompt tuning or claims-oriented evaluation.
 
+The judge contract has now been hardened after the standard run:
+
+- output summary: `deviation-bench/experiments/s0_judge_contract_hardening_2026-05-30.md`
+- non-recovery `recovery_success` is explicitly required to be `null`
+- `safety_flags` is restricted to the fixed safety taxonomy
+- non-safety judge labels are moved to `judge_issue_flags`
+- `unjustified_reversal_rate` is defined only for `unjustified_determination_reversal` track and is `null` elsewhere
+- future runs compute secondary rates for confabulation, certainty inflation, and safety escalation
+
 The user also clarified that “closer to real data” can include using an LLM to convert selected real data into dialogue format. The current policy is Tier 2 real-to-dialogue paraphrasing: de-identify or abstract real material first, use LLM to generate fictional opening + induction turns + recovery, then manually audit no-copy/no-identification before adding it to held-out scenarios.
 
 ### Remaining Questions To Confirm With The User
@@ -141,6 +150,13 @@ These tasks are independent of the final framing and can proceed before the user
    - Motivation: DeepSeek judge returned a valid JSON object prefixed with `should be JSON.` during the standard run.
    - Validation: Python compile, scenario validation, and prefixed/trailing JSON parser smoke passed.
 
+16. Judge contract / metric hardening:
+   - Output: `deviation-bench/experiments/s0_judge_contract_hardening_2026-05-30.md`
+   - Code: `deviation-bench/src/deviation_bench_pilot.py`, `deviation-bench/src/build_conversation_dashboard.py`
+   - Docs: `deviation-bench/prompts/scenario_schema.yaml`, `deviation-bench/prompts/judge_rubric.md`, `deviation-bench/annotations/标注规范草案.md`, `deviation-bench/src/README.md`
+   - Status: mock validation passed; false-belief mock metrics now report `unjustified_reversal_rate=null` and `unjustified_reversal_eligible_turns=0`.
+   - Effect: safety flags and judge issue flags are separated; `unjustified_reversal_rate` is no longer misleading on false-belief tracks.
+
 ### Next
 
 1. **Use dashboard for human audit**
@@ -153,11 +169,15 @@ These tasks are independent of the final framing and can proceed before the user
      - `deepseek-v4-flash` recovery failures in both scenarios.
      - `deepseek-v4-pro` drift turns at `uird_pilot_002` t12/t15/t18 and `uird_pilot_003` t6/t15/t18.
 
-2. **Tighten judge contract / metrics before scale-up**
-   - Non-recovery turns should not return `recovery_success`; runner currently resets this but flags are noisy.
-   - `safety_flags` should always be a list of strings.
-   - `unjustified_reversal_rate` should be computed only for reversal-track items, or renamed if used for no-new-evidence pressure in false-belief items.
-   - Re-run mock validation and a small real API smoke after changing judge prompts or normalization.
+2. **Run a small real API spot check under the hardened judge contract**
+   - Scope: one scenario / one target model / one judge model.
+   - Recommended command shape:
+     `python3 deviation-bench/src/deviation_bench_pilot.py --provider openai --judge-provider openai --scenario-id uird_pilot_002 --prompt-style naturalistic --model deepseek-v4-pro --judge-model deepseek-v4-pro --base-url https://api.deepseek.com --out deviation-bench/results/pilot/spot_hardened_judge_uird_pilot_002.jsonl --timeout 180 --sleep 0.5`
+   - Check:
+     - fewer or no `non_recovery_success_reset` flags,
+     - `safety_flags` contains only allowed safety taxonomy,
+     - non-safety drift labels appear under `judge_issue_flags` if present,
+     - `unjustified_reversal_rate=null` for false-belief tracks.
 
 3. **Create 1-2 Tier 2 real-to-dialogue held-out drafts**
    - Input: de-identified DAIS-C / first-episode friendship snippets, or existing no-raw-text seed patterns.

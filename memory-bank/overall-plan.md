@@ -96,6 +96,8 @@ Completed:
   - `deviation-bench/experiments/s0_deepseek_smoke_2026-05-29.md`
 - Ran the first standard full held-out mini pilot and wrote a tracked experiment summary:
   - `deviation-bench/experiments/s0_standard_heldout_mini_pilot_deepseek_2026-05-30.md`
+- Hardened the judge contract and metric semantics after the held-out mini pilot:
+  - `deviation-bench/experiments/s0_judge_contract_hardening_2026-05-30.md`
 
 Current implementation position:
 
@@ -124,12 +126,17 @@ Current implementation position:
 - The standard run produced 4 parseable full 20-turn episodes with 0 dashboard load errors and no early stops.
 - Held-out smoke signal was observed outside `uird_pilot_001`: all 4 episodes had judge-labeled drift / factual-error turns; `deepseek-v4-pro` recovered in both scenarios, while `deepseek-v4-flash` did not.
 - Runner JSON parsing has been hardened so judge responses with short non-JSON prefix/suffix text can still be parsed when they contain a valid JSON object.
-- Judge-contract issues remain before claims-oriented scaling: non-recovery `recovery_success` fields, inconsistent `safety_flags` types, and unclear `unjustified_reversal_rate` use on false-belief tracks.
+- Judge contract / metric semantics have been hardened:
+  - non-recovery `recovery_success` is explicitly required to be `null`,
+  - `safety_flags` is restricted to a fixed safety taxonomy,
+  - non-safety judge labels are moved to `judge_issue_flags`,
+  - `unjustified_reversal_rate` is `null` outside reversal track,
+  - secondary rates for confabulation, certainty inflation, and safety escalation are computed.
 - Tier 2 real-to-dialogue rewrite tooling now exists:
   - `deviation-bench/prompts/real_to_dialogue_rewrite_prompt.md`
   - `deviation-bench/src/rewrite_real_to_dialogue.py`
   - default ignored output under `deviation-bench/results/working/`
-- Next implementation unit is dashboard-assisted human audit of the 2026-05-30 standard run, judge-contract tightening, and generation of 1-2 Tier 2 real-to-dialogue held-out drafts.
+- Next implementation unit is dashboard-assisted human audit of the 2026-05-30 standard run, a small real API spot check of the hardened judge contract, and generation of 1-2 Tier 2 real-to-dialogue held-out drafts.
 
 ## Milestone Plan
 
@@ -223,7 +230,7 @@ Current status:
 
 ### Milestone 4: Validate Signal
 
-Status: development calibration signal and first held-out mini-pilot signal observed; next blocked on human audit, judge-contract hardening, and fresh held-out scenario construction before benchmark claims.
+Status: development calibration signal and first held-out mini-pilot signal observed; judge contract hardened; next blocked on human audit, a small post-hardening API spot check, and fresh held-out scenario construction before benchmark claims.
 
 Deliverables:
 
@@ -263,7 +270,7 @@ Exit condition:
 
 ## Immediate Next Actions
 
-Phase shift 2026-05-30：用户已选择 Framing A。当前主路径是“dashboard human audit + judge contract hardening + Tier 2 real-to-dialogue 数据构造 + fresh held-out scenario expansion”。
+Phase shift 2026-05-30：用户已选择 Framing A。当前主路径是“dashboard human audit + post-hardening real API spot check + Tier 2 real-to-dialogue 数据构造 + fresh held-out scenario expansion”。
 
 Detailed handoff queue:
 
@@ -281,8 +288,9 @@ Detailed handoff queue:
    - 已完成：写标准 full pilot 启动脚本。
    - 已完成：写 Tier 2 real-to-dialogue prompt 和脚本。
    - 已完成：跑 `uird_pilot_002` / `uird_pilot_003` full held-out mini pilot，并写 tracked experiment summary。
+   - 已完成：修正 judge contract 中暴露的输出噪声，并细化 metrics。
    - 下一步：用 dashboard 人审 2026-05-30 标准 run 的 high-score / factual-error / recovery-failure turns。
-   - 下一步：修正 judge contract 中暴露的输出噪声。
+   - 下一步：做一个 hardened judge contract 的小型 real API spot check。
    - 下一步：从 DAIS-C / first-episode friendship 去标识化片段或 seed patterns 生成 1-2 个 Tier 2 对话草稿。
    - 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
 3. 人审和 judge hardening 稳定后再回到：新增 1-3 fresh held-out scenarios → 20-scenario pilot → v1 scale-up。
@@ -344,3 +352,10 @@ Detailed handoff queue:
 - Hardened `safe_json_loads` after the judge returned a valid JSON object with a short non-JSON prefix.
 - Treat `uird_pilot_002` and `uird_pilot_003` as used held-out smoke items from now on; do not reuse them as fresh unseen evidence after further tuning.
 - Before claims-oriented scaling, prioritize dashboard human audit and judge-contract fixes for `recovery_success`, `safety_flags`, and `unjustified_reversal_rate` semantics.
+- Hardened judge contract and metrics after the standard run:
+  - added `s0_judge_contract_hardening_2026-05-30.md`,
+  - moved non-safety labels into `judge_issue_flags`,
+  - restricted safety taxonomy,
+  - made `unjustified_reversal_rate` track-scoped,
+  - added secondary rates for confabulation, certainty inflation, and safety escalation.
+- Next benchmark-evidence step should be human audit plus a small real API spot check under the hardened contract, not another large run.

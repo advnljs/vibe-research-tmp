@@ -852,7 +852,7 @@ Updated:
 Implication:
 
 - Dashboard remains useful for browsing raw outputs and debugging, but it is not the next paper-facing gate.
-- Next implementation should create a judge-consensus / reliability script before scaling.
+- Judge-consensus tooling now exists; next reliability work should create gold-control items and then run a real metajudge pass before scaling.
 
 ### Follow-up Priority Roadmap
 
@@ -877,12 +877,57 @@ Rationale:
 - `uird_pilot_002` and `uird_pilot_003` are already used smoke items, so fresh held-out evidence requires new scenarios.
 - Without metajudge / consensus and gold-control pass rates, the LLM-only paper route lacks a defensible quality pillar.
 
+### Judge Consensus Script
+
+Created:
+
+- `deviation-bench/src/build_judge_consensus.py`
+
+Updated:
+
+- `deviation-bench/src/README.md`
+  - Adds the judge-consensus command path and explains mock vs OpenAI-compatible metajudge use.
+
+Capabilities:
+
+- Reads one or more pilot JSONL files or globs.
+- Loads `deviation-bench/prompts/pilot_scenarios.yaml` to recover hidden `evidence_anchor` for metajudge packages.
+- Selects priority turns automatically:
+  - `stance_score >= 3`
+  - `factual_error=true`
+  - `recovery_success=false`
+  - non-empty `safety_flags`
+  - non-empty `judge_issue_flags`
+  - non-empty `judge_validation_flags`
+- Supports `provider=mock` for deterministic offline contract checks.
+- Supports `provider=openai` through OpenAI-compatible chat completions for semantic metajudge passes.
+- Writes ignored consensus JSONL and reliability markdown summaries under `deviation-bench/results/working/` by default.
+- Reports C2 / C1 / C0 consensus tiers, consensus coverage, conflict rate, metajudge JSON parse success, contract violation / repair rate, disputed fields, rubric flags, runner validation flags, and recovery-label conflict rate.
+
+Validation completed:
+
+- `python3 -m py_compile deviation-bench/src/build_judge_consensus.py`
+- `python3 deviation-bench/src/deviation_bench_pilot.py --validate-only`
+- Mock pass over existing standard + hardened spot-check JSONL:
+  - input files: 5
+  - conversations read: 5
+  - turns read: 100
+  - selected priority turns: 84
+  - summary path used for validation: `/tmp/judge_reliability.md`
+
+Mock pass interpretation:
+
+- The offline mock metajudge correctly surfaces old standard-run field repairs and contract violations as C1/C0 rather than silently treating them as main-metric labels.
+- Hardened spot-check drift turns without repair flags can enter C2 under mock contract validation.
+- This is still a schema/contract validation smoke, not semantic metajudge evidence; the next reliability pass should use an OpenAI-compatible metajudge after gold-control items exist.
+
 ## Current Open Items
 
 - Framing A has been selected; remaining open decisions are UIRD subtrack status, venue, language scope, raw text boundary, companion baseline, timeline, and API budget.
 - Verify the pushed data on GitHub if needed.
 - Freeze the current 20-turn `uird_pilot_001` as a development calibration item before expanding pilot runs.
-- Implement LLM-only metajudge / judge-consensus validation for the 2026-05-30 standard held-out mini pilot and hardened spot check.
+- Create gold-control scenarios so the no-human-annotation evaluation route has obvious positive / negative / recovery / safety calibration items.
+- Run a real OpenAI-compatible metajudge / judge-consensus pass for the 2026-05-30 standard held-out mini pilot and hardened spot check using `deviation-bench/src/build_judge_consensus.py`.
 - Use `run_standard_pilot.sh` for held-out full episodes so dashboard comparisons are not mixed with smoke/calibration fragments.
 - Use `rewrite_real_to_dialogue.py` to create 1-2 Tier 2 real-to-dialogue held-out drafts from de-identified DAIS-C / first-episode friendship snippets or abstract patterns, then run automatic QC / metajudge checks before copying into `pilot_scenarios.yaml`.
 - Create 1-3 fresh held-out naturalistic scenarios because `uird_pilot_002` / `uird_pilot_003` are now used smoke items.
@@ -893,9 +938,9 @@ Rationale:
 
 ## Current Best Next Step
 
-优先级 1：实现 judge-consensus / reliability 脚本，对 2026-05-30 标准 held-out mini pilot 的所有 `stance_score >= 3`、`factual_error=true`、recovery failure 和 safety / issue flagged turns 做自动复核。
+优先级 1：创建 gold-control scenarios，覆盖明显 grounded、明显 endorsement、recovery success/failure、safety taxonomy 等校准项。
 
-优先级 2：把 hardened spot check 中 `uird_pilot_002` / `deepseek-v4-pro` 的 t11、t12、t15、t16、t18 和 recovery 也纳入 metajudge / consensus 复核，重点确认 recovery failure 是 judge 分歧、目标输出真实漂移，还是 rerun variance。
+优先级 2：用 `deviation-bench/src/build_judge_consensus.py` 跑一次 real OpenAI-compatible metajudge reliability pass，把 2026-05-30 标准 run 和 hardened spot check 中的 priority turns 转成 C2/C1/C0 consensus evidence。
 
 优先级 3：用 `rewrite_real_to_dialogue.py` 从 DAIS-C / first-episode friendship 的去标识化片段或现有 seed patterns 生成 1-2 个 Tier 2 real-to-dialogue 草稿，通过自动 QC / metajudge 后再放入 held-out scenario。
 
@@ -918,7 +963,8 @@ Rationale:
 15. 已完成：细化 judge contract / metrics，区分 safety flags 与 judge issue flags，并把 `unjustified_reversal_rate` 限定为 reversal-track metric。
 16. 已完成：做 hardened judge contract 的小型 real API spot check；字段噪声明显减少，剩余重点是 recovery turn 的 metajudge / consensus 复核。
 17. 已完成：根据用户决定，将 paper-facing 方案改为 LLM-only evaluation，不使用 human annotation，并新增 metajudge rubric。
-18. 建议下一步：写 judge-consensus / reliability 脚本，并生成 1-2 个 Tier 2 real-to-dialogue 草稿。
-19. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
+18. 已完成：写 judge-consensus / reliability 脚本，并用 mock mode 在 existing standard + hardened JSONL 上跑通 summary。
+19. 建议下一步：创建 gold-control scenarios，然后跑 S1 real metajudge reliability pass。
+20. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
 
 详细行动队列见 `memory-bank/next-step.md`。

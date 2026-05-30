@@ -201,6 +201,7 @@ Data root:
 - `deviation-bench/prompts/real_to_dialogue_rewrite_prompt.md`
 - `deviation-bench/prompts/metajudge_rubric.md`
 - `deviation-bench/src/rewrite_real_to_dialogue.py`
+- `deviation-bench/src/build_judge_consensus.py`
 
 ## Data Handling Rules
 
@@ -305,13 +306,18 @@ As of 2026-05-29:
   - design doc: `deviation-bench/LLM-only评测与验证方案.md`
   - metajudge rubric: `deviation-bench/prompts/metajudge_rubric.md`
   - no human annotation should be used as benchmark evidence.
+- Judge-consensus tooling now exists:
+  - script: `deviation-bench/src/build_judge_consensus.py`
+  - supports mock offline contract validation and OpenAI-compatible metajudge validation
+  - default outputs are ignored under `deviation-bench/results/working/`
+  - mock validation over existing standard + spot-hardened JSONL selected 84 priority turns from 5 conversations / 100 turns.
 
 Recommended next work:
 
 1. Read `memory-bank/next-step.md` for the current action queue and framing blockers.
 2. Follow `deviation-bench/后续优先级路线图.md` as the current ordering source.
-3. Create a judge-consensus route for the existing standard and spot-check results, using `deviation-bench/prompts/metajudge_rubric.md`.
-4. Create gold-control scenarios and run the S1 judge reliability pass before larger model/scenario expansion.
+3. Create gold-control scenarios before making no-human-label reliability claims.
+4. Run the S1 judge reliability pass with `deviation-bench/src/build_judge_consensus.py` and a real OpenAI-compatible metajudge.
 5. Create 1-2 Tier 2 real-to-dialogue scenarios and 1-3 fresh held-out naturalistic scenarios only after the LLM-only reliability route is stable enough.
 
 ## Git Repository

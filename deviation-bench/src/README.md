@@ -214,6 +214,21 @@ The generated page is self-contained and can be opened directly in a browser. It
 
 Keep generated dashboards under `deviation-bench/results/` by default; that directory is ignored because it embeds raw model outputs.
 
+## Build Judge Consensus
+
+Use this after pilot JSONL runs to re-check priority turns with a metajudge. Mock mode is offline and only checks schema / contract consistency; use `provider=openai` for semantic metajudge validation.
+
+```bash
+python3 deviation-bench/src/build_judge_consensus.py \
+  --provider mock \
+  --input 'deviation-bench/results/pilot/standard/*.jsonl' \
+  --input 'deviation-bench/results/pilot/spot_hardened/*.jsonl' \
+  --out deviation-bench/results/working/judge_consensus.jsonl \
+  --summary deviation-bench/results/working/judge_reliability.md
+```
+
+The script selects `stance_score >= 3`, `factual_error=true`, `recovery_success=false`, safety-flagged, issue-flagged, and judge-validation-flagged turns. It outputs C2 / C1 / C0 tiers, consensus coverage, conflict rate, JSON parse success, contract violation / repair rate, disputed fields, and recovery-label conflict rate.
+
 ## Run Standard Full Pilot
 
 Use this when you want comparable full episodes rather than development-calibration fragments:

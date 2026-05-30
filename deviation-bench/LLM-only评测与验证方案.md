@@ -235,18 +235,19 @@ Metajudge 不替 target 模型重新回答，也不诊断用户。它只检查 p
 
 - `deviation-bench/prompts/metajudge_rubric.md`
 
-优先级 1：新增 judge consensus 脚本。
+已完成：新增 judge consensus 脚本。
 
 - `deviation-bench/src/build_judge_consensus.py`
-- 输入：一个或多个 JSONL result + second-judge/metajudge output
-- 输出：consensus JSONL + reliability summary markdown/CSV
+- 输入：一个或多个 JSONL result + scenario evidence anchors + metajudge output
+- 输出：consensus JSONL + reliability summary markdown
+- mock mode 已在 2026-05-30 standard + spot-hardened JSONL 上跑通；paper-facing semantic evidence 仍需 real metajudge pass。
 
-优先级 2：创建 gold-control scenarios。
+当前优先级 1：创建 gold-control scenarios。
 
 - `deviation-bench/prompts/gold_control_scenarios.yaml`
 - 覆盖 neutral、positive endorsement、recovery、safety taxonomy。
 
-优先级 3：跑 S1 judge reliability pass。
+当前优先级 2：跑 S1 judge reliability pass。
 
 - 对 2026-05-30 standard run 和 hardened spot check 做 second-judge/metajudge 复核。
 - 报告 C2 coverage、C0 conflict、rank stability。

@@ -40,7 +40,7 @@ Not primary framing:
 
 ## Current Phase
 
-Phase: Framing A selected + standard held-out mini pilot completed + judge contract spot-checked + LLM-only evaluation design selected -> metajudge / judge-consensus implementation, Tier 2 real-to-dialogue drafts, and fresh held-out scenario expansion.
+Phase: Framing A selected + standard held-out mini pilot completed + judge contract spot-checked + LLM-only evaluation design selected + judge-consensus script implemented -> gold-control scenarios, real metajudge reliability pass, Tier 2 real-to-dialogue drafts, and fresh held-out scenario expansion.
 
 Completed:
 
@@ -105,6 +105,10 @@ Completed:
   - `deviation-bench/prompts/metajudge_rubric.md`
 - Wrote the prioritized follow-up roadmap:
   - `deviation-bench/后续优先级路线图.md`
+- Implemented the judge-consensus / reliability script:
+  - `deviation-bench/src/build_judge_consensus.py`
+  - supports mock offline contract validation and OpenAI-compatible metajudge calls
+  - validated on existing standard + spot-hardened JSONL in mock mode
 
 Current implementation position:
 
@@ -151,11 +155,15 @@ Current implementation position:
   - `deviation-bench/prompts/real_to_dialogue_rewrite_prompt.md`
   - `deviation-bench/src/rewrite_real_to_dialogue.py`
   - default ignored output under `deviation-bench/results/working/`
-- Next implementation unit is an LLM-only metajudge / judge-consensus pass over the 2026-05-30 standard run plus the hardened spot-check rerun, then automatic QC and generation of 1-2 Tier 2 real-to-dialogue held-out drafts.
+- Judge-consensus tooling now exists:
+  - `deviation-bench/src/build_judge_consensus.py`
+  - default outputs under ignored `deviation-bench/results/working/`
+  - mock validation over existing standard + spot-hardened JSONL read 5 conversations / 100 turns and selected 84 priority turns.
+- The mock consensus summary is a contract/schema smoke only; semantic reliability still requires a real OpenAI-compatible metajudge pass after gold-control calibration items exist.
 - Follow-up priority is now explicit:
-  - Priority 1 judge-consensus / reliability script,
-  - Priority 2 gold-control scenarios,
-  - Priority 3 S1 judge reliability pass,
+  - Priority 1 completed: judge-consensus / reliability script,
+  - Priority 2 current: gold-control scenarios,
+  - Priority 3 next: S1 judge reliability pass with real metajudge,
   - Priority 4 Tier 2 drafts,
   - Priority 5 fresh held-out naturalistic scenarios,
   - Priority 6 S1 fresh held-out mini pilot,
@@ -255,7 +263,7 @@ Current status:
 
 ### Milestone 4: Validate Signal
 
-Status: development calibration signal and first held-out mini-pilot signal observed; judge contract hardened and spot-checked; user selected no-human-annotation paper route; next blocked on metajudge / judge-consensus validation and fresh held-out scenario construction before benchmark claims.
+Status: development calibration signal and first held-out mini-pilot signal observed; judge contract hardened and spot-checked; user selected no-human-annotation paper route; judge-consensus tooling implemented; next blocked on gold-control calibration, real metajudge reliability validation, and fresh held-out scenario construction before benchmark claims.
 
 Deliverables:
 
@@ -317,7 +325,8 @@ Detailed handoff queue:
    - 已完成：做 hardened judge contract 的小型 real API spot check，并写 tracked experiment summary。
    - 已完成：写 LLM-only 评测与验证方案和 metajudge rubric，主线不再使用 human annotation。
    - 已完成：写后续优先级路线图。
-   - 下一步：写 judge-consensus 脚本，对 2026-05-30 标准 run / hardened spot check 做 LLM-only 复核。
+   - 已完成：写 judge-consensus 脚本，并用 mock mode 在 2026-05-30 标准 run / hardened spot check 上跑通 contract summary。
+   - 下一步：创建 gold-control scenarios，然后用真实 metajudge 做 S1 reliability pass。
    - 下一步：从 DAIS-C / first-episode friendship 去标识化片段或 seed patterns 生成 1-2 个 Tier 2 对话草稿，并通过自动 QC / metajudge。
    - 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
 3. LLM-only judge reliability 和 judge hardening 稳定后再回到：新增 1-3 fresh held-out scenarios → 20-scenario pilot → v1 scale-up。

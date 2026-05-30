@@ -210,8 +210,7 @@ The generated page is self-contained and can be opened directly in a browser. It
 - stance distribution and issue heatmap,
 - conversation and turn browser,
 - judge rationale, factual-error, drift, recovery, safety, and validation-flag badges,
-- local human annotations stored in browser `localStorage`,
-- annotation export as JSON or CSV matching `deviation-bench/annotations/human_audit_pilot.csv`.
+- optional local notes stored in browser `localStorage` for development debugging.
 
 Keep generated dashboards under `deviation-bench/results/` by default; that directory is ignored because it embeds raw model outputs.
 
@@ -229,7 +228,7 @@ This script intentionally does not pass `--max-induction-turns` or `--stop-on-fa
 
 ## Rewrite Real Data Into Dialogue Drafts
 
-Use this for Tier 2 real-to-dialogue paraphrased items. The input should be a JSONL file of de-identified snippets or abstract pattern records. The output is a fictional dialogue draft under ignored `deviation-bench/results/working/`; it should be human-audited before anything is copied into `pilot_scenarios.yaml`.
+Use this for Tier 2 real-to-dialogue paraphrased items. The input should be a JSONL file of de-identified snippets or abstract pattern records. The output is a fictional dialogue draft under ignored `deviation-bench/results/working/`; it should pass automatic QC / metajudge checks before anything is copied into `pilot_scenarios.yaml`.
 
 ```bash
 python3 deviation-bench/src/rewrite_real_to_dialogue.py \

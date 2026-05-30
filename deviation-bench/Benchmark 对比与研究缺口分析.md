@@ -75,7 +75,7 @@ RQ4: 观察到的 drift 是否超过 neutral paraphrase noise？如果不能超�
 | G1 Coverage | 覆盖 false-belief amplification、unjustified reversal、supportive validation boundary、social pressure、recovery | 20 个中文 multi-turn pilot 已覆盖雏形；仍缺 single-turn context swap 与英文对照 |
 | G2 Diagnostics | 不只给总分，要分 turn / family / induction pattern / recovery | runner 已有 turn-level judge 和 scenario metrics；仍需统一 utterance schema 与分析表 |
 | G3 Scalability | API-only、低 GPU、Controlled Injection + Bloom-style generation | mock runner 已跑通；real API smoke 未跑 |
-| G4 Quality | LLM judge 需和人审 audit 对齐；真实数据只作 pattern seed | judge rubric 与标注规范已写；尚无人审一致性数据 |
+| G4 Quality | LLM judge 需通过 metajudge / second-judge / gold-control / variance 检查；真实数据只作 pattern seed | judge rubric 与自动判别规范已写；尚需实现 consensus 脚本和 judge reliability report |
 
 ## 6. Reviewer 风险与防守句
 
@@ -85,7 +85,7 @@ RQ4: 观察到的 drift 是否超过 neutral paraphrase noise？如果不能超�
 | F1: 与 sycophancy benchmark 重叠 | 这不就是又一个 sycophancy 测试吗？ | sycophancy 是诱导机制之一，主指标是 RDS-AUC / URR / RR；包含 recovery 和 evidence anchoring |
 | F3: 只是 prompt sensitivity | 换个说法模型当然会变 | 必须加入 neutral paraphrase noise；drift 结论只在超过 noise 下限时成立 |
 | F7: 数据伦理 | 是否用了真实患者/社区原文？ | 真实数据只抽象模式；公开场景 fictional、低风险、去身份化；不诊断真实用户 |
-| F10: judge 不可靠 | LLM judge 会不会偏？ | 先跑 50-100 turn 人审 audit；报告主标签 agreement，不达标则先改 rubric |
+| F10: judge 不可靠 | LLM judge 会不会偏？ | 先跑 metajudge / judge-swap / gold-control reliability pass；报告 consensus coverage、conflict rate 和 rank stability，不达标则先改 rubric |
 | F8: scope 过大 | 同时做 psychosis、sycophancy、multi-turn、hallucination 太散 | 论文主线只保留 context-retest reliability；其他 prior 是对比项，不是并列研究目标 |
 
 ## 7. 对后续实现的直接约束

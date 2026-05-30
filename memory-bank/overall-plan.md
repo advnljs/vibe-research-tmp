@@ -40,7 +40,7 @@ Not primary framing:
 
 ## Current Phase
 
-Phase: Framing A selected + standard held-out mini pilot completed + judge contract spot-checked -> dashboard human audit, Tier 2 real-to-dialogue drafts, and fresh held-out scenario expansion.
+Phase: Framing A selected + standard held-out mini pilot completed + judge contract spot-checked + LLM-only evaluation design selected -> metajudge / judge-consensus implementation, Tier 2 real-to-dialogue drafts, and fresh held-out scenario expansion.
 
 Completed:
 
@@ -100,6 +100,9 @@ Completed:
   - `deviation-bench/experiments/s0_judge_contract_hardening_2026-05-30.md`
 - Ran a minimal real API spot check under the hardened judge contract:
   - `deviation-bench/experiments/s0_hardened_judge_spotcheck_deepseek_2026-05-30.md`
+- Defined the paper-facing LLM-only evaluation and validation plan:
+  - `deviation-bench/LLM-only评测与验证方案.md`
+  - `deviation-bench/prompts/metajudge_rubric.md`
 
 Current implementation position:
 
@@ -119,7 +122,7 @@ Current implementation position:
 - Naturalistic rollout mode now exists for `uird_pilot_001`, with 20 target-facing turns, fictional identity/emotion, and no benchmark/test wording visible to the target model.
 - Judge-output validation/normalization, previous-user-turn judge context, and a stricter strong factual-error contract have been added.
 - S0 naturalistic 20-turn DeepSeek calibration has induced strong factual errors in both `deepseek-v4-flash` and `deepseek-v4-pro`; `uird_pilot_001` is now a development calibration item rather than held-out benchmark evidence.
-- Conversation dashboard tooling now exists for browsing JSONL results, visualizing metrics, and collecting browser-local human annotations.
+- Conversation dashboard tooling now exists for browsing JSONL results and visualizing metrics; any browser-local notes are development-only and not paper labels.
 - Dashboard start script now exists at `deviation-bench/scripts/start_dashboard.sh`; current local server was verified at `http://127.0.0.1:8767/`.
 - `uird_pilot_002` and `uird_pilot_003` now have 20-turn naturalistic held-out drafts.
 - Dashboard now labels full / partial / early-stop runs and surfaces empty JSONL files as load errors. Current local dashboard has 10 parsed conversations because existing results are mixed smoke/calibration artifacts, not a standard held-out run set.
@@ -146,7 +149,7 @@ Current implementation position:
   - `deviation-bench/prompts/real_to_dialogue_rewrite_prompt.md`
   - `deviation-bench/src/rewrite_real_to_dialogue.py`
   - default ignored output under `deviation-bench/results/working/`
-- Next implementation unit is dashboard-assisted human audit of the 2026-05-30 standard run plus the hardened spot-check rerun, then generation and audit of 1-2 Tier 2 real-to-dialogue held-out drafts.
+- Next implementation unit is an LLM-only metajudge / judge-consensus pass over the 2026-05-30 standard run plus the hardened spot-check rerun, then automatic QC and generation of 1-2 Tier 2 real-to-dialogue held-out drafts.
 
 ## Milestone Plan
 
@@ -187,7 +190,8 @@ Deliverables:
   - judge prompts
 
 - `deviation-bench/annotations/标注规范草案.md`
-  - stance labels
+  - LLM-as-judge labels
+  - metajudge / consensus rules
   - examples
   - edge cases
   - safety exclusions
@@ -203,7 +207,7 @@ Current status:
 
 - 20 pilot scenarios exist in `deviation-bench/prompts/pilot_scenarios.yaml`.
 - YAML parse check passed.
-- Scenario schema, judge rubric, and human annotation draft exist.
+- Scenario schema, judge rubric, and LLM-only automatic judge specification exist.
 
 ### Milestone 3: Pilot Runner
 
@@ -240,13 +244,13 @@ Current status:
 
 ### Milestone 4: Validate Signal
 
-Status: development calibration signal and first held-out mini-pilot signal observed; judge contract hardened and spot-checked; next blocked on human audit and fresh held-out scenario construction before benchmark claims.
+Status: development calibration signal and first held-out mini-pilot signal observed; judge contract hardened and spot-checked; user selected no-human-annotation paper route; next blocked on metajudge / judge-consensus validation and fresh held-out scenario construction before benchmark claims.
 
 Deliverables:
 
 - Model comparison table.
 - Repetition variance analysis.
-- Human spot-check of judge labels.
+- LLM judge reliability report: metajudge, consensus coverage, conflict rate, judge variance, and gold-control pass rate.
 - Failure-case taxonomy.
 
 Exit condition:
@@ -255,7 +259,7 @@ Exit condition:
 - Development-tuned prompts are separated from held-out prompts.
 - Turn-level outputs can be browsed and audited in a local dashboard.
 - Full, partial, and early-stop runs are separated in reporting.
-- Tier 2 real-to-dialogue drafts are manually checked for no-copy/no-identification before being added to held-out scenarios.
+- Tier 2 real-to-dialogue drafts pass automatic no-copy / no-identification / low-risk QC before being added to held-out scenarios.
 
 ### Milestone 5: Paper Skeleton
 
@@ -280,7 +284,7 @@ Exit condition:
 
 ## Immediate Next Actions
 
-Phase shift 2026-05-30：用户已选择 Framing A。当前主路径是“dashboard human audit + Tier 2 real-to-dialogue 数据构造 + fresh held-out scenario expansion”。
+Phase shift 2026-05-30：用户已选择 Framing A，并明确论文不使用人类标注。当前主路径是“LLM-only metajudge / judge-consensus + Tier 2 real-to-dialogue 数据构造 + fresh held-out scenario expansion”。
 
 Detailed handoff queue:
 
@@ -300,11 +304,11 @@ Detailed handoff queue:
    - 已完成：跑 `uird_pilot_002` / `uird_pilot_003` full held-out mini pilot，并写 tracked experiment summary。
    - 已完成：修正 judge contract 中暴露的输出噪声，并细化 metrics。
    - 已完成：做 hardened judge contract 的小型 real API spot check，并写 tracked experiment summary。
-   - 下一步：用 dashboard 人审 2026-05-30 标准 run 的 high-score / factual-error / recovery-failure turns。
-   - 下一步：把 hardened spot check 的 drift / recovery turns 纳入同一轮人审。
-   - 下一步：从 DAIS-C / first-episode friendship 去标识化片段或 seed patterns 生成 1-2 个 Tier 2 对话草稿。
+   - 已完成：写 LLM-only 评测与验证方案和 metajudge rubric，主线不再使用 human annotation。
+   - 下一步：写 judge-consensus 脚本，对 2026-05-30 标准 run / hardened spot check 做 LLM-only 复核。
+   - 下一步：从 DAIS-C / first-episode friendship 去标识化片段或 seed patterns 生成 1-2 个 Tier 2 对话草稿，并通过自动 QC / metajudge。
    - 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
-3. 人审和 judge hardening 稳定后再回到：新增 1-3 fresh held-out scenarios → 20-scenario pilot → v1 scale-up。
+3. LLM-only judge reliability 和 judge hardening 稳定后再回到：新增 1-3 fresh held-out scenarios → 20-scenario pilot → v1 scale-up。
 
 ## Decision Log
 
@@ -325,7 +329,7 @@ Detailed handoff queue:
 - Continued from `todo20260521.txt`.
 - Treated community data as a signal source, not a source of clinical labels.
 - Chose not to directly scrape Zhihu at this phase because platform terms, privacy, copyright, and redistribution risk are higher than using existing public datasets.
-- Chose the pipeline: public/community dataset -> text-signal judge -> human audit subset -> abstract pattern -> fictional multi-turn benchmark scenario.
+- Chose the then-current pipeline: public/community dataset -> text-signal judge -> human audit subset -> abstract pattern -> fictional multi-turn benchmark scenario. This was later superseded for paper-facing labels by the 2026-05-30 LLM-only decision.
 - Recorded PDCH full data as restricted; downloaded only public metadata/code.
 - Recorded EATD full data as a large Git LFS item; downloaded only the pointer/README.
 - Created `真实语料到场景设计映射.md` as the bridge from data sources to pilot scenario families.
@@ -346,7 +350,7 @@ Detailed handoff queue:
 
 - Produced `deviation-bench/Benchmark 对比与研究缺口分析.md`，将 Deviation Bench 与 Weval、Stanford HAI / FAccT、Bloom、ELEPHANT、Anthropic sycophancy、multi-turn reliability 和 hallucination probes 做 Table 1 式对比。
 - 决定后续 introduction 的主防守点应是 context-retest reliability of reality-grounded judgment，而不是 AI psychosis、therapy safety、generic sycophancy 或 ordinary hallucination。
-- 将 neutral paraphrase noise、evidence anchor、unsupported claim、recovery turn、人审 audit 明确列为后续实现的硬约束。
+- 将 neutral paraphrase noise、evidence anchor、unsupported claim、recovery turn、judge audit 明确列为后续实现的硬约束；2026-05-30 后 paper-facing audit 改为 LLM-only metajudge / consensus。
 - Created `deviation-bench/data_sources/patterns/seed_pattern_bank.jsonl` with 60 abstracted no-raw-text patterns from DAIS-C, first-episode psychosis friendship interviews, and Reddit `r/schizophrenia`; next schema work should map these pattern fields into `prompts/utterance_schema.yaml`.
 - Created `deviation-bench/prompts/utterance_schema.yaml` and `deviation-bench/LLM数据合成方案与API成本预估.md`; current token estimate is S0 smoke about 20k-35k tokens, S1 synthesis/QC about 200k-350k tokens plus 3.4M-5.1M pilot evaluation tokens, and S2 v1 synthesis/QC about 1.1M-1.8M tokens plus 22M-51M evaluation tokens depending on model count.
 - Correction: the component-related request was clarified as a message intended for another agent, not this Deviation Bench workspace. The mistaken component registry work should be reverted, and the `component-registry-v0.1` tag should be removed.
@@ -362,7 +366,7 @@ Detailed handoff queue:
 - Wrote `deviation-bench/experiments/s0_standard_heldout_mini_pilot_deepseek_2026-05-30.md` as the tracked summary; raw JSONL remains ignored under `deviation-bench/results/pilot/standard/`.
 - Hardened `safe_json_loads` after the judge returned a valid JSON object with a short non-JSON prefix.
 - Treat `uird_pilot_002` and `uird_pilot_003` as used held-out smoke items from now on; do not reuse them as fresh unseen evidence after further tuning.
-- Before claims-oriented scaling, prioritize dashboard human audit and judge-contract fixes for `recovery_success`, `safety_flags`, and `unjustified_reversal_rate` semantics.
+- Before claims-oriented scaling, prioritize LLM-only metajudge / judge-consensus validation and judge-contract fixes for `recovery_success`, `safety_flags`, and `unjustified_reversal_rate` semantics.
 - Hardened judge contract and metrics after the standard run:
   - added `s0_judge_contract_hardening_2026-05-30.md`,
   - moved non-safety labels into `judge_issue_flags`,
@@ -374,5 +378,10 @@ Detailed handoff queue:
   - used `uird_pilot_002` / `deepseek-v4-pro` / `deepseek-v4-pro`,
   - field-noise flags mostly disappeared,
   - `unjustified_reversal_rate=null` behaved correctly for the false-belief track,
-  - recovery failure remains a human-audit target.
-- Next benchmark-evidence step should be dashboard human audit and fresh / Tier 2 scenario construction, not repeated runs on `uird_pilot_002`.
+  - recovery failure remains a metajudge / consensus target.
+- User clarified the paper will not use human annotation:
+  - added `deviation-bench/LLM-only评测与验证方案.md`,
+  - added `deviation-bench/prompts/metajudge_rubric.md`,
+  - updated the annotation spec to LLM-as-judge / metajudge / consensus,
+  - primary validation should follow Bloom-like automated generation, judgment, metajudgment, and variance checks.
+- Next benchmark-evidence step should be LLM-only judge reliability validation and fresh / Tier 2 scenario construction, not repeated runs on `uird_pilot_002` or human-label collection.

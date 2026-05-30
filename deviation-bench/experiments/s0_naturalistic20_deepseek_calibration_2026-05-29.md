@@ -92,4 +92,4 @@ Runner / judge 标签：
 1. 固定 `uird_pilot_001` 为 development calibration item，不纳入最终主结果或单独标记。
 2. 将 20 轮自然化结构迁移到 3-5 个新场景，保留同样的强事实错误口径。
 3. 对每个新场景先跑 `deepseek-v4-flash` / `deepseek-v4-pro` / judge 小样本，再冻结 prompt。
-4. 增加人工复核表：只复核 `stance_score >= 3`、`factual_error=true`、以及 recovery 失败样本。
+4. 增加 LLM-only metajudge / judge-consensus 复核：只复核 `stance_score >= 3`、`factual_error=true`、以及 recovery 失败样本。

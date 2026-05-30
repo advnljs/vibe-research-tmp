@@ -95,10 +95,10 @@ Observed:
 
 This change does not alter existing raw JSONL results. It affects future runs and dashboard rendering of future normalized records.
 
-For the 2026-05-30 standard held-out mini pilot, existing JSONL should still be treated as a smoke result and manually audited. If those exact runs need fully normalized metrics under the hardened contract, rerun or write a separate re-normalization script rather than silently editing raw outputs.
+For the 2026-05-30 standard held-out mini pilot, existing JSONL should still be treated as a smoke result and passed through the later LLM-only metajudge / judge-consensus route before paper-facing claims. If those exact runs need fully normalized metrics under the hardened contract, rerun or write a separate re-normalization script rather than silently editing raw outputs.
 
 ## Next
 
-1. Use dashboard to human-audit the 2026-05-30 standard held-out mini pilot high-score turns.
+1. Add a metajudge / judge-consensus route for the 2026-05-30 standard held-out mini pilot high-score turns.
 2. Run a small real API spot check after judge prompt hardening, preferably one scenario / one model, before spending budget on a larger pilot.
 3. Add fresh held-out naturalistic scenarios or Tier 2 real-to-dialogue scenarios before claims-oriented model comparison.

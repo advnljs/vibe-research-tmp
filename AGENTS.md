@@ -141,6 +141,14 @@ Additional persistent workflow requirement:
 - The user clarified that Tier 2 may use an LLM to convert selected de-identified real-data snippets or abstract source patterns into fictional multi-turn dialogue format. The output should be opening + induction turns + recovery, not raw-real prompts.
 - Raw real text can only be used after explicit license, consent/privacy, and ethics review, and should not be published as benchmark prompts by default.
 
+## User Decision From 2026-05-30
+
+- The paper should not rely on human annotation.
+- Do not make human labels, human audit, or human-judge agreement part of the paper's benchmark evidence.
+- Use an LLM-only design instead: LLM generation, LLM-as-judge, metajudge / second-judge verification, judge-variance checks, gold-control items, and rule/schema validation.
+- Anthropic / Safety Research Bloom remains the main design analogue: understanding -> ideation -> rollout -> judgment -> metajudgment / variance.
+- Dashboard/manual reading may remain useful for development debugging and privacy/governance inspection, but it is not a paper-facing annotation source.
+
 ## Installed Skills
 
 Installed in the workspace root:
@@ -170,6 +178,7 @@ Core research docs:
 - `deviation-bench/数据生成方式与心理精神病学数据源清单.md`
 - `deviation-bench/Deviation Bench 相关研究深度综述.md`
 - `deviation-bench/Datasets for a Deviation Bench on Reality-Boundary Language.md`
+- `deviation-bench/LLM-only评测与验证方案.md`
 
 Navigation:
 
@@ -189,6 +198,7 @@ Data root:
 - `deviation-bench/data_sources/notes/真实语料到场景设计映射.md`
 - `deviation-bench/data_sources/notes/真实数据贴近度与半真实评测方案.md`
 - `deviation-bench/prompts/real_to_dialogue_rewrite_prompt.md`
+- `deviation-bench/prompts/metajudge_rubric.md`
 - `deviation-bench/src/rewrite_real_to_dialogue.py`
 
 ## Data Handling Rules
@@ -271,7 +281,7 @@ As of 2026-05-29:
   - prompt: `deviation-bench/prompts/real_to_dialogue_rewrite_prompt.md`
   - script: `deviation-bench/src/rewrite_real_to_dialogue.py`
   - default output: ignored `deviation-bench/results/working/`
-- Human audit CSV template exists at `deviation-bench/annotations/human_audit_pilot.csv`.
+- Historical development CSV template exists at `deviation-bench/annotations/human_audit_pilot.csv`; do not treat it as a paper-facing human annotation source.
 - Offline mock validation/smoke test has passed.
 - S0 real API smoke has been run on `uird_pilot_001`:
   - targets: `deepseek-v4-flash`, `deepseek-v4-pro`
@@ -285,19 +295,23 @@ As of 2026-05-29:
   - `deepseek-v4-pro` produced strong factual errors in the full 20-turn run, including direct endorsements by t15/t18.
 - Dashboard generation has been validated locally on current JSONL results:
   - local ignored output: `deviation-bench/results/dashboard/index.html`
-  - supports conversation browsing, charts, full/partial/early-stop run status, problem badges, local human annotations, and JSON/CSV export.
+  - supports conversation browsing, charts, full/partial/early-stop run status, and problem badges; local notes are development-only and not paper labels.
   - current local server was verified at `http://127.0.0.1:8767/`.
 - `uird_pilot_002` and `uird_pilot_003` now have 20-turn naturalistic held-out drafts.
 - The current local dashboard only parses 10 non-empty conversation records because the available JSONL files are mixed smoke/calibration artifacts; one interrupted run left an empty JSONL that is now surfaced as a load error.
 - A real-data-closeness plan now exists at `deviation-bench/data_sources/notes/真实数据贴近度与半真实评测方案.md`.
+- Paper-facing evaluation is now LLM-only:
+  - design doc: `deviation-bench/LLM-only评测与验证方案.md`
+  - metajudge rubric: `deviation-bench/prompts/metajudge_rubric.md`
+  - no human annotation should be used as benchmark evidence.
 
 Recommended next work:
 
 1. Read `memory-bank/next-step.md` for the current action queue and framing blockers.
-2. Run a standard full held-out mini pilot on `uird_pilot_002` and `uird_pilot_003` with `deviation-bench/scripts/run_standard_pilot.sh`, then add 1-3 more held-out scenarios.
-3. Create 1-2 Tier 2 real-to-dialogue scenarios from DAIS-C / first-episode friendship de-identified snippets or abstract patterns after manual privacy and no-copy review.
-4. Rebuild the dashboard and use it for human audit of strong factual errors and minor-error-only exclusions.
-5. Draft `deviation-bench/paper/task_and_design_goals.md` once held-out smoke is stable.
+2. Create a judge-consensus route for the existing standard and spot-check results, using `deviation-bench/prompts/metajudge_rubric.md`.
+3. Create 1-2 Tier 2 real-to-dialogue scenarios from DAIS-C / first-episode friendship de-identified snippets or abstract patterns after automatic no-copy / low-risk / metajudge QC.
+4. Add 1-3 fresh held-out naturalistic scenarios because `uird_pilot_002` / `uird_pilot_003` are now used smoke items.
+5. Draft `deviation-bench/paper/task_and_design_goals.md` once the LLM-only judge reliability route is stable.
 
 ## Git Repository
 

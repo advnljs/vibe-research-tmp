@@ -271,7 +271,7 @@ Created the first executable pilot benchmark specification files:
   - YAML parse check passed with `scenario_count=20`.
 
 - `deviation-bench/annotations/标注规范草案.md`
-  - Defines human annotation goals, turn-level labeling rules, stance labels, auxiliary labels, safety flags, boundary cases, audit sampling, and quality thresholds.
+  - Originally defined human-audit alignment goals; after the 2026-05-30 decision it defines LLM-as-judge / metajudge / consensus rules.
 
 Updated:
 
@@ -559,7 +559,7 @@ Created:
   - Reads one or more JSONL result files or globs.
   - Writes a self-contained static HTML dashboard.
   - Shows overview KPIs, model/scenario factual-error charts, stance distribution, model issue heatmap, conversation list, turn-level timeline, judge rationale, and problem badges.
-  - Supports browser-local human annotations with export to JSON or CSV.
+  - Supports browser-local notes/export for development debugging; these are not paper labels under the 2026-05-30 LLM-only decision.
 
 - `deviation-bench/annotations/human_audit_pilot.csv`
   - Header template matching dashboard CSV export.
@@ -694,7 +694,7 @@ Interpretation:
 
 - This is still S0 mini-pilot evidence, not final benchmark evidence.
 - `uird_pilot_002` and `uird_pilot_003` should now be treated as used held-out smoke items, not fresh unseen scenarios for later tuning.
-- The signal is no longer limited to dev-tuned `uird_pilot_001`; however, human audit is required before paper-facing claims.
+- The signal is no longer limited to dev-tuned `uird_pilot_001`; under the later 2026-05-30 decision, LLM-only metajudge / consensus validation is required before paper-facing claims.
 
 Implementation fix:
 
@@ -818,16 +818,50 @@ Interpretation:
 
 - The hardened judge contract is cleaner on a real API run than the earlier standard run on the same scenario/model; most prior field-noise flags did not recur.
 - This is a contract-quality check, not a new model-performance claim.
-- The recovery failure and rerun variance should be reviewed in dashboard human audit before any paper-facing interpretation.
+- The recovery failure and rerun variance should be reviewed with metajudge / judge-consensus before any paper-facing interpretation.
+
+### LLM-only Evaluation Design Decision
+
+User clarified:
+
+- The paper will not use human annotation.
+- Human labels / human audit / human-judge agreement should not be part of the paper's benchmark evidence.
+- The design should follow an LLM-only route similar to Bloom-style automatic evaluations: generation, rollout, judgment, metajudgment, and variance checks.
+
+Created:
+
+- `deviation-bench/LLM-only评测与验证方案.md`
+- `deviation-bench/prompts/metajudge_rubric.md`
+
+Updated:
+
+- `deviation-bench/annotations/标注规范草案.md`
+  - Reframed as an automatic LLM judge / metajudge / consensus specification.
+  - Replaced human-audit gate with primary judge, metajudge / second judge, C2/C1/C0 consensus tiers, gold-control items, and judge reliability metrics.
+- `deviation-bench/LLM数据合成方案与API成本预估.md`
+  - Replaced judge-human agreement gate with LLM judge consensus / metajudge / gold-control reliability checks.
+- `deviation-bench/数据生成方式与心理精神病学数据源清单.md`
+  - Replaced human QC language with LLM QC / metajudge / judge-variance language.
+- `deviation-bench/data_sources/notes/真实数据贴近度与半真实评测方案.md`
+  - Tier 2 entry now requires automatic no-copy / low-risk / metajudge QC; governance checks are not paper labels.
+- `deviation-bench/src/README.md`
+  - Dashboard notes are now development-only, not paper annotations.
+- `AGENTS.md`
+  - Added the persistent 2026-05-30 no-human-annotation decision.
+
+Implication:
+
+- Dashboard remains useful for browsing raw outputs and debugging, but it is not the next paper-facing gate.
+- Next implementation should create a judge-consensus / reliability script before scaling.
 
 ## Current Open Items
 
 - Framing A has been selected; remaining open decisions are UIRD subtrack status, venue, language scope, raw text boundary, companion baseline, timeline, and API budget.
 - Verify the pushed data on GitHub if needed.
 - Freeze the current 20-turn `uird_pilot_001` as a development calibration item before expanding pilot runs.
-- Use `build_conversation_dashboard.py` to inspect the 2026-05-30 standard held-out mini pilot and collect human annotations for high-score turns.
+- Implement LLM-only metajudge / judge-consensus validation for the 2026-05-30 standard held-out mini pilot and hardened spot check.
 - Use `run_standard_pilot.sh` for held-out full episodes so dashboard comparisons are not mixed with smoke/calibration fragments.
-- Use `rewrite_real_to_dialogue.py` to create 1-2 Tier 2 real-to-dialogue held-out drafts from de-identified DAIS-C / first-episode friendship snippets or abstract patterns, then manually audit before copying into `pilot_scenarios.yaml`.
+- Use `rewrite_real_to_dialogue.py` to create 1-2 Tier 2 real-to-dialogue held-out drafts from de-identified DAIS-C / first-episode friendship snippets or abstract patterns, then run automatic QC / metajudge checks before copying into `pilot_scenarios.yaml`.
 - Create 1-3 fresh held-out naturalistic scenarios because `uird_pilot_002` / `uird_pilot_003` are now used smoke items.
 - Review whether the pilot runner should support additional providers beyond OpenAI-compatible chat completions.
 - Continue populating implementation/output directories:
@@ -836,11 +870,11 @@ Interpretation:
 
 ## Current Best Next Step
 
-优先级 1：用 dashboard 人工复核 2026-05-30 标准 held-out mini pilot 的所有 `stance_score >= 3`、`factual_error=true`、recovery failure 和 safety / issue flagged turns。
+优先级 1：实现 judge-consensus / reliability 脚本，对 2026-05-30 标准 held-out mini pilot 的所有 `stance_score >= 3`、`factual_error=true`、recovery failure 和 safety / issue flagged turns 做自动复核。
 
-优先级 2：把 hardened spot check 中 `uird_pilot_002` / `deepseek-v4-pro` 的 t11、t12、t15、t16、t18 和 recovery 也纳入 dashboard 人审，重点确认 recovery failure 是否是 judge 误判、目标输出真实漂移，还是 rerun variance。
+优先级 2：把 hardened spot check 中 `uird_pilot_002` / `deepseek-v4-pro` 的 t11、t12、t15、t16、t18 和 recovery 也纳入 metajudge / consensus 复核，重点确认 recovery failure 是 judge 分歧、目标输出真实漂移，还是 rerun variance。
 
-优先级 3：用 `rewrite_real_to_dialogue.py` 从 DAIS-C / first-episode friendship 的去标识化片段或现有 seed patterns 生成 1-2 个 Tier 2 real-to-dialogue 草稿，人工复核后再放入 held-out scenario。
+优先级 3：用 `rewrite_real_to_dialogue.py` 从 DAIS-C / first-episode friendship 的去标识化片段或现有 seed patterns 生成 1-2 个 Tier 2 real-to-dialogue 草稿，通过自动 QC / metajudge 后再放入 held-out scenario。
 
 已完成的 Framing-A 主线准备动作：
 
@@ -852,15 +886,16 @@ Interpretation:
 6. 已完成：跑 S0 real API smoke（`deepseek-v4-flash` / `deepseek-v4-pro` targets，`deepseek-v4-pro` judge，1 scenario）。
 7. 已完成：实现 judge-output validation/normalization，并为 `uird_pilot_001` 增加自然对话模式。
 8. 已完成：把 `uird_pilot_001` 扩展到 20 轮 naturalistic rollout，并用 DeepSeek flash/pro 做开发校准，诱导出强事实错误。
-9. 已完成：增加 JSONL conversation dashboard 脚本和 human audit CSV 模板，可浏览对话、查看图表并本地标注问题。
+9. 已完成：增加 JSONL conversation dashboard 脚本和历史开发 CSV 模板，可浏览对话、查看图表并记录本地调试 notes；这些 notes 不作为 paper labels。
 10. 已完成：为 `uird_pilot_002` / `uird_pilot_003` 添加 20 轮 naturalistic held-out drafts。
 11. 已完成：dashboard 增加 full / partial / early-stop run status，解释当前对话数量少和 turns 不一致的原因。
 12. 已完成：加入标准 full pilot 启动脚本 `run_standard_pilot.sh`。
 13. 已完成：加入 Tier 2 real-to-dialogue 改写 prompt 和脚本，可用 LLM 把真实数据或真实数据摘要改成虚构多轮对话格式。
 14. 已完成：跑 DeepSeek held-out full mini pilot（`uird_pilot_002/003` × `deepseek-v4-flash/pro`），4 个 full episodes 均可解析，并写实验摘要。
 15. 已完成：细化 judge contract / metrics，区分 safety flags 与 judge issue flags，并把 `unjustified_reversal_rate` 限定为 reversal-track metric。
-16. 已完成：做 hardened judge contract 的小型 real API spot check；字段噪声明显减少，剩余重点是 recovery turn 人审。
-17. 建议下一步：用 dashboard 做人工复核，并生成 1-2 个 Tier 2 real-to-dialogue 草稿。
-18. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
+16. 已完成：做 hardened judge contract 的小型 real API spot check；字段噪声明显减少，剩余重点是 recovery turn 的 metajudge / consensus 复核。
+17. 已完成：根据用户决定，将 paper-facing 方案改为 LLM-only evaluation，不使用 human annotation，并新增 metajudge rubric。
+18. 建议下一步：写 judge-consensus / reliability 脚本，并生成 1-2 个 Tier 2 real-to-dialogue 草稿。
+19. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
 
 详细行动队列见 `memory-bank/next-step.md`。

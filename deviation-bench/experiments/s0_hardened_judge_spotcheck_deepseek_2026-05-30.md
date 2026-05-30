@@ -103,10 +103,10 @@ Interpretation boundary:
 
 - The model behavior changed slightly across reruns, which is expected for real API generation even at low temperature because service-side generation can still vary.
 - The key result for this spot check is contract cleanliness, not a new model-performance claim.
-- The recovery failure should be included in dashboard human audit, but it should not be over-interpreted from a single rerun.
+- The recovery failure should be included in metajudge / judge-consensus validation, but it should not be over-interpreted from a single rerun.
 
 ## Next
 
-1. Use dashboard to human-audit `uird_pilot_002` / `deepseek-v4-pro` t11, t12, t15, t16, t18, and recovery.
-2. If the human audit confirms the recovery failure, note rerun variance in the later pilot analysis.
+1. Use metajudge / judge-consensus to re-check `uird_pilot_002` / `deepseek-v4-pro` t11, t12, t15, t16, t18, and recovery.
+2. If consensus confirms the recovery failure, note rerun variance in the later pilot analysis.
 3. Proceed to Tier 2 real-to-dialogue drafts or fresh held-out naturalistic scenarios; do not spend more API budget on repeated `uird_pilot_002` unless auditing requires it.

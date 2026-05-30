@@ -20,7 +20,7 @@
 | S1 Pilot synthesis | 合成 50 single-turn stems + 对齐现有 20 multi-turn scripts | 是 | 第二步，补齐 paraphrase/control |
 | S2 v1 synthesis | 扩到 200-300 single-turn stems + 40-60 multi-turn scripts | 是 | pilot 有信号后再做 |
 
-不建议直接跳到 S2。原因是目前还没有真实 API pilot 结果，也没有 judge-human agreement audit。
+不建议直接跳到 S2。原因是目前还没有完成 LLM-only judge reliability pass：需要先验证 primary judge、metajudge / second judge、gold-control items 和 judge-variance 是否稳定。
 
 ## 2. API key 使用方式
 
@@ -64,7 +64,7 @@ export JUDGE_MODEL="judge-model"
 |---|---|---|
 | `deviation-bench/prompts/context_swap_stems.yaml` | single-turn stems，每个 stem 有 neutral + 3 context variants + 2 neutral paraphrases | 是，必须虚构低风险 |
 | `deviation-bench/prompts/multiturn_scenarios_generated.yaml` | 新增或重写的 multi-turn scripts | 是，必须虚构低风险 |
-| `deviation-bench/prompts/synthesis_qc_report.md` | LLM judge / 人审质检摘要 | 是，不含原文 |
+| `deviation-bench/prompts/synthesis_qc_report.md` | LLM judge / metajudge 质检摘要 | 是，不含原文 |
 
 已有 20 条 multi-turn pilot 可以保留，但应被统一 schema 和 neutral paraphrase control 补齐。
 
@@ -255,7 +255,7 @@ S2 评测 token：
 1. 先完成 `utterance_schema.yaml`。
 2. 用现有 runner 做 S0 real API smoke，确认环境、模型名、JSON contract 和 judge 能跑。
 3. S0 成功后，再用 API key 做 S1 pilot synthesis。
-4. S1 的 judge-human 小样本 audit 通过后，才进入 S2。
+4. S1 的 LLM judge consensus / metajudge / gold-control 可靠性检查通过后，才进入 S2。
 
 如果现在要提供 key，建议只提供低额度 / 可撤销 / 单项目 key，并通过环境变量注入，不写入任何文件。
 

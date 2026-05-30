@@ -40,7 +40,7 @@ Not primary framing:
 
 ## Current Phase
 
-Phase: Framing A selected + standard held-out mini pilot completed + judge contract spot-checked + LLM-only evaluation design selected + judge-consensus script implemented -> gold-control scenarios, real metajudge reliability pass, Tier 2 real-to-dialogue drafts, and fresh held-out scenario expansion.
+Phase: Framing A selected + standard held-out mini pilot completed + judge contract spot-checked + LLM-only evaluation design selected + judge-consensus script implemented + gold-control scenarios created -> real metajudge reliability pass, Tier 2 real-to-dialogue drafts, and fresh held-out scenario expansion.
 
 Completed:
 
@@ -109,6 +109,10 @@ Completed:
   - `deviation-bench/src/build_judge_consensus.py`
   - supports mock offline contract validation and OpenAI-compatible metajudge calls
   - validated on existing standard + spot-hardened JSONL in mock mode
+- Created first gold-control scenarios:
+  - `deviation-bench/prompts/gold_control_scenarios.yaml`
+  - 11 synthetic turn-level controls covering grounded negative, endorsement, confabulation, unjustified reversal, recovery success/failure, safety taxonomy, and non-safety drift labels
+  - YAML and local label-contract validation passed
 
 Current implementation position:
 
@@ -160,10 +164,15 @@ Current implementation position:
   - default outputs under ignored `deviation-bench/results/working/`
   - mock validation over existing standard + spot-hardened JSONL read 5 conversations / 100 turns and selected 84 priority turns.
 - The mock consensus summary is a contract/schema smoke only; semantic reliability still requires a real OpenAI-compatible metajudge pass after gold-control calibration items exist.
+- Gold-control scenarios now exist:
+  - `deviation-bench/prompts/gold_control_scenarios.yaml`
+  - 11 synthetic turn-level controls
+  - not target-model performance items
+  - intended for primary judge / metajudge gold pass-rate reporting.
 - Follow-up priority is now explicit:
   - Priority 1 completed: judge-consensus / reliability script,
-  - Priority 2 current: gold-control scenarios,
-  - Priority 3 next: S1 judge reliability pass with real metajudge,
+  - Priority 2 completed: gold-control scenarios,
+  - Priority 3 current: S1 judge reliability pass with real metajudge,
   - Priority 4 Tier 2 drafts,
   - Priority 5 fresh held-out naturalistic scenarios,
   - Priority 6 S1 fresh held-out mini pilot,
@@ -263,7 +272,7 @@ Current status:
 
 ### Milestone 4: Validate Signal
 
-Status: development calibration signal and first held-out mini-pilot signal observed; judge contract hardened and spot-checked; user selected no-human-annotation paper route; judge-consensus tooling implemented; next blocked on gold-control calibration, real metajudge reliability validation, and fresh held-out scenario construction before benchmark claims.
+Status: development calibration signal and first held-out mini-pilot signal observed; judge contract hardened and spot-checked; user selected no-human-annotation paper route; judge-consensus tooling and gold-control scenarios implemented; next blocked on real metajudge reliability validation and fresh held-out scenario construction before benchmark claims.
 
 Deliverables:
 
@@ -326,7 +335,8 @@ Detailed handoff queue:
    - 已完成：写 LLM-only 评测与验证方案和 metajudge rubric，主线不再使用 human annotation。
    - 已完成：写后续优先级路线图。
    - 已完成：写 judge-consensus 脚本，并用 mock mode 在 2026-05-30 标准 run / hardened spot check 上跑通 contract summary。
-   - 下一步：创建 gold-control scenarios，然后用真实 metajudge 做 S1 reliability pass。
+   - 已完成：创建 11 条 gold-control scenarios，并通过本地 label-contract 校验。
+   - 下一步：用真实 metajudge 做 S1 reliability pass。
    - 下一步：从 DAIS-C / first-episode friendship 去标识化片段或 seed patterns 生成 1-2 个 Tier 2 对话草稿，并通过自动 QC / metajudge。
    - 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
 3. LLM-only judge reliability 和 judge hardening 稳定后再回到：新增 1-3 fresh held-out scenarios → 20-scenario pilot → v1 scale-up。

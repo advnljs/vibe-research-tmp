@@ -214,6 +214,16 @@ The generated page is self-contained and can be opened directly in a browser. It
 
 Keep generated dashboards under `deviation-bench/results/` by default; that directory is ignored because it embeds raw model outputs.
 
+## Gold Controls
+
+Gold-control turn packages live at:
+
+```text
+deviation-bench/prompts/gold_control_scenarios.yaml
+```
+
+They are synthetic calibration cases for the LLM-only judge / metajudge route, not held-out target-model performance items. Use them to compute gold-control pass rate before relying on consensus labels in paper-facing metrics.
+
 ## Build Judge Consensus
 
 Use this after pilot JSONL runs to re-check priority turns with a metajudge. Mock mode is offline and only checks schema / contract consistency; use `provider=openai` for semantic metajudge validation.

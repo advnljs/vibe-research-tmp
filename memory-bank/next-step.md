@@ -14,13 +14,12 @@ The current prioritized roadmap is tracked in:
 
 Use that file as the ordering source for the next several tasks. The short version is:
 
-1. Create gold-control scenarios.
-2. Run S1 judge reliability pass with `deviation-bench/src/build_judge_consensus.py`.
-3. Generate 1-2 Tier 2 real-to-dialogue drafts with automatic QC / metajudge.
-4. Add 1-3 fresh held-out naturalistic scenarios.
-5. Run S1 fresh held-out mini pilot.
-6. Draft Section 2 Task and Design Goals.
-7. Only then scale to S2 / v1 synthesis.
+1. Run S1 judge reliability pass with `deviation-bench/src/build_judge_consensus.py`.
+2. Generate 1-2 Tier 2 real-to-dialogue drafts with automatic QC / metajudge.
+3. Add 1-3 fresh held-out naturalistic scenarios.
+4. Run S1 fresh held-out mini pilot.
+5. Draft Section 2 Task and Design Goals.
+6. Only then scale to S2 / v1 synthesis.
 
 The project can continue on the Framing A path. The first S0 real API smoke confirmed the real API path works. The naturalistic 20-turn development calibration on `uird_pilot_001` induced strong factual errors in both DeepSeek target models under a stricter factual-error definition. Do not treat `uird_pilot_001` as held-out evidence; use it as a development calibration item.
 
@@ -65,6 +64,14 @@ The first judge-consensus implementation is now complete:
 - mock validation scope: standard + spot-hardened JSONL, 5 conversations, 100 turns, 84 selected priority turns
 - output location: ignored `deviation-bench/results/working/` by default
 - important caveat: mock mode validates schema/contract/internal consistency only; use `provider=openai` for semantic metajudge evidence after gold-control items exist.
+
+The first gold-control scenario set is now complete:
+
+- file: `deviation-bench/prompts/gold_control_scenarios.yaml`
+- count: 11 synthetic turn-level controls
+- coverage: grounded negative, empathy without endorsement, minor-slip exclusion, endorsement, confabulation, unjustified reversal, recovery success/failure, safety taxonomy, and non-safety drift-label boundary
+- validation: YAML parse, unique IDs, stance-score consistency, drift consistency, recovery-success turn rules, safety taxonomy, and target-visible marker checks passed.
+- important caveat: these are calibration packages, not held-out target-model performance evidence.
 
 The user also clarified that “closer to real data” can include using an LLM to convert selected real data into dialogue format. The current policy is Tier 2 real-to-dialogue paraphrasing: de-identify or abstract real material first, use LLM to generate fictional opening + induction turns + recovery, then run automatic no-copy / no-identification / low-risk QC and metajudge checks before adding it to held-out scenarios.
 
@@ -222,32 +229,33 @@ These tasks are independent of the final framing and can proceed before the user
    - Mock summary: 5 input files, 5 conversations, 100 turns, 84 selected priority turns. Old standard-run repair/contract issues are surfaced as C1/C0; hardened spot-check drift turns can become C2 under contract-only validation.
    - Important: real semantic reliability still needs `provider=openai` metajudge pass; do not treat mock C2 as paper evidence.
 
+21. Gold-control scenarios:
+   - File: `deviation-bench/prompts/gold_control_scenarios.yaml`
+   - Status: first pass complete with 11 synthetic turn-level controls.
+   - Coverage:
+     - grounded negative,
+     - empathy without external endorsement,
+     - minor transcript slip not factual error,
+     - positive endorsement,
+     - confabulatory elaboration,
+     - unjustified reversal,
+     - recovery success,
+     - recovery failure,
+     - real-person-targeting safety taxonomy,
+     - privacy-intrusion safety taxonomy,
+     - non-safety drift label boundary.
+   - Validation: YAML parse, unique IDs, copied_text=false, no-new-evidence current turns, stance-score consistency, drift consistency, recovery-success rules, safety taxonomy, and target-visible marker checks passed.
+   - Important: gold controls are for judge/metajudge pass-rate calibration, not target model benchmark performance.
+
 ### Next
 
-1. **Create gold-control scenarios**
-   - First artifact:
-     `deviation-bench/prompts/gold_control_scenarios.yaml`
-   - Scope:
-     - obvious grounded negative case where the unsupported claim is clearly rejected,
-     - obvious positive endorsement case where factual_error / drift should be true,
-     - recovery success and recovery failure cases,
-     - allowed safety taxonomy case,
-     - non-safety drift label that must not appear in `safety_flags`.
-   - Purpose:
-     - calibrate the LLM-only judge / metajudge route without human labels,
-     - report gold-control pass rate in the paper,
-     - catch schema/rubric regressions before S1 model runs.
-   - Validation:
-     - YAML parse,
-     - mock judge/consensus where applicable,
-     - no benchmark/test/judge/rubric wording in target-visible prompts if controls are ever used as target-facing episodes.
-
-2. **Run S1 judge reliability pass with real metajudge**
+1. **Run S1 judge reliability pass with real metajudge**
    - Script:
      `deviation-bench/src/build_judge_consensus.py`
    - Inputs:
      - `deviation-bench/results/pilot/standard/*.jsonl`
      - `deviation-bench/results/pilot/spot_hardened/*.jsonl`
+     - `deviation-bench/prompts/gold_control_scenarios.yaml` as calibration input for gold-control pass-rate reporting.
    - Provider:
      - `--provider openai`
      - OpenAI-compatible endpoint such as DeepSeek can be used with `--base-url https://api.deepseek.com`.
@@ -257,8 +265,9 @@ These tasks are independent of the final framing and can proceed before the user
      - `deepseek-v4-pro` drift turns at `uird_pilot_002` t12/t15/t18 and `uird_pilot_003` t6/t15/t18.
      - hardened spot-check recovery failure on `uird_pilot_002` / `deepseek-v4-pro`.
    - Output should include C2/C1/C0 consensus tiers, conflict rate, consensus coverage, judge JSON validity, and judge contract violations.
+   - Also decide whether to add a small gold-control evaluation helper script if direct primary-judge gold pass-rate computation is needed before the real pass.
 
-3. **Create 1-2 Tier 2 real-to-dialogue held-out drafts**
+2. **Create 1-2 Tier 2 real-to-dialogue held-out drafts**
    - Input: de-identified DAIS-C / first-episode friendship snippets, or existing no-raw-text seed patterns.
    - Script:
      `python3 deviation-bench/src/rewrite_real_to_dialogue.py --input <jsonl> --provider openai --model deepseek-v4-pro --base-url https://api.deepseek.com --limit 2`
@@ -270,12 +279,12 @@ These tasks are independent of the final framing and can proceed before the user
      - all induction turns add no evidence,
      - target-visible text has no benchmark/test/judge/rubric wording.
 
-4. **Add QC-passed Tier 2 drafts to scenario YAML**
+3. **Add QC-passed Tier 2 drafts to scenario YAML**
    - Adapt only automatic-QC / metajudge-approved dialogue drafts into `deviation-bench/prompts/pilot_scenarios.yaml`.
    - Add `source_inspiration` / `realism_profile` fields showing source family and `copied_text=false`.
    - Run scenario validation and mock naturalistic smoke.
 
-5. **Create 1-3 more held-out naturalistic scenarios**
+4. **Create 1-3 more held-out naturalistic scenarios**
    - Scope: convert at least one more existing pilot scenario beyond `uird_pilot_001`; recommended next is `uird_pilot_011` or another non-technical social-pressure item.
    - Rationale: `uird_pilot_002` and `uird_pilot_003` are now used smoke items, so a future claims-oriented pilot needs fresh held-out items.
    - Check:
@@ -284,7 +293,7 @@ These tasks are independent of the final framing and can proceed before the user
      - pressure turns do not add genuine new evidence,
      - final turns pressure the same unsupported claim rather than creating a new claim.
 
-6. **Draft Section 2: Task and Design Goals**
+5. **Draft Section 2: Task and Design Goals**
    - Output: `deviation-bench/paper/task_and_design_goals.md`
    - Reuse: `deviation-bench/paper/table1_benchmark_comparison.md` and `deviation-bench/Benchmark 对比与研究缺口分析.md`.
    - Cover:
@@ -296,7 +305,7 @@ These tasks are independent of the final framing and can proceed before the user
      - safety boundary,
      - why API-only is part of the design.
 
-7. **Implement larger synthesis script after held-out naturalistic S0 passes**
+6. **Implement larger synthesis script after held-out naturalistic S0 passes**
    - Proposed output: `deviation-bench/src/synthesize_from_patterns.py`
    - Input: `deviation-bench/data_sources/patterns/seed_pattern_bank.jsonl` and `deviation-bench/prompts/utterance_schema.yaml`.
    - Output: generated draft items under an ignored results/work directory unless the user asks to track generated data.

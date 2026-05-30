@@ -921,13 +921,51 @@ Mock pass interpretation:
 - Hardened spot-check drift turns without repair flags can enter C2 under mock contract validation.
 - This is still a schema/contract validation smoke, not semantic metajudge evidence; the next reliability pass should use an OpenAI-compatible metajudge after gold-control items exist.
 
+### Gold-Control Scenarios
+
+Created:
+
+- `deviation-bench/prompts/gold_control_scenarios.yaml`
+
+Purpose:
+
+- Provide synthetic, obvious turn-level calibration packages for the no-human-annotation evaluation route.
+- Support future gold-control pass-rate reporting for primary judge, metajudge, safety taxonomy, recovery labeling, and factual-error boundary checks.
+- Keep these controls separate from held-out target-model performance items.
+
+Coverage:
+
+- 11 synthetic controls:
+  - grounded negative
+  - empathy without external endorsement
+  - minor transcript slip not factual error
+  - positive endorsement
+  - confabulatory elaboration
+  - unjustified reversal
+  - recovery success
+  - recovery failure
+  - real-person-targeting safety taxonomy
+  - privacy-intrusion safety taxonomy
+  - non-safety drift label boundary
+
+Validation completed:
+
+- YAML parse check passed.
+- Unique `control_id` check passed: 11 unique IDs.
+- `source_inspiration.copied_text=false` check passed.
+- `current_turn.adds_new_evidence=false` check passed for all controls.
+- Expected `stance_score` values match the stance score map.
+- Expected `drift_event` matches `stance_score >= 3`.
+- `recovery_success` is boolean only on recovery controls and null otherwise.
+- Expected `safety_flags` only use the allowed safety taxonomy.
+- Target-visible user prompts do not leak benchmark/test/judge/rubric markers.
+
 ## Current Open Items
 
 - Framing A has been selected; remaining open decisions are UIRD subtrack status, venue, language scope, raw text boundary, companion baseline, timeline, and API budget.
 - Verify the pushed data on GitHub if needed.
 - Freeze the current 20-turn `uird_pilot_001` as a development calibration item before expanding pilot runs.
-- Create gold-control scenarios so the no-human-annotation evaluation route has obvious positive / negative / recovery / safety calibration items.
-- Run a real OpenAI-compatible metajudge / judge-consensus pass for the 2026-05-30 standard held-out mini pilot and hardened spot check using `deviation-bench/src/build_judge_consensus.py`.
+- Run a real OpenAI-compatible S1 judge reliability pass using `deviation-bench/src/build_judge_consensus.py`, existing standard / hardened spot-check outputs, and the new gold-control scenarios.
 - Use `run_standard_pilot.sh` for held-out full episodes so dashboard comparisons are not mixed with smoke/calibration fragments.
 - Use `rewrite_real_to_dialogue.py` to create 1-2 Tier 2 real-to-dialogue held-out drafts from de-identified DAIS-C / first-episode friendship snippets or abstract patterns, then run automatic QC / metajudge checks before copying into `pilot_scenarios.yaml`.
 - Create 1-3 fresh held-out naturalistic scenarios because `uird_pilot_002` / `uird_pilot_003` are now used smoke items.
@@ -938,9 +976,9 @@ Mock pass interpretation:
 
 ## Current Best Next Step
 
-优先级 1：创建 gold-control scenarios，覆盖明显 grounded、明显 endorsement、recovery success/failure、safety taxonomy 等校准项。
+优先级 1：跑 S1 real metajudge reliability pass，把 2026-05-30 标准 run、hardened spot check 和 gold controls 转成可报告的 judge reliability evidence。
 
-优先级 2：用 `deviation-bench/src/build_judge_consensus.py` 跑一次 real OpenAI-compatible metajudge reliability pass，把 2026-05-30 标准 run 和 hardened spot check 中的 priority turns 转成 C2/C1/C0 consensus evidence。
+优先级 2：若 S1 reliability pass 暴露 conflict 集中点，先修 judge rubric / metajudge rubric / runner contract；若通过，再进入 Tier 2 和 fresh held-out 扩展。
 
 优先级 3：用 `rewrite_real_to_dialogue.py` 从 DAIS-C / first-episode friendship 的去标识化片段或现有 seed patterns 生成 1-2 个 Tier 2 real-to-dialogue 草稿，通过自动 QC / metajudge 后再放入 held-out scenario。
 
@@ -964,7 +1002,8 @@ Mock pass interpretation:
 16. 已完成：做 hardened judge contract 的小型 real API spot check；字段噪声明显减少，剩余重点是 recovery turn 的 metajudge / consensus 复核。
 17. 已完成：根据用户决定，将 paper-facing 方案改为 LLM-only evaluation，不使用 human annotation，并新增 metajudge rubric。
 18. 已完成：写 judge-consensus / reliability 脚本，并用 mock mode 在 existing standard + hardened JSONL 上跑通 summary。
-19. 建议下一步：创建 gold-control scenarios，然后跑 S1 real metajudge reliability pass。
-20. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
+19. 已完成：创建 11 条 gold-control scenarios，并通过本地 YAML / label-contract 校验。
+20. 建议下一步：跑 S1 real metajudge reliability pass。
+21. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
 
 详细行动队列见 `memory-bank/next-step.md`。

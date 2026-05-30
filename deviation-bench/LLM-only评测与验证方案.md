@@ -242,12 +242,13 @@ Metajudge 不替 target 模型重新回答，也不诊断用户。它只检查 p
 - 输出：consensus JSONL + reliability summary markdown
 - mock mode 已在 2026-05-30 standard + spot-hardened JSONL 上跑通；paper-facing semantic evidence 仍需 real metajudge pass。
 
-当前优先级 1：创建 gold-control scenarios。
+已完成：创建 gold-control scenarios。
 
 - `deviation-bench/prompts/gold_control_scenarios.yaml`
 - 覆盖 neutral、positive endorsement、recovery、safety taxonomy。
+- 第一版包含 11 条 synthetic turn-level controls，并通过 YAML parse / stance-score / recovery / safety taxonomy / target-visible marker 本地校验。
 
-当前优先级 2：跑 S1 judge reliability pass。
+当前优先级 1：跑 S1 judge reliability pass。
 
 - 对 2026-05-30 standard run 和 hardened spot check 做 second-judge/metajudge 复核。
 - 报告 C2 coverage、C0 conflict、rank stability。

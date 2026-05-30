@@ -16,6 +16,7 @@ The core question:
 
 Primary framing:
 
+- New candidate primary framing: Deviation Bench as an evaluation for agent memory systems.
 - Framing A: real-corpus-anchored context-retest reliability benchmark
 - Context-induced deviation
 - Social judgment deviation
@@ -40,7 +41,7 @@ Not primary framing:
 
 ## Current Phase
 
-Phase: Framing A selected + standard held-out mini pilot completed + judge contract spot-checked + LLM-only evaluation design selected + judge-consensus script implemented + gold-control scenarios created -> real metajudge reliability pass, Tier 2 real-to-dialogue drafts, and fresh held-out scenario expansion.
+Phase: Framing A selected + standard held-out mini pilot completed + judge contract spot-checked + LLM-only evaluation design selected + judge-consensus script implemented + gold-control scenarios created + new Agent Memory evaluation framing recorded -> formalize memory-system protocol before the next experiment sequence.
 
 Completed:
 
@@ -113,6 +114,10 @@ Completed:
   - `deviation-bench/prompts/gold_control_scenarios.yaml`
   - 11 synthetic turn-level controls covering grounded negative, endorsement, confabulation, unjustified reversal, recovery success/failure, safety taxonomy, and non-safety drift labels
   - YAML and local label-contract validation passed
+- Recorded the new Agent Memory evaluation framing:
+  - `deviation-bench/Agent Memory系统评测新视角.md`
+  - core idea: use Deviation Bench to test whether agent memory systems preserve evidence anchors and avoid amplifying unsupported claims compared with full transcript context
+  - candidate systems named by the user include mem0 and Graphiti; tooling/version claims still need verification
 
 Current implementation position:
 
@@ -169,15 +174,20 @@ Current implementation position:
   - 11 synthetic turn-level controls
   - not target-model performance items
   - intended for primary judge / metajudge gold pass-rate reporting.
+- Agent Memory evaluation framing now exists:
+  - `deviation-bench/Agent Memory系统评测新视角.md`
+  - proposed comparison: full transcript vs summary memory vs vector/RAG memory vs graph memory vs hybrid/evidence-aware memory
+  - proposed core metric: Memory-Induced Drift Amplification, `MIDA = Drift(memory_system) - Drift(full_transcript)`
+  - next step is a concrete experiment protocol and a tooling survey for mem0 / Graphiti before any external-system claim.
 - Follow-up priority is now explicit:
   - Priority 1 completed: judge-consensus / reliability script,
   - Priority 2 completed: gold-control scenarios,
-  - Priority 3 current: S1 judge reliability pass with real metajudge,
-  - Priority 4 Tier 2 drafts,
-  - Priority 5 fresh held-out naturalistic scenarios,
-  - Priority 6 S1 fresh held-out mini pilot,
-  - Priority 7 Section 2 Task and Design Goals,
-  - Priority 8 S2 / v1 scaling.
+  - Priority 3 current: formalize Agent Memory evaluation protocol,
+  - Priority 4 tooling survey for mem0 / Graphiti / other memory systems,
+  - Priority 5 runner design for full transcript vs memory conditions,
+  - Priority 6 S1 judge reliability pass with real metajudge,
+  - Priority 7 Tier 2 / fresh held-out expansion if still needed,
+  - Priority 8 paper Section 2 and v1 scaling.
 
 ## Milestone Plan
 
@@ -272,7 +282,7 @@ Current status:
 
 ### Milestone 4: Validate Signal
 
-Status: development calibration signal and first held-out mini-pilot signal observed; judge contract hardened and spot-checked; user selected no-human-annotation paper route; judge-consensus tooling and gold-control scenarios implemented; next blocked on real metajudge reliability validation and fresh held-out scenario construction before benchmark claims.
+Status: development calibration signal and first held-out mini-pilot signal observed; judge contract hardened and spot-checked; user selected no-human-annotation paper route; judge-consensus tooling and gold-control scenarios implemented; user proposed a stronger Agent Memory evaluation framing; next blocked on turning that framing into a concrete protocol before benchmark claims.
 
 Deliverables:
 
@@ -312,7 +322,7 @@ Exit condition:
 
 ## Immediate Next Actions
 
-Phase shift 2026-05-30：用户已选择 Framing A，并明确论文不使用人类标注。当前主路径是“LLM-only metajudge / judge-consensus + Tier 2 real-to-dialogue 数据构造 + fresh held-out scenario expansion”。
+Phase shift 2026-05-30：用户已选择 Framing A，并明确论文不使用人类标注。随后用户提出更有区分度的新主视角：用 Deviation Bench 评测 agent memory 系统，比较 full transcript 与 mem0 / Graphiti 等 memory system 在 reality-boundary 场景中的信息保持和 drift amplification。当前主路径先暂停直接扩 fresh held-out，优先把 Agent Memory evaluation protocol 写清楚。
 
 Detailed handoff queue:
 
@@ -336,10 +346,11 @@ Detailed handoff queue:
    - 已完成：写后续优先级路线图。
    - 已完成：写 judge-consensus 脚本，并用 mock mode 在 2026-05-30 标准 run / hardened spot check 上跑通 contract summary。
    - 已完成：创建 11 条 gold-control scenarios，并通过本地 label-contract 校验。
-   - 下一步：用真实 metajudge 做 S1 reliability pass。
-   - 下一步：从 DAIS-C / first-episode friendship 去标识化片段或 seed patterns 生成 1-2 个 Tier 2 对话草稿，并通过自动 QC / metajudge。
-   - 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
-3. LLM-only judge reliability 和 judge hardening 稳定后再回到：新增 1-3 fresh held-out scenarios → 20-scenario pilot → v1 scale-up。
+   - 已完成：记录 Agent Memory 系统评测新视角。
+   - 下一步：写 `agent_memory_eval_protocol.md`，定义 full transcript vs memory system 的 token-window sweep、memory traces、metrics 和 runner 改造。
+   - 后续：完成 mem0 / Graphiti tooling survey 后，再决定 S1 judge reliability、Tier 2 drafts 和 fresh held-out expansion 的顺序。
+   - 写 Section 2 §Task and Design Goals 草稿时应复用 `paper/table1_benchmark_comparison.md`、`Benchmark 对比与研究缺口分析.md` 和 `Agent Memory系统评测新视角.md`。
+3. Agent Memory protocol、tooling survey、LLM-only judge reliability 和 memory runner design 稳定后，再回到：新增 1-3 fresh held-out scenarios → memory-system pilot → v1 scale-up。
 
 ## Decision Log
 

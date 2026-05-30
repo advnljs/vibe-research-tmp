@@ -148,6 +148,10 @@ Additional persistent workflow requirement:
 - Use an LLM-only design instead: LLM generation, LLM-as-judge, metajudge / second-judge verification, judge-variance checks, gold-control items, and rule/schema validation.
 - Anthropic / Safety Research Bloom remains the main design analogue: understanding -> ideation -> rollout -> judgment -> metajudgment / variance.
 - Dashboard/manual reading may remain useful for development debugging and privacy/governance inspection, but it is not a paper-facing annotation source.
+- New stronger paper angle: use Deviation Bench to evaluate agent memory systems.
+- Core hypothesis to preserve: within specified context-token intervals, direct full transcript context may be more accurate than memory systems because memory extraction / retrieval can drop evidence and amplify unsupported claims.
+- Candidate systems named by the user include mem0 and Graphiti, but their APIs/mechanisms must be verified before making paper claims.
+- The new angle is recorded in `deviation-bench/Agent Memory系统评测新视角.md`; next recommended artifact is `deviation-bench/agent_memory_eval_protocol.md`.
 
 ## Installed Skills
 
@@ -179,6 +183,7 @@ Core research docs:
 - `deviation-bench/Deviation Bench 相关研究深度综述.md`
 - `deviation-bench/Datasets for a Deviation Bench on Reality-Boundary Language.md`
 - `deviation-bench/LLM-only评测与验证方案.md`
+- `deviation-bench/Agent Memory系统评测新视角.md`
 - `deviation-bench/后续优先级路线图.md`
 
 Navigation:
@@ -316,13 +321,19 @@ As of 2026-05-29:
   - file: `deviation-bench/prompts/gold_control_scenarios.yaml`
   - 11 synthetic turn-level controls for grounded negative, endorsement, confabulation, unjustified reversal, recovery, safety taxonomy, and non-safety drift-label boundaries
   - these are judge/metajudge calibration packages, not target-model performance evidence.
+- Agent Memory evaluation framing now exists:
+  - file: `deviation-bench/Agent Memory系统评测新视角.md`
+  - Deviation Bench should be considered as a benchmark for agent memory systems, comparing full transcript context with summary / vector-RAG / graph / external memory systems.
+  - Candidate systems named by the user: mem0 and Graphiti.
+  - Do not make factual claims about these systems until a current tooling survey has been done.
 
 Recommended next work:
 
 1. Read `memory-bank/next-step.md` for the current action queue and framing blockers.
 2. Follow `deviation-bench/后续优先级路线图.md` as the current ordering source.
-3. Run the S1 judge reliability pass with `deviation-bench/src/build_judge_consensus.py`, `deviation-bench/prompts/gold_control_scenarios.yaml`, and a real OpenAI-compatible metajudge.
-4. Create 1-2 Tier 2 real-to-dialogue scenarios and 1-3 fresh held-out naturalistic scenarios only after the LLM-only reliability route is stable enough.
+3. Draft `deviation-bench/agent_memory_eval_protocol.md` before more pilot/model expansion.
+4. Survey mem0, Graphiti, and any other candidate memory systems before making external-system claims.
+5. Then run the S1 judge reliability pass and memory-condition runner work in the order specified by `memory-bank/next-step.md`.
 
 ## Git Repository
 

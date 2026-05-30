@@ -960,12 +960,44 @@ Validation completed:
 - Expected `safety_flags` only use the allowed safety taxonomy.
 - Target-visible user prompts do not leak benchmark/test/judge/rubric markers.
 
+### Agent Memory Evaluation Framing
+
+User proposed a stronger research framing:
+
+- Use Deviation Bench as a way to evaluate agent memory systems.
+- Compare full transcript context against agent memory systems under fixed context-token regimes.
+- Hypothesis: within token ranges where the complete interaction can fit into context, full transcript should be more reality-grounded than current memory systems.
+- Reasoning: many agent memory systems are broadly RAG-like; they may drop evidence anchors, over-retain repeated unsupported user claims, rewrite uncertainty into memory facts, and amplify delusion-like interpretations.
+- User named mem0 and Graphiti as candidate systems to evaluate later.
+
+Created:
+
+- `deviation-bench/Agent Memory系统评测新视角.md`
+
+The note records:
+
+- the one-sentence story,
+- the full-transcript vs memory-system hypothesis,
+- possible failure modes such as evidence loss, repeated-claim overweighting, compression distortion, retrieval mismatch, graph relation hardening, and recovery failure,
+- a draft metric `MIDA = Drift(memory_system) - Drift(full_transcript)`,
+- proposed memory conditions: full transcript, summary memory, vector/RAG memory, graph memory, hybrid memory, and evidence-aware memory,
+- required trace fields such as memory backend, write policy, retrieval policy, retrieved memory items, source turns, verified status, context tokens, and compression ratio.
+
+Interpretation:
+
+- This does not discard UIRD; it makes UIRD a diagnostic workload for agent memory infrastructure.
+- It may be more paper-distinctive than only comparing target LLMs because it binds Deviation Bench to real agent deployment patterns.
+- mem0 / Graphiti claims and APIs have not yet been verified; tooling survey is required before making external-system claims.
+
 ## Current Open Items
 
-- Framing A has been selected; remaining open decisions are UIRD subtrack status, venue, language scope, raw text boundary, companion baseline, timeline, and API budget.
+- Framing A has been selected, and a new Agent Memory evaluation framing is now the most promising possible paper angle to formalize.
+- Remaining open decisions are UIRD subtrack status, venue, language scope, raw text boundary, companion baseline, timeline, API budget, and whether Agent Memory evaluation becomes the primary paper framing.
 - Verify the pushed data on GitHub if needed.
 - Freeze the current 20-turn `uird_pilot_001` as a development calibration item before expanding pilot runs.
-- Run a real OpenAI-compatible S1 judge reliability pass using `deviation-bench/src/build_judge_consensus.py`, existing standard / hardened spot-check outputs, and the new gold-control scenarios.
+- Formalize the Agent Memory evaluation protocol before committing to the next experiment sequence.
+- Run a tooling survey for mem0, Graphiti, and any other candidate memory systems before writing claims about their mechanisms.
+- Run a real OpenAI-compatible S1 judge reliability pass using `deviation-bench/src/build_judge_consensus.py`, existing standard / hardened spot-check outputs, and the new gold-control scenarios if the memory-system protocol keeps the existing LLM-only judge path.
 - Use `run_standard_pilot.sh` for held-out full episodes so dashboard comparisons are not mixed with smoke/calibration fragments.
 - Use `rewrite_real_to_dialogue.py` to create 1-2 Tier 2 real-to-dialogue held-out drafts from de-identified DAIS-C / first-episode friendship snippets or abstract patterns, then run automatic QC / metajudge checks before copying into `pilot_scenarios.yaml`.
 - Create 1-3 fresh held-out naturalistic scenarios because `uird_pilot_002` / `uird_pilot_003` are now used smoke items.
@@ -976,11 +1008,11 @@ Validation completed:
 
 ## Current Best Next Step
 
-优先级 1：跑 S1 real metajudge reliability pass，把 2026-05-30 标准 run、hardened spot check 和 gold controls 转成可报告的 judge reliability evidence。
+优先级 1：把 Agent Memory 新视角扩成正式实验协议，建议产物为 `deviation-bench/agent_memory_eval_protocol.md`。
 
-优先级 2：若 S1 reliability pass 暴露 conflict 集中点，先修 judge rubric / metajudge rubric / runner contract；若通过，再进入 Tier 2 和 fresh held-out 扩展。
+优先级 2：做 mem0、Graphiti 等 candidate memory systems 的 tooling / mechanism survey，确认 API、默认写入策略、检索策略和可复现实验配置。
 
-优先级 3：用 `rewrite_real_to_dialogue.py` 从 DAIS-C / first-episode friendship 的去标识化片段或现有 seed patterns 生成 1-2 个 Tier 2 real-to-dialogue 草稿，通过自动 QC / metajudge 后再放入 held-out scenario。
+优先级 3：设计 full transcript vs memory system 的 token-window sweep 和 runner 改造路线；之后再跑 S1 real metajudge reliability pass。
 
 已完成的 Framing-A 主线准备动作：
 
@@ -1003,7 +1035,8 @@ Validation completed:
 17. 已完成：根据用户决定，将 paper-facing 方案改为 LLM-only evaluation，不使用 human annotation，并新增 metajudge rubric。
 18. 已完成：写 judge-consensus / reliability 脚本，并用 mock mode 在 existing standard + hardened JSONL 上跑通 summary。
 19. 已完成：创建 11 条 gold-control scenarios，并通过本地 YAML / label-contract 校验。
-20. 建议下一步：跑 S1 real metajudge reliability pass。
-21. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md` 和 `Benchmark 对比与研究缺口分析.md`）。
+20. 已记录新主视角：用 Deviation Bench 评测 agent memory 系统，比较 full transcript 与 mem0 / Graphiti 等 memory 系统在 reality-boundary 场景中的信息保持和 drift 放大。
+21. 建议下一步：写 `agent_memory_eval_protocol.md`，把新视角转成可执行实验设计。
+22. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md`、`Benchmark 对比与研究缺口分析.md` 和 `Agent Memory系统评测新视角.md`）。
 
 详细行动队列见 `memory-bank/next-step.md`。

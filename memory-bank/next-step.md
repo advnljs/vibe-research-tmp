@@ -8,18 +8,28 @@ This file is the actionable handoff queue for Deviation Bench. Future agents sho
 
 The user selected **Framing A** as the main path: real-corpus-anchored context-retest reliability benchmark.
 
+New 2026-05-30 framing upgrade:
+
+- Use Deviation Bench as a benchmark for **agent memory systems**.
+- Core comparison: full transcript context vs memory systems under specified context-token ranges.
+- User hypothesis: within token ranges where full transcript fits, direct full history should be more reality-grounded than current memory systems.
+- Candidate memory systems named by the user: mem0 and Graphiti.
+- Proposed failure mechanism: current agent memory is often broadly RAG-like, so it can drop evidence anchors, over-retain repeated unsupported claims, rewrite uncertainty into memory facts, and amplify delusion-like interpretations.
+- Recorded in: `deviation-bench/Agent Memory系统评测新视角.md`.
+- Tooling claims about mem0 / Graphiti are not yet verified; a survey is required before paper claims.
+
 The current prioritized roadmap is tracked in:
 
 - `deviation-bench/后续优先级路线图.md`
 
-Use that file as the ordering source for the next several tasks. The short version is:
+Use that file as the ordering source, but apply the new Agent Memory framing before running the next experiment. The short version is:
 
-1. Run S1 judge reliability pass with `deviation-bench/src/build_judge_consensus.py`.
-2. Generate 1-2 Tier 2 real-to-dialogue drafts with automatic QC / metajudge.
-3. Add 1-3 fresh held-out naturalistic scenarios.
-4. Run S1 fresh held-out mini pilot.
-5. Draft Section 2 Task and Design Goals.
-6. Only then scale to S2 / v1 synthesis.
+1. Draft `deviation-bench/agent_memory_eval_protocol.md`.
+2. Survey mem0, Graphiti, and any other candidate memory systems for API, default write policy, retrieval policy, and reproducibility.
+3. Design runner changes for full transcript vs summary / vector / graph / external memory conditions.
+4. Then run S1 judge reliability pass if the memory protocol keeps the current LLM-only judge/metajudge route.
+5. Generate Tier 2 / fresh held-out items only after the memory-system framing is settled.
+6. Draft Section 2 Task and Design Goals around the final framing.
 
 The project can continue on the Framing A path. The first S0 real API smoke confirmed the real API path works. The naturalistic 20-turn development calibration on `uird_pilot_001` induced strong factual errors in both DeepSeek target models under a stricter factual-error definition. Do not treat `uird_pilot_001` as held-out evidence; use it as a development calibration item.
 
@@ -72,6 +82,14 @@ The first gold-control scenario set is now complete:
 - coverage: grounded negative, empathy without endorsement, minor-slip exclusion, endorsement, confabulation, unjustified reversal, recovery success/failure, safety taxonomy, and non-safety drift-label boundary
 - validation: YAML parse, unique IDs, stance-score consistency, drift consistency, recovery-success turn rules, safety taxonomy, and target-visible marker checks passed.
 - important caveat: these are calibration packages, not held-out target-model performance evidence.
+
+The Agent Memory evaluation idea is now recorded:
+
+- file: `deviation-bench/Agent Memory系统评测新视角.md`
+- one-sentence story: Deviation Bench can test whether agent memory systems preserve reality-grounded judgment or amplify unsupported claims compared with full transcript context.
+- proposed metric: `MIDA = Drift(memory_system) - Drift(full_transcript)`.
+- proposed conditions: full transcript, summary memory, vector/RAG memory, graph memory, hybrid memory, and evidence-aware memory.
+- proposed trace fields: memory backend, write policy, retrieval policy, retrieved memory items, source turns, verified status, context tokens, full transcript tokens, compression ratio.
 
 The user also clarified that “closer to real data” can include using an LLM to convert selected real data into dialogue format. The current policy is Tier 2 real-to-dialogue paraphrasing: de-identify or abstract real material first, use LLM to generate fictional opening + induction turns + recovery, then run automatic no-copy / no-identification / low-risk QC and metajudge checks before adding it to held-out scenarios.
 
@@ -216,7 +234,7 @@ These tasks are independent of the final framing and can proceed before the user
 
 19. Prioritized roadmap:
    - Output: `deviation-bench/后续优先级路线图.md`
-   - Status: next work is ordered by benchmark-paper dependency: judge-consensus tooling first, then gold controls, then S1 reliability pass, then Tier 2 / fresh held-out construction, then S1 pilot, then paper section drafting and v1 scaling.
+   - Status: next work was originally ordered by benchmark-paper dependency; after the Agent Memory idea, the immediate order is protocol -> memory-system tooling survey -> memory-condition runner design -> S1 judge reliability pass / memory pilot.
 
 20. Judge-consensus validation script:
    - Code: `deviation-bench/src/build_judge_consensus.py`
@@ -247,9 +265,50 @@ These tasks are independent of the final framing and can proceed before the user
    - Validation: YAML parse, unique IDs, copied_text=false, no-new-evidence current turns, stance-score consistency, drift consistency, recovery-success rules, safety taxonomy, and target-visible marker checks passed.
    - Important: gold controls are for judge/metajudge pass-rate calibration, not target model benchmark performance.
 
+22. Agent Memory evaluation framing:
+   - File: `deviation-bench/Agent Memory系统评测新视角.md`
+   - Status: new idea recorded.
+   - Core hypothesis: in specified context-token intervals, full transcript should outperform memory systems on Deviation Bench because memory extraction/retrieval can lose evidence and amplify unsupported claims.
+   - Candidate systems named by user: mem0 and Graphiti.
+   - Next artifact: `deviation-bench/agent_memory_eval_protocol.md`.
+
 ### Next
 
-1. **Run S1 judge reliability pass with real metajudge**
+1. **Draft Agent Memory evaluation protocol**
+   - Output:
+     `deviation-bench/agent_memory_eval_protocol.md`
+   - Must define:
+     - benchmark question,
+     - full transcript baseline,
+     - memory conditions,
+     - token-window sweep,
+     - memory write / retrieval policies,
+     - memory trace schema,
+     - metrics such as MIDA, evidence retention, memory distortion, unsupported-claim amplification, and recovery-anchor retention,
+     - how existing judge-consensus / gold-control route fits the memory-system evaluation.
+
+2. **Survey candidate memory systems**
+   - Candidate systems named by the user:
+     - mem0
+     - Graphiti
+   - Check:
+     - current API / SDK,
+     - storage backend,
+     - write policy,
+     - retrieval policy,
+     - graph / vector / summary behavior,
+     - reproducibility controls,
+     - whether raw user text, summaries, or entity relations are stored.
+   - Record findings before making claims that these systems are RAG-like or graph-based.
+
+3. **Design runner changes for memory conditions**
+   - Proposed code direction:
+     - add `--memory-condition full_transcript|rolling_summary|vector|graph|external`
+     - record memory write / retrieval traces,
+     - log context token counts and compression ratio.
+   - Keep raw Deviation Bench scenarios fictional and low-risk.
+
+4. **Run S1 judge reliability pass with real metajudge**
    - Script:
      `deviation-bench/src/build_judge_consensus.py`
    - Inputs:
@@ -267,7 +326,7 @@ These tasks are independent of the final framing and can proceed before the user
    - Output should include C2/C1/C0 consensus tiers, conflict rate, consensus coverage, judge JSON validity, and judge contract violations.
    - Also decide whether to add a small gold-control evaluation helper script if direct primary-judge gold pass-rate computation is needed before the real pass.
 
-2. **Create 1-2 Tier 2 real-to-dialogue held-out drafts**
+5. **Create 1-2 Tier 2 real-to-dialogue held-out drafts**
    - Input: de-identified DAIS-C / first-episode friendship snippets, or existing no-raw-text seed patterns.
    - Script:
      `python3 deviation-bench/src/rewrite_real_to_dialogue.py --input <jsonl> --provider openai --model deepseek-v4-pro --base-url https://api.deepseek.com --limit 2`
@@ -279,12 +338,12 @@ These tasks are independent of the final framing and can proceed before the user
      - all induction turns add no evidence,
      - target-visible text has no benchmark/test/judge/rubric wording.
 
-3. **Add QC-passed Tier 2 drafts to scenario YAML**
+6. **Add QC-passed Tier 2 drafts to scenario YAML**
    - Adapt only automatic-QC / metajudge-approved dialogue drafts into `deviation-bench/prompts/pilot_scenarios.yaml`.
    - Add `source_inspiration` / `realism_profile` fields showing source family and `copied_text=false`.
    - Run scenario validation and mock naturalistic smoke.
 
-4. **Create 1-3 more held-out naturalistic scenarios**
+7. **Create 1-3 more held-out naturalistic scenarios**
    - Scope: convert at least one more existing pilot scenario beyond `uird_pilot_001`; recommended next is `uird_pilot_011` or another non-technical social-pressure item.
    - Rationale: `uird_pilot_002` and `uird_pilot_003` are now used smoke items, so a future claims-oriented pilot needs fresh held-out items.
    - Check:
@@ -293,7 +352,7 @@ These tasks are independent of the final framing and can proceed before the user
      - pressure turns do not add genuine new evidence,
      - final turns pressure the same unsupported claim rather than creating a new claim.
 
-5. **Draft Section 2: Task and Design Goals**
+8. **Draft Section 2: Task and Design Goals**
    - Output: `deviation-bench/paper/task_and_design_goals.md`
    - Reuse: `deviation-bench/paper/table1_benchmark_comparison.md` and `deviation-bench/Benchmark 对比与研究缺口分析.md`.
    - Cover:
@@ -305,7 +364,7 @@ These tasks are independent of the final framing and can proceed before the user
      - safety boundary,
      - why API-only is part of the design.
 
-6. **Implement larger synthesis script after held-out naturalistic S0 passes**
+9. **Implement larger synthesis script after held-out naturalistic S0 passes**
    - Proposed output: `deviation-bench/src/synthesize_from_patterns.py`
    - Input: `deviation-bench/data_sources/patterns/seed_pattern_bank.jsonl` and `deviation-bench/prompts/utterance_schema.yaml`.
    - Output: generated draft items under an ignored results/work directory unless the user asks to track generated data.

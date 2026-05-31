@@ -28,7 +28,7 @@ The current prioritized roadmap is tracked in:
 Use that file as the ordering source, but apply the new Agent Memory framing before running the next experiment. The short version is:
 
 1. Draft `deviation-bench/agent_memory_eval_protocol.md`. **Done 2026-05-31.**
-2. Review the first memory-facing scenario drafts in the local scenario browser. **Current next task.**
+2. Review the first 20-turn memory-facing scenario drafts in the local scenario browser and mock rollout dashboard. **Current next task.**
 3. Survey mem0, Graphiti, and any other candidate memory systems for API, default write policy, retrieval policy, and reproducibility.
 4. Design runner changes for full transcript vs recent-window / summary / vector / fact-memory / graph / evidence-aware / external memory conditions.
 5. Run S1 judge reliability pass before any claims-oriented fresh memory-system pilot.
@@ -100,11 +100,18 @@ The first memory-facing scenario drafts and browser now exist:
 
 - draft YAML: `deviation-bench/prompts/memory_scenario_drafts.yaml`
 - browser script: `deviation-bench/src/build_scenario_browser.py`
+- runner conversion script: `deviation-bench/src/build_memory_runner_scenarios.py`
 - generated local page: `deviation-bench/results/scenario_browser/index.html` (ignored)
-- count: 5 draft scenarios, each with objective boundary, unsupported claim, memory-test design, expected memory failures, target-visible dialogue turns, and recovery turn.
+- generated mock dashboard: `deviation-bench/results/scenario_browser/mock_all_dashboard.html` (ignored)
+- tracked experiment note: `deviation-bench/experiments/s0_memory_draft_mock_rollout_2026-05-31.md`
+- count: 5 draft scenarios, each with objective boundary, unsupported claim, memory-test design, expected memory failures, 20 target-visible dialogue turns, and recovery turn.
 - validation:
   - `python3 deviation-bench/src/build_scenario_browser.py --validate-only`
   - `python3 -m py_compile deviation-bench/src/build_scenario_browser.py`
+  - `python3 -m py_compile deviation-bench/src/build_memory_runner_scenarios.py`
+  - converted runner YAML validates through `deviation_bench_pilot.py`
+  - full mock rollout over all 5 drafts produced 5 records / 100 turns and dashboard load errors = 0
+- real API smoke has not run because API environment variables were missing.
 
 The user also clarified that “closer to real data” can include using an LLM to convert selected real data into dialogue format. The current policy is Tier 2 real-to-dialogue paraphrasing: de-identify or abstract real material first, use LLM to generate fictional opening + induction turns + recovery, then run automatic no-copy / no-identification / low-risk QC and metajudge checks before adding it to held-out scenarios.
 
@@ -292,21 +299,25 @@ These tasks are independent of the final framing and can proceed before the user
 23. Memory-facing scenario drafts and browser:
    - Draft YAML: `deviation-bench/prompts/memory_scenario_drafts.yaml`
    - Browser script: `deviation-bench/src/build_scenario_browser.py`
+   - Runner conversion script: `deviation-bench/src/build_memory_runner_scenarios.py`
    - Generated local page: `deviation-bench/results/scenario_browser/index.html`
-   - Status: first review set complete with 5 closed-world fictional drafts.
-   - Validation: scenario-browser validator passed; Python compile passed.
+   - Generated mock dashboard: `deviation-bench/results/scenario_browser/mock_all_dashboard.html`
+   - Status: first review set complete with 5 closed-world fictional 20-turn drafts.
+   - Validation: scenario-browser validator passed; Python compile passed; runner conversion validates; full mock rollout passed with 100 turns.
 
 ### Next
 
-1. **Review memory-facing scenario drafts**
+1. **Review memory-facing scenario drafts and mock rollout**
    - Open:
      `deviation-bench/results/scenario_browser/index.html`
+   - Also open:
+     `deviation-bench/results/scenario_browser/mock_all_dashboard.html`
    - Review goals:
      - whether each scenario feels natural enough,
      - whether the unsupported claim is clearly not supported by the evidence anchor,
      - whether pressure turns repeat/reshape the same claim without adding real evidence,
      - whether the memory-test design would expose evidence-anchor loss or claim amplification,
-     - which drafts should be kept, expanded to 20 turns, rewritten, or discarded.
+     - which drafts should be kept, rewritten, or discarded.
    - Current drafts:
      - `memdraft_001_blue_mug_signal`
      - `memdraft_002_focus_mode_thoughts`

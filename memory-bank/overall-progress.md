@@ -1079,7 +1079,7 @@ Created first reviewable scenario drafts for the agent-memory framing:
 
 Contents:
 
-- 5 fictional, low-risk, closed-world evidence-bound scenarios:
+- 5 fictional, low-risk, closed-world evidence-bound scenarios, each now expanded to 20 turns:
   - `memdraft_001_blue_mug_signal`
   - `memdraft_002_focus_mode_thoughts`
   - `memdraft_003_support_template_we_see_you`
@@ -1099,23 +1099,44 @@ Contents:
 Created browser tooling:
 
 - `deviation-bench/src/build_scenario_browser.py`
+- `deviation-bench/src/build_memory_runner_scenarios.py`
+
+Created tracked experiment note:
+
+- `deviation-bench/experiments/s0_memory_draft_mock_rollout_2026-05-31.md`
 
 Generated local ignored page:
 
 - `deviation-bench/results/scenario_browser/index.html`
+- `deviation-bench/results/scenario_browser/mock_all_dashboard.html`
 
 Validation completed:
 
+- All 5 drafts now have `draft_turn_count=20` and `dialogue` length 20 (`opening`, `t1`-`t18`, `recovery`).
 - `python3 deviation-bench/src/build_scenario_browser.py --validate-only`
   - result: `validation=ok scenarios=5`
 - `python3 -m py_compile deviation-bench/src/build_scenario_browser.py`
   - result: passed
-- Generated page size: about 54KB.
+- `python3 -m py_compile deviation-bench/src/build_memory_runner_scenarios.py`
+  - result: passed
+- `python3 deviation-bench/src/build_memory_runner_scenarios.py --out deviation-bench/results/working/memory_runner_scenarios.yaml`
+  - result: converted 5 scenarios.
+- `python3 deviation-bench/src/deviation_bench_pilot.py --scenarios deviation-bench/results/working/memory_runner_scenarios.yaml --validate-only`
+  - result: `loaded_scenarios=5 selected=5`, `validation=ok`.
+- Full offline mock rollout:
+  - command: `python3 deviation-bench/src/deviation_bench_pilot.py --provider mock --judge-provider mock --scenarios deviation-bench/results/working/memory_runner_scenarios.yaml --prompt-style naturalistic --out deviation-bench/results/working/memory_runner_all_mock.jsonl`
+  - result: 5 records, 100 total turns, 20 turns per scenario, first turn `baseline`, last turn `recovery`.
+- Mock conversation dashboard:
+  - command: `python3 deviation-bench/src/build_conversation_dashboard.py --input deviation-bench/results/working/memory_runner_all_mock.jsonl --out deviation-bench/results/scenario_browser/mock_all_dashboard.html`
+  - result: 5 conversations, 0 load errors.
+- Generated scenario browser size: about 71KB.
+- Generated mock dashboard size: about 129KB.
+- Real API smoke could not be run because `OPENAI_API_KEY`, `OPENAI_BASE_URL`, `OPENAI_MODEL`, and `JUDGE_MODEL` were not set in the shell environment.
 
 Updated:
 
 - `deviation-bench/src/README.md`
-  - documents scenario-browser validation and build commands.
+  - documents scenario-browser validation/build commands and memory-draft mock rollout commands.
 - `研究导航.md`
   - adds the new scenario draft file and browser script.
 
@@ -1139,7 +1160,7 @@ Updated:
 
 ## Current Best Next Step
 
-优先级 1：先浏览 `deviation-bench/results/scenario_browser/index.html`，筛选和修改 5 个 memory-facing scenario drafts。
+优先级 1：先浏览 `deviation-bench/results/scenario_browser/index.html` 和 `deviation-bench/results/scenario_browser/mock_all_dashboard.html`，筛选和修改 5 个 20-turn memory-facing scenario drafts。
 
 优先级 2：写 `deviation-bench/agent_memory_system_survey.md`，完成 mem0、Graphiti 等 candidate memory systems 的 tooling / mechanism survey，确认 API、默认写入策略、检索策略和可复现实验配置。
 
@@ -1169,8 +1190,9 @@ Updated:
 20. 已记录新主视角：用 Deviation Bench 评测 agent memory 系统，比较 full transcript 与 mem0 / Graphiti 等 memory 系统在 reality-boundary 场景中的信息保持和 drift 放大。
 21. 已完成：写 `agent_memory_eval_protocol.md`，把新视角转成可执行实验设计。
 22. 已完成：创建 5 条 memory-facing scenario drafts，并生成本地 scenario browser。
-23. 建议下一步：浏览 `results/scenario_browser/index.html` 后，决定哪些草稿需要扩到 20 轮、进入 formal split，或重写。
-24. 后续：写 `agent_memory_system_survey.md`，再实现本地 memory-condition runner。
-25. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md`、`Benchmark 对比与研究缺口分析.md`、`Agent Memory系统评测新视角.md` 和 `agent_memory_eval_protocol.md`）。
+23. 已完成：将 5 条 memory-facing scenario drafts 全部扩到 20 轮，并用 mock full rollout 跑通 5 records / 100 turns。
+24. 建议下一步：浏览 `results/scenario_browser/index.html` 和 `results/scenario_browser/mock_all_dashboard.html` 后，决定哪些草稿进入 formal split 或需要重写。
+25. 后续：写 `agent_memory_system_survey.md`，再实现本地 memory-condition runner。
+26. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md`、`Benchmark 对比与研究缺口分析.md`、`Agent Memory系统评测新视角.md` 和 `agent_memory_eval_protocol.md`）。
 
 详细行动队列见 `memory-bank/next-step.md`。

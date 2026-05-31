@@ -223,6 +223,7 @@ Data root:
 - `deviation-bench/src/rewrite_real_to_dialogue.py`
 - `deviation-bench/src/build_judge_consensus.py`
 - `deviation-bench/src/build_scenario_browser.py`
+- `deviation-bench/src/build_memory_runner_scenarios.py`
 
 ## Data Handling Rules
 
@@ -347,8 +348,9 @@ As of 2026-05-31:
 - First memory-facing scenario drafts and browser now exist:
   - draft YAML: `deviation-bench/prompts/memory_scenario_drafts.yaml`
   - browser script: `deviation-bench/src/build_scenario_browser.py`
+  - runner conversion script: `deviation-bench/src/build_memory_runner_scenarios.py`
   - generated ignored page: `deviation-bench/results/scenario_browser/index.html`
-  - these are draft review items, not held-out benchmark evidence.
+  - all 5 drafts are now 20-turn episodes and have passed mock full-rollout testing; these are still draft review items, not held-out benchmark evidence.
 
 Recommended next work:
 

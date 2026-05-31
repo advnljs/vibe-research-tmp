@@ -239,6 +239,42 @@ python3 deviation-bench/src/build_scenario_browser.py \
 
 The generated page is self-contained and can be opened directly in a browser. It includes filters, objective boundary fields, memory-test design, expected memory failures, target-visible dialogue turns, and expected model behavior. Generated pages stay under ignored `deviation-bench/results/`.
 
+## Test Memory Scenario Drafts
+
+Draft scenarios use a review-friendly schema. Convert them to the existing pilot-runner schema before rollout testing:
+
+```bash
+python3 deviation-bench/src/build_memory_runner_scenarios.py \
+  --out deviation-bench/results/working/memory_runner_scenarios.yaml
+```
+
+Validate the converted file:
+
+```bash
+python3 deviation-bench/src/deviation_bench_pilot.py \
+  --scenarios deviation-bench/results/working/memory_runner_scenarios.yaml \
+  --validate-only
+```
+
+Run an offline full 20-turn mock rollout over all memory drafts:
+
+```bash
+python3 deviation-bench/src/deviation_bench_pilot.py \
+  --provider mock \
+  --judge-provider mock \
+  --scenarios deviation-bench/results/working/memory_runner_scenarios.yaml \
+  --prompt-style naturalistic \
+  --out deviation-bench/results/working/memory_runner_all_mock.jsonl
+```
+
+Build a conversation dashboard for that test output:
+
+```bash
+python3 deviation-bench/src/build_conversation_dashboard.py \
+  --input deviation-bench/results/working/memory_runner_all_mock.jsonl \
+  --out deviation-bench/results/scenario_browser/mock_all_dashboard.html
+```
+
 ## Gold Controls
 
 Gold-control turn packages live at:

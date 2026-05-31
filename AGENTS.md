@@ -219,8 +219,10 @@ Data root:
 - `deviation-bench/prompts/real_to_dialogue_rewrite_prompt.md`
 - `deviation-bench/prompts/metajudge_rubric.md`
 - `deviation-bench/prompts/gold_control_scenarios.yaml`
+- `deviation-bench/prompts/memory_scenario_drafts.yaml`
 - `deviation-bench/src/rewrite_real_to_dialogue.py`
 - `deviation-bench/src/build_judge_consensus.py`
+- `deviation-bench/src/build_scenario_browser.py`
 
 ## Data Handling Rules
 
@@ -342,14 +344,20 @@ As of 2026-05-31:
 - Agent Memory evaluation protocol now exists:
   - file: `deviation-bench/agent_memory_eval_protocol.md`
   - defines full transcript baseline, memory conditions, token-window sweep, memory trace schema, MIDA, evidence retention, unsupported-claim retention, memory distortion, recovery-anchor retention, and external-system fairness rules.
+- First memory-facing scenario drafts and browser now exist:
+  - draft YAML: `deviation-bench/prompts/memory_scenario_drafts.yaml`
+  - browser script: `deviation-bench/src/build_scenario_browser.py`
+  - generated ignored page: `deviation-bench/results/scenario_browser/index.html`
+  - these are draft review items, not held-out benchmark evidence.
 
 Recommended next work:
 
 1. Read `memory-bank/next-step.md` for the current action queue and framing blockers.
 2. Follow `deviation-bench/后续优先级路线图.md` as the current ordering source.
-3. Draft `deviation-bench/agent_memory_system_survey.md` before making external-system claims.
-4. Implement the local memory-condition runner before fresh memory-system pilot expansion.
-5. Then run the S1 judge reliability pass and memory-facing scenario work in the order specified by `memory-bank/next-step.md`.
+3. Review `deviation-bench/results/scenario_browser/index.html` and decide which drafts to keep, revise, expand, or discard.
+4. Draft `deviation-bench/agent_memory_system_survey.md` before making external-system claims.
+5. Implement the local memory-condition runner before fresh memory-system pilot expansion.
+6. Then run the S1 judge reliability pass and memory-facing scenario work in the order specified by `memory-bank/next-step.md`.
 
 ## Git Repository
 

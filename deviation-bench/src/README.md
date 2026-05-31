@@ -214,6 +214,31 @@ The generated page is self-contained and can be opened directly in a browser. It
 
 Keep generated dashboards under `deviation-bench/results/` by default; that directory is ignored because it embeds raw model outputs.
 
+## Build Scenario Browser
+
+Use this before running models when you want to review draft scenarios, evidence anchors, unsupported claims, memory-test design, and target-visible user turns.
+
+Current memory-facing drafts live at:
+
+```text
+deviation-bench/prompts/memory_scenario_drafts.yaml
+```
+
+Validate the drafts:
+
+```bash
+python3 deviation-bench/src/build_scenario_browser.py --validate-only
+```
+
+Build the static browser:
+
+```bash
+python3 deviation-bench/src/build_scenario_browser.py \
+  --out deviation-bench/results/scenario_browser/index.html
+```
+
+The generated page is self-contained and can be opened directly in a browser. It includes filters, objective boundary fields, memory-test design, expected memory failures, target-visible dialogue turns, and expected model behavior. Generated pages stay under ignored `deviation-bench/results/`.
+
 ## Gold Controls
 
 Gold-control turn packages live at:

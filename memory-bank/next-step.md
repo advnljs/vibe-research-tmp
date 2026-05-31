@@ -28,11 +28,12 @@ The current prioritized roadmap is tracked in:
 Use that file as the ordering source, but apply the new Agent Memory framing before running the next experiment. The short version is:
 
 1. Draft `deviation-bench/agent_memory_eval_protocol.md`. **Done 2026-05-31.**
-2. Survey mem0, Graphiti, and any other candidate memory systems for API, default write policy, retrieval policy, and reproducibility. **Current next task.**
-3. Design runner changes for full transcript vs recent-window / summary / vector / fact-memory / graph / evidence-aware / external memory conditions.
-4. Run S1 judge reliability pass before any claims-oriented fresh memory-system pilot.
-5. Generate Tier 2 / fresh memory-facing held-out items only after the memory runner and judge reliability path are stable.
-6. Draft Section 2 Task and Design Goals around the final agent-memory framing.
+2. Review the first memory-facing scenario drafts in the local scenario browser. **Current next task.**
+3. Survey mem0, Graphiti, and any other candidate memory systems for API, default write policy, retrieval policy, and reproducibility.
+4. Design runner changes for full transcript vs recent-window / summary / vector / fact-memory / graph / evidence-aware / external memory conditions.
+5. Run S1 judge reliability pass before any claims-oriented fresh memory-system pilot.
+6. Generate Tier 2 / fresh memory-facing held-out items only after the memory runner and judge reliability path are stable.
+7. Draft Section 2 Task and Design Goals around the final agent-memory framing.
 
 The project can continue on the Framing A path. The first S0 real API smoke confirmed the real API path works. The naturalistic 20-turn development calibration on `uird_pilot_001` induced strong factual errors in both DeepSeek target models under a stricter factual-error definition. Do not treat `uird_pilot_001` as held-out evidence; use it as a development calibration item.
 
@@ -94,6 +95,16 @@ The Agent Memory evaluation protocol is now recorded:
 - proposed metric: `MIDA = Drift(memory_system) - Drift(full_transcript)`.
 - proposed conditions: full transcript, recent window, rolling summary, vector chunks, LLM fact memory, temporal graph, hybrid memory, evidence-aware memory, external mem0, and external Graphiti.
 - proposed trace fields: memory backend, write policy, retrieval policy, retrieved memory items, source turns, verification status, evidence relation, distortion flags, context tokens, full transcript tokens, compression ratio.
+
+The first memory-facing scenario drafts and browser now exist:
+
+- draft YAML: `deviation-bench/prompts/memory_scenario_drafts.yaml`
+- browser script: `deviation-bench/src/build_scenario_browser.py`
+- generated local page: `deviation-bench/results/scenario_browser/index.html` (ignored)
+- count: 5 draft scenarios, each with objective boundary, unsupported claim, memory-test design, expected memory failures, target-visible dialogue turns, and recovery turn.
+- validation:
+  - `python3 deviation-bench/src/build_scenario_browser.py --validate-only`
+  - `python3 -m py_compile deviation-bench/src/build_scenario_browser.py`
 
 The user also clarified that “closer to real data” can include using an LLM to convert selected real data into dialogue format. The current policy is Tier 2 real-to-dialogue paraphrasing: de-identify or abstract real material first, use LLM to generate fictional opening + induction turns + recovery, then run automatic no-copy / no-identification / low-risk QC and metajudge checks before adding it to held-out scenarios.
 
@@ -278,9 +289,32 @@ These tasks are independent of the final framing and can proceed before the user
    - Protocol defines token-window sweep, memory traces, MIDA, evidence retention, unsupported-claim retention, memory distortion, and external-system fairness rules.
    - Next artifact: `deviation-bench/agent_memory_system_survey.md`.
 
+23. Memory-facing scenario drafts and browser:
+   - Draft YAML: `deviation-bench/prompts/memory_scenario_drafts.yaml`
+   - Browser script: `deviation-bench/src/build_scenario_browser.py`
+   - Generated local page: `deviation-bench/results/scenario_browser/index.html`
+   - Status: first review set complete with 5 closed-world fictional drafts.
+   - Validation: scenario-browser validator passed; Python compile passed.
+
 ### Next
 
-1. **Survey candidate memory systems**
+1. **Review memory-facing scenario drafts**
+   - Open:
+     `deviation-bench/results/scenario_browser/index.html`
+   - Review goals:
+     - whether each scenario feels natural enough,
+     - whether the unsupported claim is clearly not supported by the evidence anchor,
+     - whether pressure turns repeat/reshape the same claim without adding real evidence,
+     - whether the memory-test design would expose evidence-anchor loss or claim amplification,
+     - which drafts should be kept, expanded to 20 turns, rewritten, or discarded.
+   - Current drafts:
+     - `memdraft_001_blue_mug_signal`
+     - `memdraft_002_focus_mode_thoughts`
+     - `memdraft_003_support_template_we_see_you`
+     - `memdraft_004_random_seat_assignment`
+     - `memdraft_005_lms_hint_hidden_message`
+
+2. **Survey candidate memory systems**
    - Output:
      `deviation-bench/agent_memory_system_survey.md`
    - Candidate systems named by the user:
@@ -296,7 +330,7 @@ These tasks are independent of the final framing and can proceed before the user
      - whether raw user text, summaries, or entity relations are stored.
    - Record findings before making claims that these systems are RAG-like or graph-based.
 
-2. **Design runner changes for memory conditions**
+3. **Design runner changes for memory conditions**
    - Proposed code direction:
      - add `--memory-condition full_transcript|recent_window|rolling_summary|vector_chunks|llm_fact_memory|temporal_graph|evidence_aware_memory|external`
      - add `--token-window`
@@ -304,7 +338,7 @@ These tasks are independent of the final framing and can proceed before the user
      - log context token counts, compression ratio, source turns, verification status, evidence relation, and distortion flags.
    - Keep raw Deviation Bench scenarios fictional and low-risk.
 
-3. **Run S1 judge reliability pass with real metajudge**
+4. **Run S1 judge reliability pass with real metajudge**
    - Script:
      `deviation-bench/src/build_judge_consensus.py`
    - Inputs:
@@ -322,7 +356,7 @@ These tasks are independent of the final framing and can proceed before the user
    - Output should include C2/C1/C0 consensus tiers, conflict rate, consensus coverage, judge JSON validity, and judge contract violations.
    - Also decide whether to add a small gold-control evaluation helper script if direct primary-judge gold pass-rate computation is needed before the real pass.
 
-4. **Create 1-2 Tier 2 real-to-dialogue held-out drafts**
+5. **Create 1-2 Tier 2 real-to-dialogue held-out drafts**
    - Input: de-identified DAIS-C / first-episode friendship snippets, or existing no-raw-text seed patterns.
    - Script:
      `python3 deviation-bench/src/rewrite_real_to_dialogue.py --input <jsonl> --provider openai --model deepseek-v4-pro --base-url https://api.deepseek.com --limit 2`
@@ -334,12 +368,12 @@ These tasks are independent of the final framing and can proceed before the user
      - all induction turns add no evidence,
      - target-visible text has no benchmark/test/judge/rubric wording.
 
-5. **Add QC-passed Tier 2 drafts to scenario YAML**
+6. **Add QC-passed Tier 2 drafts to scenario YAML**
    - Adapt only automatic-QC / metajudge-approved dialogue drafts into `deviation-bench/prompts/pilot_scenarios.yaml`.
    - Add `source_inspiration` / `realism_profile` fields showing source family and `copied_text=false`.
    - Run scenario validation and mock naturalistic smoke.
 
-6. **Create 1-3 more memory-facing held-out naturalistic scenarios**
+7. **Create 1-3 more memory-facing held-out naturalistic scenarios**
    - Scope: convert at least one more existing pilot scenario beyond `uird_pilot_001`; recommended next is `uird_pilot_011` or another non-technical social-pressure item.
    - Rationale: `uird_pilot_002` and `uird_pilot_003` are now used smoke items, so a future claims-oriented memory pilot needs fresh held-out items.
    - Check:
@@ -349,7 +383,7 @@ These tasks are independent of the final framing and can proceed before the user
      - final turns pressure the same unsupported claim rather than creating a new claim,
      - scenario contains early evidence anchor and repeated later claim so memory retrieval can be tested.
 
-7. **Draft Section 2: Task and Design Goals**
+8. **Draft Section 2: Task and Design Goals**
    - Output: `deviation-bench/paper/task_and_design_goals.md`
    - Reuse: `deviation-bench/paper/table1_benchmark_comparison.md`, `deviation-bench/Benchmark 对比与研究缺口分析.md`, `deviation-bench/Agent Memory系统评测新视角.md`, and `deviation-bench/agent_memory_eval_protocol.md`.
    - Cover:
@@ -361,7 +395,7 @@ These tasks are independent of the final framing and can proceed before the user
      - safety boundary,
      - why API-only is part of the design.
 
-8. **Implement larger synthesis script after memory-system S0 passes**
+9. **Implement larger synthesis script after memory-system S0 passes**
    - Proposed output: `deviation-bench/src/synthesize_from_patterns.py`
    - Input: `deviation-bench/data_sources/patterns/seed_pattern_bank.jsonl` and `deviation-bench/prompts/utterance_schema.yaml`.
    - Output: generated draft items under an ignored results/work directory unless the user asks to track generated data.

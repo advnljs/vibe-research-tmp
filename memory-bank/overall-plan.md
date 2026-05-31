@@ -41,7 +41,7 @@ Not primary framing:
 
 ## Current Phase
 
-Phase: Agent Memory primary framing selected + formal protocol drafted -> next complete candidate-memory tooling survey, then implement local memory-condition runner before fresh memory-system pilot.
+Phase: Agent Memory primary framing selected + formal protocol drafted + first memory-facing scenario drafts/browser created -> user review of drafts, then candidate-memory tooling survey and local memory-condition runner before fresh memory-system pilot.
 
 Completed:
 
@@ -123,6 +123,11 @@ Completed:
   - main hook: agent memory can be delusive
   - defines full transcript baseline, memory conditions, token-window sweep, memory trace schema, MIDA, evidence retention, unsupported-claim retention, memory distortion, recovery-anchor retention, and external-system fairness rules
   - records a 2026-05-31 official-source snapshot for mem0 and Graphiti as preliminary mechanism verification, not a substitute for the full tooling survey
+- Created the first memory-facing scenario review set and browser:
+  - `deviation-bench/prompts/memory_scenario_drafts.yaml`
+  - `deviation-bench/src/build_scenario_browser.py`
+  - local ignored page: `deviation-bench/results/scenario_browser/index.html`
+  - 5 draft scenarios for user review before formal split assignment
 
 Current implementation position:
 
@@ -185,12 +190,18 @@ Current implementation position:
   - proposed comparison: full transcript vs summary memory vs vector/RAG memory vs graph memory vs hybrid/evidence-aware memory
   - proposed core metric: Memory-Induced Drift Amplification, `MIDA = Drift(memory_system) - Drift(full_transcript)`
   - next step is a tooling survey for mem0 / Graphiti before any external-system claim, followed by memory-condition runner implementation.
+- Memory-facing scenario drafts now exist:
+  - `deviation-bench/prompts/memory_scenario_drafts.yaml`
+  - 5 closed-world fictional drafts with objective boundary, unsupported claim, memory-test design, expected memory failures, dialogue turns, and recovery turn
+  - browser script: `deviation-bench/src/build_scenario_browser.py`
+  - generated ignored page: `deviation-bench/results/scenario_browser/index.html`
 - Follow-up priority is now explicit:
   - Priority 1 completed: judge-consensus / reliability script,
   - Priority 2 completed: gold-control scenarios,
   - Priority M0 completed: formalize Agent Memory evaluation protocol,
-  - Priority M1 current: tooling survey for mem0 / Graphiti / other memory systems,
-  - Priority M2 next: runner design for full transcript vs memory conditions,
+  - Scenario review current: browse and revise first memory-facing drafts,
+  - Priority M1 next: tooling survey for mem0 / Graphiti / other memory systems,
+  - Priority M2 after survey/review: runner design for full transcript vs memory conditions,
   - Priority 3: S1 judge reliability pass with real metajudge before fresh memory-system evidence,
   - Priority 4/5: Tier 2 / fresh memory-facing held-out expansion if still needed,
   - Priority 6+: memory-system pilot, paper Section 2 and v1 scaling.
@@ -328,7 +339,7 @@ Exit condition:
 
 ## Immediate Next Actions
 
-Phase shift 2026-05-31：用户已将 agent memory 评测升为主路线。Deviation Bench 现在作为 measurement workload，用于比较 full transcript 与 memory systems 在 reality-boundary 场景中的信息保持和 drift amplification。当前主路径先暂停直接扩 fresh held-out，优先完成 memory-system survey 与 memory-condition runner。
+Phase shift 2026-05-31：用户已将 agent memory 评测升为主路线。Deviation Bench 现在作为 measurement workload，用于比较 full transcript 与 memory systems 在 reality-boundary 场景中的信息保持和 drift amplification。当前已先生成 5 条 memory-facing scenario drafts 和本地浏览页面，供用户筛选；再进入 memory-system survey 与 memory-condition runner。
 
 Detailed handoff queue:
 
@@ -354,7 +365,8 @@ Detailed handoff queue:
    - 已完成：创建 11 条 gold-control scenarios，并通过本地 label-contract 校验。
    - 已完成：记录 Agent Memory 系统评测新视角。
    - 已完成：写 `agent_memory_eval_protocol.md`，定义 full transcript vs memory system 的 token-window sweep、memory traces、metrics 和 runner 改造。
-   - 下一步：写 `agent_memory_system_survey.md`，完成 mem0 / Graphiti / 其他候选系统的版本、API、写入策略、检索策略和可复现实验配置调查。
+   - 已完成：写 `memory_scenario_drafts.yaml` 和 `build_scenario_browser.py`，生成本地 scenario browser 供用户浏览 5 条草稿。
+   - 下一步：用户浏览 scenario browser 后，筛选/修改/扩展 memory-facing drafts；然后写 `agent_memory_system_survey.md`，完成 mem0 / Graphiti / 其他候选系统的版本、API、写入策略、检索策略和可复现实验配置调查。
    - 后续：实现本地 memory-condition runner，再跑 S1 judge reliability、Tier 2 drafts、fresh memory-facing scenarios 和 memory-system pilot。
    - 写 Section 2 §Task and Design Goals 草稿时应复用 `paper/table1_benchmark_comparison.md`、`Benchmark 对比与研究缺口分析.md`、`Agent Memory系统评测新视角.md` 和 `agent_memory_eval_protocol.md`。
 3. Agent Memory tooling survey、LLM-only judge reliability 和 memory runner design 稳定后，再回到：新增 1-3 fresh memory-facing scenarios → memory-system pilot → v1 scale-up。

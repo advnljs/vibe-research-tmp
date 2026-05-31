@@ -1071,12 +1071,61 @@ Important caveat:
 
 - These checks are only enough for plan grounding. Formal paper claims about mem0, Graphiti, or other memory systems still require `deviation-bench/agent_memory_system_survey.md` with version/config pinning and reproducibility details.
 
+### Memory-Facing Scenario Drafts and Browser
+
+Created first reviewable scenario drafts for the agent-memory framing:
+
+- `deviation-bench/prompts/memory_scenario_drafts.yaml`
+
+Contents:
+
+- 5 fictional, low-risk, closed-world evidence-bound scenarios:
+  - `memdraft_001_blue_mug_signal`
+  - `memdraft_002_focus_mode_thoughts`
+  - `memdraft_003_support_template_we_see_you`
+  - `memdraft_004_random_seat_assignment`
+  - `memdraft_005_lms_hint_hidden_message`
+- Each scenario includes:
+  - objective evidence boundary,
+  - unsupported claim,
+  - `claim_supported_by_anchor=false`,
+  - `induction_turns_add_new_evidence=false`,
+  - memory-test design,
+  - expected memory failures,
+  - target-visible user dialogue turns,
+  - recovery turn.
+- These are draft review items, not held-out benchmark evidence. They should be reviewed and revised before being assigned to a formal split or converted into runner-ready memory episodes.
+
+Created browser tooling:
+
+- `deviation-bench/src/build_scenario_browser.py`
+
+Generated local ignored page:
+
+- `deviation-bench/results/scenario_browser/index.html`
+
+Validation completed:
+
+- `python3 deviation-bench/src/build_scenario_browser.py --validate-only`
+  - result: `validation=ok scenarios=5`
+- `python3 -m py_compile deviation-bench/src/build_scenario_browser.py`
+  - result: passed
+- Generated page size: about 54KB.
+
+Updated:
+
+- `deviation-bench/src/README.md`
+  - documents scenario-browser validation and build commands.
+- `研究导航.md`
+  - adds the new scenario draft file and browser script.
+
 ## Current Open Items
 
 - Framing A remains the data/construction substrate, and Agent Memory evaluation is now the primary paper framing.
 - Remaining open decisions are venue, language scope, raw text boundary for any future Tier 2 work, whether to include evidence-aware memory as a companion baseline, timeline, and API budget.
 - Verify the pushed data on GitHub if needed.
 - Freeze the current 20-turn `uird_pilot_001` as a development calibration item before expanding pilot runs.
+- Review the generated scenario browser and decide which memory-facing drafts to keep, revise, expand to 20 turns, or discard.
 - Run a tooling survey for mem0, Graphiti, and any other candidate memory systems before writing claims about their mechanisms.
 - Implement the local memory-condition runner for full transcript vs recent window / rolling summary / vector chunks / LLM fact memory / evidence-aware memory.
 - Run a real OpenAI-compatible S1 judge reliability pass using `deviation-bench/src/build_judge_consensus.py`, existing standard / hardened spot-check outputs, and the new gold-control scenarios before any claims-oriented fresh memory-system pilot.
@@ -1090,11 +1139,11 @@ Important caveat:
 
 ## Current Best Next Step
 
-优先级 1：写 `deviation-bench/agent_memory_system_survey.md`，完成 mem0、Graphiti 等 candidate memory systems 的 tooling / mechanism survey，确认 API、默认写入策略、检索策略和可复现实验配置。
+优先级 1：先浏览 `deviation-bench/results/scenario_browser/index.html`，筛选和修改 5 个 memory-facing scenario drafts。
 
-优先级 2：实现本地 memory-condition runner，先支持 full transcript、recent window、rolling summary、vector chunks、LLM fact memory 和 evidence-aware memory。
+优先级 2：写 `deviation-bench/agent_memory_system_survey.md`，完成 mem0、Graphiti 等 candidate memory systems 的 tooling / mechanism survey，确认 API、默认写入策略、检索策略和可复现实验配置。
 
-优先级 3：跑 S1 real metajudge reliability pass；之后创建 fresh memory-facing held-out scenarios 并做 full transcript vs memory-system pilot。
+优先级 3：实现本地 memory-condition runner，先支持 full transcript、recent window、rolling summary、vector chunks、LLM fact memory 和 evidence-aware memory；之后跑 S1 real metajudge reliability pass。
 
 已完成的 Framing-A 主线准备动作：
 
@@ -1119,7 +1168,9 @@ Important caveat:
 19. 已完成：创建 11 条 gold-control scenarios，并通过本地 YAML / label-contract 校验。
 20. 已记录新主视角：用 Deviation Bench 评测 agent memory 系统，比较 full transcript 与 mem0 / Graphiti 等 memory 系统在 reality-boundary 场景中的信息保持和 drift 放大。
 21. 已完成：写 `agent_memory_eval_protocol.md`，把新视角转成可执行实验设计。
-22. 建议下一步：写 `agent_memory_system_survey.md`，再实现本地 memory-condition runner。
-23. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md`、`Benchmark 对比与研究缺口分析.md`、`Agent Memory系统评测新视角.md` 和 `agent_memory_eval_protocol.md`）。
+22. 已完成：创建 5 条 memory-facing scenario drafts，并生成本地 scenario browser。
+23. 建议下一步：浏览 `results/scenario_browser/index.html` 后，决定哪些草稿需要扩到 20 轮、进入 formal split，或重写。
+24. 后续：写 `agent_memory_system_survey.md`，再实现本地 memory-condition runner。
+25. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md`、`Benchmark 对比与研究缺口分析.md`、`Agent Memory系统评测新视角.md` 和 `agent_memory_eval_protocol.md`）。
 
 详细行动队列见 `memory-bank/next-step.md`。

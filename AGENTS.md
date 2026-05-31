@@ -151,7 +151,19 @@ Additional persistent workflow requirement:
 - New stronger paper angle: use Deviation Bench to evaluate agent memory systems.
 - Core hypothesis to preserve: within specified context-token intervals, direct full transcript context may be more accurate than memory systems because memory extraction / retrieval can drop evidence and amplify unsupported claims.
 - Candidate systems named by the user include mem0 and Graphiti, but their APIs/mechanisms must be verified before making paper claims.
-- The new angle is recorded in `deviation-bench/Agent Memory系统评测新视角.md`; next recommended artifact is `deviation-bench/agent_memory_eval_protocol.md`.
+- The new angle is recorded in `deviation-bench/Agent Memory系统评测新视角.md`; the then-recommended protocol artifact was later created on 2026-05-31.
+
+## User Decision From 2026-05-31
+
+- Upgrade the project from a standalone induced-drift benchmark to a broader agent-memory evaluation framing.
+- Current main hook: **agent memory can be delusive**.
+- Operational meaning: a memory layer may transform hallucinated, induced, unsupported, or merely subjective user claims into persistent context that later LLM generation accepts as objective fact.
+- Deviation Bench should be treated as the measurement workload for this idea, not only as a target-model prompt stress test.
+- Core experiment: compare direct full transcript context with memory systems across specified context-token windows.
+- User hypothesis to preserve: within a long enough context-token range where the complete dialogue still fits, direct full transcript should produce less deviation than memory-conditioned generation.
+- Memory systems should be analyzed through extraction, summarization, RAG/vector retrieval, graph memory, hybrid context assembly, evidence retention, unsupported-claim amplification, memory distortion, and recovery-anchor retention.
+- Do not overgeneralize about current memory systems. Verify mem0, Graphiti, and any other candidate system via official docs/source and pinned versions before paper claims.
+- The formal protocol is now `deviation-bench/agent_memory_eval_protocol.md`; next recommended artifact is `deviation-bench/agent_memory_system_survey.md`.
 
 ## Installed Skills
 
@@ -184,6 +196,7 @@ Core research docs:
 - `deviation-bench/Datasets for a Deviation Bench on Reality-Boundary Language.md`
 - `deviation-bench/LLM-only评测与验证方案.md`
 - `deviation-bench/Agent Memory系统评测新视角.md`
+- `deviation-bench/agent_memory_eval_protocol.md`
 - `deviation-bench/后续优先级路线图.md`
 
 Navigation:
@@ -269,7 +282,7 @@ Not allowed:
 
 ## Current Implementation Position
 
-As of 2026-05-29:
+As of 2026-05-31:
 
 - Research framing is drafted.
 - User selected Framing A: real-corpus-anchored context-retest reliability benchmark.
@@ -326,14 +339,17 @@ As of 2026-05-29:
   - Deviation Bench should be considered as a benchmark for agent memory systems, comparing full transcript context with summary / vector-RAG / graph / external memory systems.
   - Candidate systems named by the user: mem0 and Graphiti.
   - Do not make factual claims about these systems until a current tooling survey has been done.
+- Agent Memory evaluation protocol now exists:
+  - file: `deviation-bench/agent_memory_eval_protocol.md`
+  - defines full transcript baseline, memory conditions, token-window sweep, memory trace schema, MIDA, evidence retention, unsupported-claim retention, memory distortion, recovery-anchor retention, and external-system fairness rules.
 
 Recommended next work:
 
 1. Read `memory-bank/next-step.md` for the current action queue and framing blockers.
 2. Follow `deviation-bench/后续优先级路线图.md` as the current ordering source.
-3. Draft `deviation-bench/agent_memory_eval_protocol.md` before more pilot/model expansion.
-4. Survey mem0, Graphiti, and any other candidate memory systems before making external-system claims.
-5. Then run the S1 judge reliability pass and memory-condition runner work in the order specified by `memory-bank/next-step.md`.
+3. Draft `deviation-bench/agent_memory_system_survey.md` before making external-system claims.
+4. Implement the local memory-condition runner before fresh memory-system pilot expansion.
+5. Then run the S1 judge reliability pass and memory-facing scenario work in the order specified by `memory-bank/next-step.md`.
 
 ## Git Repository
 

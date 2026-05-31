@@ -1,6 +1,6 @@
 # Overall Progress
 
-Last updated: 2026-05-30
+Last updated: 2026-05-31
 
 This file records completed work and the current state of the Deviation Bench project. Update it after any meaningful research, data, implementation, or planning change.
 
@@ -8,9 +8,10 @@ This file records completed work and the current state of the Deviation Bench pr
 
 Deviation Bench has been narrowed from a broad context-induced deviation idea into a more feasible, API-only benchmark direction:
 
-- Working phenomenon: User-Induced Reality Drift (UIRD), also described as user-induced reality-grounding drift.
+- Current primary framing: agent memory can be delusive; Deviation Bench is now the measurement workload for comparing full transcript context against agent memory systems under reality-boundary pressure.
+- Working phenomenon substrate: User-Induced Reality Drift (UIRD), also described as user-induced reality-grounding drift.
 - Core observation: in multi-turn interaction, an LLM may move from grounded, evidence-constrained responses toward unsupported delusional elaboration, inappropriate validation, or unjustified reversal of an earlier determination.
-- Intended contribution: measure context-retest / situation-retest reliability for LLMs, analogous to test-retest reliability in psychology.
+- Intended contribution: measure whether memory extraction / retrieval / summarization / graph construction amplifies reality drift relative to direct full transcript context within defined token-window regimes.
 - Compute constraint: low GPU / API-only. The benchmark should not depend on model training, activation extraction, or high-cost inference infrastructure.
 - Safety boundary: induction designs should test reality-grounding failure in controlled, fictional, low-risk settings. They should not be jailbreaks, safety bypasses, or prompts that escalate real-world harm.
 
@@ -989,15 +990,96 @@ Interpretation:
 - It may be more paper-distinctive than only comparing target LLMs because it binds Deviation Bench to real agent deployment patterns.
 - mem0 / Graphiti claims and APIs have not yet been verified; tooling survey is required before making external-system claims.
 
+## Completed 2026-05-31
+
+### Agent Memory Protocol and Plan Update
+
+User clarified the latest research idea:
+
+- Move from single-purpose induced-drift testing to a broader professional agent-memory setting.
+- Main hook: **agent memory can be delusive**.
+- Proposed mechanism: current memory layers often transform dialogue history through LLM summaries, fact extraction, vector/RAG retrieval, or graph memories; hallucination, extraction loss, technical retrieval problems, and user induction may create delusive memory items that later LLM generation accepts as objective facts.
+- Deviation Bench should become the measurement instrument for this idea.
+- Core comparison: direct full transcript vs memory systems across specified context-token windows.
+- User intuition: within a sufficiently long context range where the full transcript fits, full transcript should produce less deviation than memory-conditioned generation.
+
+Created:
+
+- `deviation-bench/agent_memory_eval_protocol.md`
+
+Protocol contents:
+
+- Defines the new paper story and the operational meaning of `delusive memory`.
+- Defines research questions for memory-induced reality drift, token-window boundaries, and evidence-aware memory.
+- Defines conditions:
+  - `full_transcript`
+  - `recent_window`
+  - `rolling_summary`
+  - `vector_chunks`
+  - `llm_fact_memory`
+  - `temporal_graph`
+  - `hybrid_memory`
+  - `evidence_aware_memory`
+  - `external_mem0`
+  - `external_graphiti`
+- Defines token-window sweep: `B4k`, `B8k`, `B16k`, `B32k+`, and `overflow`.
+- Defines memory write / retrieval policy fields and a turn-level memory trace schema.
+- Defines memory-specific metrics:
+  - `MIDA`
+  - `evidence_retention_rate`
+  - `unsupported_claim_retention_rate`
+  - `retrieval_grounding_ratio`
+  - `verification_status_accuracy`
+  - `memory_distortion_rate`
+  - `recovery_anchor_retention`
+  - `provenance_coverage`
+  - `drift_per_1k_context_tokens`
+- Reframes the benchmark paper five pillars around agent memory evaluation.
+- Sets the next implementation route: tooling survey -> local memory simulator -> development memory pilot -> judge reliability pass -> fresh memory-system pilot -> external memory system pilot.
+
+Updated:
+
+- `deviation-bench/Agent Memory系统评测新视角.md`
+  - Marks the 2026-05-31 framing upgrade.
+  - Links to the new protocol.
+  - Records `agent memory can be delusive` as the sharper hook.
+  - Adds a preliminary official-source mechanism check for mem0 and Graphiti.
+- `deviation-bench/后续优先级路线图.md`
+  - Marks Agent Memory as the primary route rather than a candidate.
+  - Marks Priority M0 protocol as completed.
+  - Adds Priority M1 candidate memory-system tooling survey.
+  - Adds Priority M2 memory-condition runner design.
+  - Reorders future pilot work around full transcript vs memory systems.
+- `deviation-bench/LLM-only评测与验证方案.md`
+  - Updates the Agent Memory note so the protocol is no longer listed as future work.
+  - Keeps LLM-only judge / metajudge / gold-control validation as the paper-facing route for memory-system evaluation.
+- `memory-bank/overall-plan.md`
+  - Updates the North Star, phase, immediate next actions, and decision log.
+- `memory-bank/next-step.md`
+  - Updates the actionable queue for the next agent.
+- `研究导航.md`
+  - Adds the protocol to the reading order and important-file list.
+- `AGENTS.md`
+  - Records the user's 2026-05-31 persistent decision and updated implementation position.
+
+Preliminary official-source checks completed:
+
+- mem0 official docs / GitHub show add/search memory workflow, default Python `Memory()` using LLM + embedding + vector store, and current algorithm notes including ADD-only extraction, agent-generated facts, entity linking, and multi-signal retrieval.
+- Graphiti official docs / GitHub show a temporal context graph framework with episodes/provenance, temporal facts, graph backend requirements, and hybrid semantic + keyword + graph retrieval.
+
+Important caveat:
+
+- These checks are only enough for plan grounding. Formal paper claims about mem0, Graphiti, or other memory systems still require `deviation-bench/agent_memory_system_survey.md` with version/config pinning and reproducibility details.
+
 ## Current Open Items
 
-- Framing A has been selected, and a new Agent Memory evaluation framing is now the most promising possible paper angle to formalize.
-- Remaining open decisions are UIRD subtrack status, venue, language scope, raw text boundary, companion baseline, timeline, API budget, and whether Agent Memory evaluation becomes the primary paper framing.
+- Framing A remains the data/construction substrate, and Agent Memory evaluation is now the primary paper framing.
+- Remaining open decisions are venue, language scope, raw text boundary for any future Tier 2 work, whether to include evidence-aware memory as a companion baseline, timeline, and API budget.
 - Verify the pushed data on GitHub if needed.
 - Freeze the current 20-turn `uird_pilot_001` as a development calibration item before expanding pilot runs.
-- Formalize the Agent Memory evaluation protocol before committing to the next experiment sequence.
 - Run a tooling survey for mem0, Graphiti, and any other candidate memory systems before writing claims about their mechanisms.
-- Run a real OpenAI-compatible S1 judge reliability pass using `deviation-bench/src/build_judge_consensus.py`, existing standard / hardened spot-check outputs, and the new gold-control scenarios if the memory-system protocol keeps the existing LLM-only judge path.
+- Implement the local memory-condition runner for full transcript vs recent window / rolling summary / vector chunks / LLM fact memory / evidence-aware memory.
+- Run a real OpenAI-compatible S1 judge reliability pass using `deviation-bench/src/build_judge_consensus.py`, existing standard / hardened spot-check outputs, and the new gold-control scenarios before any claims-oriented fresh memory-system pilot.
 - Use `run_standard_pilot.sh` for held-out full episodes so dashboard comparisons are not mixed with smoke/calibration fragments.
 - Use `rewrite_real_to_dialogue.py` to create 1-2 Tier 2 real-to-dialogue held-out drafts from de-identified DAIS-C / first-episode friendship snippets or abstract patterns, then run automatic QC / metajudge checks before copying into `pilot_scenarios.yaml`.
 - Create 1-3 fresh held-out naturalistic scenarios because `uird_pilot_002` / `uird_pilot_003` are now used smoke items.
@@ -1008,11 +1090,11 @@ Interpretation:
 
 ## Current Best Next Step
 
-优先级 1：把 Agent Memory 新视角扩成正式实验协议，建议产物为 `deviation-bench/agent_memory_eval_protocol.md`。
+优先级 1：写 `deviation-bench/agent_memory_system_survey.md`，完成 mem0、Graphiti 等 candidate memory systems 的 tooling / mechanism survey，确认 API、默认写入策略、检索策略和可复现实验配置。
 
-优先级 2：做 mem0、Graphiti 等 candidate memory systems 的 tooling / mechanism survey，确认 API、默认写入策略、检索策略和可复现实验配置。
+优先级 2：实现本地 memory-condition runner，先支持 full transcript、recent window、rolling summary、vector chunks、LLM fact memory 和 evidence-aware memory。
 
-优先级 3：设计 full transcript vs memory system 的 token-window sweep 和 runner 改造路线；之后再跑 S1 real metajudge reliability pass。
+优先级 3：跑 S1 real metajudge reliability pass；之后创建 fresh memory-facing held-out scenarios 并做 full transcript vs memory-system pilot。
 
 已完成的 Framing-A 主线准备动作：
 
@@ -1036,7 +1118,8 @@ Interpretation:
 18. 已完成：写 judge-consensus / reliability 脚本，并用 mock mode 在 existing standard + hardened JSONL 上跑通 summary。
 19. 已完成：创建 11 条 gold-control scenarios，并通过本地 YAML / label-contract 校验。
 20. 已记录新主视角：用 Deviation Bench 评测 agent memory 系统，比较 full transcript 与 mem0 / Graphiti 等 memory 系统在 reality-boundary 场景中的信息保持和 drift 放大。
-21. 建议下一步：写 `agent_memory_eval_protocol.md`，把新视角转成可执行实验设计。
-22. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md`、`Benchmark 对比与研究缺口分析.md` 和 `Agent Memory系统评测新视角.md`）。
+21. 已完成：写 `agent_memory_eval_protocol.md`，把新视角转成可执行实验设计。
+22. 建议下一步：写 `agent_memory_system_survey.md`，再实现本地 memory-condition runner。
+23. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md`、`Benchmark 对比与研究缺口分析.md`、`Agent Memory系统评测新视角.md` 和 `agent_memory_eval_protocol.md`）。
 
 详细行动队列见 `memory-bank/next-step.md`。

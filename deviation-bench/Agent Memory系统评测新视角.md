@@ -1,10 +1,25 @@
 # Agent Memory 系统评测新视角
 
 创建日期：2026-05-30
+更新日期：2026-05-31
+
+2026-05-31 用户进一步明确：研究应从单纯“模型被用户诱导偏移”转向更大的专业场景，即 **agent memory can be delusive**。Deviation Bench 不再只是目标模型压力测试，而是用于测量 agent memory 系统是否会把被诱导出来的错误、无证据解释或主观 claim 写入记忆，并在后续生成中被 LLM 当作事实接受。
+
+正式实验协议已新增：
+
+- `deviation-bench/agent_memory_eval_protocol.md`
+
+后续计划、runner 改造和论文结构应优先按该 protocol 推进。
 
 ## 一句话想法
 
 把 Deviation Bench 从“测模型在多轮诱导下是否 reality drift”进一步转成一种 **测 agent memory 系统是否保持现实锚定记忆** 的 benchmark：在同一个 Deviation Bench episode 中，比对完整上下文记录、不同 agent memory 系统和检索式摘要记忆，观察它们是否因为信息丢失、检索偏差或记忆重写而更容易放大 unsupported claim。
+
+更尖锐的论文 hook：
+
+> Agent memory can be delusive: a memory layer may transform repeated unsupported user claims into persistent context that later generations accept as objective fact.
+
+这里的 delusive 是系统行为术语，不是对用户或模型作临床诊断。
 
 ## 核心论文视角
 
@@ -237,4 +252,9 @@ MIDA = Drift(memory_system) - Drift(full_transcript)
 
 ## 当前状态
 
-这是 2026-05-30 用户提出的新主视角。尚未做文献 / 工具版本核验，也尚未确认 mem0、Graphiti 的具体 API、默认写入策略和可复现实验配置。后续在写论文 claim 前需要单独做 tooling survey 和公平性设置。
+这是 2026-05-30 用户提出并在 2026-05-31 升级为主路线的新视角。2026-05-31 已用官方资料做了初步核验：
+
+- mem0 官方文档显示其有 add/search memory workflow，默认 Python `Memory()` 使用 LLM、embedding 和向量存储；其 GitHub 还描述了 ADD-only extraction、agent-generated facts、entity linking 和 multi-signal retrieval 等新算法要素。
+- Graphiti 官方文档显示其是 temporal context graph framework，支持 episodes/provenance、temporal facts、hybrid retrieval 和 graph database backend。
+
+这些只支持“候选系统机制初步核验”，不能替代正式 tooling survey。正式 survey 应记录版本、后端、写入策略、检索策略、可复现配置和是否使用云服务。后续在写论文 claim 前需要单独做 tooling survey 和公平性设置。

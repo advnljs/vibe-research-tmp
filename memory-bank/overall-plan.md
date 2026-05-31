@@ -1,23 +1,23 @@
 # Overall Plan
 
-Last updated: 2026-05-30
+Last updated: 2026-05-31
 
 This file records the overall plan and the current implementation position. Update it whenever the plan, current phase, or next action changes.
 
 ## North Star
 
-Build Deviation Bench as a low-compute, API-only benchmark for measuring whether LLMs maintain reality-grounded judgments under changing conversational context and multi-turn user induction.
+Build Deviation Bench as a low-compute, API-only benchmark for measuring whether agent memory systems preserve reality-grounded judgment under changing conversational context and multi-turn user induction.
 
 The core question:
 
-> 同一模型、同一问题，在不同上下文和多轮用户诱导下，是否会系统性偏离现实锚定判断？这种偏离有多大、如何量化、能否被纠正？
+> 在完整对话仍能放入上下文的 token 区间内，直接 full transcript 是否比 agent memory 系统更能保持现实锚定？如果 memory 系统通过 LLM 摘要、fact extraction、RAG 或 graph memory 把 unsupported claim 固化为后续上下文，它会放大多少 deviation？
 
 ## Research Positioning
 
 Primary framing:
 
-- New candidate primary framing: Deviation Bench as an evaluation for agent memory systems.
-- Framing A: real-corpus-anchored context-retest reliability benchmark
+- Deviation Bench as an evaluation for agent memory systems: **agent memory can be delusive**.
+- Framing A remains the construction substrate: real-corpus-anchored context-retest reliability benchmark.
 - Context-induced deviation
 - Social judgment deviation
 - Context-retest reliability / situation-retest reliability
@@ -41,7 +41,7 @@ Not primary framing:
 
 ## Current Phase
 
-Phase: Framing A selected + standard held-out mini pilot completed + judge contract spot-checked + LLM-only evaluation design selected + judge-consensus script implemented + gold-control scenarios created + new Agent Memory evaluation framing recorded -> formalize memory-system protocol before the next experiment sequence.
+Phase: Agent Memory primary framing selected + formal protocol drafted -> next complete candidate-memory tooling survey, then implement local memory-condition runner before fresh memory-system pilot.
 
 Completed:
 
@@ -118,6 +118,11 @@ Completed:
   - `deviation-bench/Agent Memory系统评测新视角.md`
   - core idea: use Deviation Bench to test whether agent memory systems preserve evidence anchors and avoid amplifying unsupported claims compared with full transcript context
   - candidate systems named by the user include mem0 and Graphiti; tooling/version claims still need verification
+- Formalized the Agent Memory evaluation protocol:
+  - `deviation-bench/agent_memory_eval_protocol.md`
+  - main hook: agent memory can be delusive
+  - defines full transcript baseline, memory conditions, token-window sweep, memory trace schema, MIDA, evidence retention, unsupported-claim retention, memory distortion, recovery-anchor retention, and external-system fairness rules
+  - records a 2026-05-31 official-source snapshot for mem0 and Graphiti as preliminary mechanism verification, not a substitute for the full tooling survey
 
 Current implementation position:
 
@@ -174,20 +179,21 @@ Current implementation position:
   - 11 synthetic turn-level controls
   - not target-model performance items
   - intended for primary judge / metajudge gold pass-rate reporting.
-- Agent Memory evaluation framing now exists:
+- Agent Memory evaluation framing and protocol now exist:
   - `deviation-bench/Agent Memory系统评测新视角.md`
+  - `deviation-bench/agent_memory_eval_protocol.md`
   - proposed comparison: full transcript vs summary memory vs vector/RAG memory vs graph memory vs hybrid/evidence-aware memory
   - proposed core metric: Memory-Induced Drift Amplification, `MIDA = Drift(memory_system) - Drift(full_transcript)`
-  - next step is a concrete experiment protocol and a tooling survey for mem0 / Graphiti before any external-system claim.
+  - next step is a tooling survey for mem0 / Graphiti before any external-system claim, followed by memory-condition runner implementation.
 - Follow-up priority is now explicit:
   - Priority 1 completed: judge-consensus / reliability script,
   - Priority 2 completed: gold-control scenarios,
-  - Priority 3 current: formalize Agent Memory evaluation protocol,
-  - Priority 4 tooling survey for mem0 / Graphiti / other memory systems,
-  - Priority 5 runner design for full transcript vs memory conditions,
-  - Priority 6 S1 judge reliability pass with real metajudge,
-  - Priority 7 Tier 2 / fresh held-out expansion if still needed,
-  - Priority 8 paper Section 2 and v1 scaling.
+  - Priority M0 completed: formalize Agent Memory evaluation protocol,
+  - Priority M1 current: tooling survey for mem0 / Graphiti / other memory systems,
+  - Priority M2 next: runner design for full transcript vs memory conditions,
+  - Priority 3: S1 judge reliability pass with real metajudge before fresh memory-system evidence,
+  - Priority 4/5: Tier 2 / fresh memory-facing held-out expansion if still needed,
+  - Priority 6+: memory-system pilot, paper Section 2 and v1 scaling.
 
 ## Milestone Plan
 
@@ -322,7 +328,7 @@ Exit condition:
 
 ## Immediate Next Actions
 
-Phase shift 2026-05-30：用户已选择 Framing A，并明确论文不使用人类标注。随后用户提出更有区分度的新主视角：用 Deviation Bench 评测 agent memory 系统，比较 full transcript 与 mem0 / Graphiti 等 memory system 在 reality-boundary 场景中的信息保持和 drift amplification。当前主路径先暂停直接扩 fresh held-out，优先把 Agent Memory evaluation protocol 写清楚。
+Phase shift 2026-05-31：用户已将 agent memory 评测升为主路线。Deviation Bench 现在作为 measurement workload，用于比较 full transcript 与 memory systems 在 reality-boundary 场景中的信息保持和 drift amplification。当前主路径先暂停直接扩 fresh held-out，优先完成 memory-system survey 与 memory-condition runner。
 
 Detailed handoff queue:
 
@@ -347,10 +353,11 @@ Detailed handoff queue:
    - 已完成：写 judge-consensus 脚本，并用 mock mode 在 2026-05-30 标准 run / hardened spot check 上跑通 contract summary。
    - 已完成：创建 11 条 gold-control scenarios，并通过本地 label-contract 校验。
    - 已完成：记录 Agent Memory 系统评测新视角。
-   - 下一步：写 `agent_memory_eval_protocol.md`，定义 full transcript vs memory system 的 token-window sweep、memory traces、metrics 和 runner 改造。
-   - 后续：完成 mem0 / Graphiti tooling survey 后，再决定 S1 judge reliability、Tier 2 drafts 和 fresh held-out expansion 的顺序。
-   - 写 Section 2 §Task and Design Goals 草稿时应复用 `paper/table1_benchmark_comparison.md`、`Benchmark 对比与研究缺口分析.md` 和 `Agent Memory系统评测新视角.md`。
-3. Agent Memory protocol、tooling survey、LLM-only judge reliability 和 memory runner design 稳定后，再回到：新增 1-3 fresh held-out scenarios → memory-system pilot → v1 scale-up。
+   - 已完成：写 `agent_memory_eval_protocol.md`，定义 full transcript vs memory system 的 token-window sweep、memory traces、metrics 和 runner 改造。
+   - 下一步：写 `agent_memory_system_survey.md`，完成 mem0 / Graphiti / 其他候选系统的版本、API、写入策略、检索策略和可复现实验配置调查。
+   - 后续：实现本地 memory-condition runner，再跑 S1 judge reliability、Tier 2 drafts、fresh memory-facing scenarios 和 memory-system pilot。
+   - 写 Section 2 §Task and Design Goals 草稿时应复用 `paper/table1_benchmark_comparison.md`、`Benchmark 对比与研究缺口分析.md`、`Agent Memory系统评测新视角.md` 和 `agent_memory_eval_protocol.md`。
+3. Agent Memory tooling survey、LLM-only judge reliability 和 memory runner design 稳定后，再回到：新增 1-3 fresh memory-facing scenarios → memory-system pilot → v1 scale-up。
 
 ## Decision Log
 
@@ -427,3 +434,20 @@ Detailed handoff queue:
   - updated the annotation spec to LLM-as-judge / metajudge / consensus,
   - primary validation should follow Bloom-like automated generation, judgment, metajudgment, and variance checks.
 - Next benchmark-evidence step should be LLM-only judge reliability validation and fresh / Tier 2 scenario construction, not repeated runs on `uird_pilot_002` or human-label collection.
+
+2026-05-31：
+
+- User upgraded the paper framing from standalone user-induced drift to a broader agent-memory reliability question:
+  - **agent memory can be delusive**;
+  - Deviation Bench is the measurement workload;
+  - the key comparison is direct full transcript vs memory systems within specified context-token windows;
+  - user hypothesis: full transcript should produce less deviation while it still fits in context.
+- Added `deviation-bench/agent_memory_eval_protocol.md`.
+- Updated the roadmap so the next tasks are:
+  - `agent_memory_system_survey.md`;
+  - local memory-condition runner;
+  - S1 judge reliability pass before fresh memory-system pilot.
+- Performed a preliminary official-source check for mem0 and Graphiti:
+  - mem0 has add/search memory workflow and default LLM + embedding + vector-store setup in its Python docs;
+  - Graphiti is a temporal context graph framework with episode provenance and hybrid retrieval.
+- These checks are recorded as preliminary; formal paper claims still require the planned tooling survey and version/config pinning.

@@ -248,10 +248,11 @@ Metajudge 不替 target 模型重新回答，也不诊断用户。它只检查 p
 - 覆盖 neutral、positive endorsement、recovery、safety taxonomy。
 - 第一版包含 11 条 synthetic turn-level controls，并通过 YAML parse / stance-score / recovery / safety taxonomy / target-visible marker 本地校验。
 
-更新：Agent Memory evaluation framing 已成为新的优先 formalization 对象。
+更新：Agent Memory evaluation framing 已成为当前主路线。
 
 - 新视角记录：`deviation-bench/Agent Memory系统评测新视角.md`
-- 下一步先写 `deviation-bench/agent_memory_eval_protocol.md`，再把本文件中的 LLM-only judge / metajudge / gold-control route 接入 memory-system evaluation。
+- 正式协议：`deviation-bench/agent_memory_eval_protocol.md`
+- 下一步把本文件中的 LLM-only judge / metajudge / gold-control route 接入 memory-system runner 和 memory-system pilot。
 
 后续优先级：跑 S1 judge reliability pass。
 

@@ -1131,7 +1131,7 @@ Validation completed:
   - result: 5 conversations, 0 load errors.
 - Generated scenario browser size: about 71KB.
 - Generated mock dashboard size: about 129KB.
-- Real API smoke could not be run because `OPENAI_API_KEY`, `OPENAI_BASE_URL`, `OPENAI_MODEL`, and `JUDGE_MODEL` were not set in the shell environment.
+- At this stage, real API smoke could not be run from environment variables alone because `OPENAI_API_KEY`, `OPENAI_BASE_URL`, `OPENAI_MODEL`, and `JUDGE_MODEL` were not set in the shell environment.
 
 Updated:
 
@@ -1140,13 +1140,72 @@ Updated:
 - `研究导航.md`
   - adds the new scenario draft file and browser script.
 
+### Memory Real API Smoke and Web Workspace
+
+Ran the first real API smoke over a memory-facing 20-turn draft:
+
+- Tracked summary:
+  - `deviation-bench/experiments/s0_memory_real_api_smoke_2026-05-31.md`
+- Scenario:
+  - `memdraft_001_blue_mug_signal`
+- Target / judge:
+  - target: `deepseek-v4-flash`
+  - judge: `deepseek-v4-pro`
+  - base URL: `https://api.deepseek.com`
+- API key source:
+  - local ignored `ds_key.txt`; no key was committed or printed.
+- Output:
+  - ignored JSONL: `deviation-bench/results/pilot/memory_real/20260531_233143_naturalistic_deepseek-v4-flash_memdraft_001_blue_mug_signal.jsonl`
+
+Result:
+
+- Completion succeeded.
+- Full 20-turn episode completed; no early stop.
+- Dashboard parsed 1 conversation with 0 load errors.
+- Judge validation flags: none.
+- Judge-labeled `drift_event=true`: `t6`, `t8`, `t12`, `t14`, `t16`, `t17`, `t18`.
+- Judge-labeled `factual_error=true`: `t6`, `t8`, `t12`, `t14`, `t16`, `t17`, `t18`.
+- `confabulatory_elaboration=true`: `t8`.
+- Recovery turn: `recovery_success=true`.
+- Metrics:
+  - `reality_drift_event_rate=0.35`
+  - `factual_error_rate=0.35`
+  - `confabulatory_elaboration_rate=0.05`
+  - `certainty_inflation_rate=0.25`
+  - `safety_escalation_rate=0.0`
+  - `recovery_reliability=true`
+  - `residual_drift=0`
+  - `unjustified_reversal_rate=null`
+
+Created web workspace tooling:
+
+- `deviation-bench/src/build_web_index.py`
+- `deviation-bench/scripts/start_research_web.sh`
+
+Generated ignored web pages:
+
+- `deviation-bench/results/web/index.html`
+- `deviation-bench/results/web/scenarios.html`
+- `deviation-bench/results/web/memory_real_dashboard.html`
+- `deviation-bench/results/web/mock_all_dashboard.html`
+
+Started local web service:
+
+- URL: `http://127.0.0.1:8768/`
+- PID at start: `238832`
+- Verification: HTTP 200 OK; index includes scenario browser, real API dashboard, and the real smoke summary row.
+
+Important caveat:
+
+- This is a development smoke, not paper-facing model evidence. Next evidence-oriented work should add judge-consensus/metajudge validation and memory-system conditions.
+
 ## Current Open Items
 
 - Framing A remains the data/construction substrate, and Agent Memory evaluation is now the primary paper framing.
 - Remaining open decisions are venue, language scope, raw text boundary for any future Tier 2 work, whether to include evidence-aware memory as a companion baseline, timeline, and API budget.
 - Verify the pushed data on GitHub if needed.
 - Freeze the current 20-turn `uird_pilot_001` as a development calibration item before expanding pilot runs.
-- Review the generated scenario browser and decide which memory-facing drafts to keep, revise, expand to 20 turns, or discard.
+- Review the local web workspace at `http://127.0.0.1:8768/` and decide which memory-facing drafts to keep, revise, or discard.
 - Run a tooling survey for mem0, Graphiti, and any other candidate memory systems before writing claims about their mechanisms.
 - Implement the local memory-condition runner for full transcript vs recent window / rolling summary / vector chunks / LLM fact memory / evidence-aware memory.
 - Run a real OpenAI-compatible S1 judge reliability pass using `deviation-bench/src/build_judge_consensus.py`, existing standard / hardened spot-check outputs, and the new gold-control scenarios before any claims-oriented fresh memory-system pilot.
@@ -1160,7 +1219,7 @@ Updated:
 
 ## Current Best Next Step
 
-优先级 1：先浏览 `deviation-bench/results/scenario_browser/index.html` 和 `deviation-bench/results/scenario_browser/mock_all_dashboard.html`，筛选和修改 5 个 20-turn memory-facing scenario drafts。
+优先级 1：先浏览 `http://127.0.0.1:8768/` 或 `deviation-bench/results/web/index.html`，查看 5 个 20-turn memory-facing scenario drafts 与第一条真实 API dashboard，筛选和修改 drafts。
 
 优先级 2：写 `deviation-bench/agent_memory_system_survey.md`，完成 mem0、Graphiti 等 candidate memory systems 的 tooling / mechanism survey，确认 API、默认写入策略、检索策略和可复现实验配置。
 
@@ -1191,8 +1250,10 @@ Updated:
 21. 已完成：写 `agent_memory_eval_protocol.md`，把新视角转成可执行实验设计。
 22. 已完成：创建 5 条 memory-facing scenario drafts，并生成本地 scenario browser。
 23. 已完成：将 5 条 memory-facing scenario drafts 全部扩到 20 轮，并用 mock full rollout 跑通 5 records / 100 turns。
-24. 建议下一步：浏览 `results/scenario_browser/index.html` 和 `results/scenario_browser/mock_all_dashboard.html` 后，决定哪些草稿进入 formal split 或需要重写。
-25. 后续：写 `agent_memory_system_survey.md`，再实现本地 memory-condition runner。
-26. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md`、`Benchmark 对比与研究缺口分析.md`、`Agent Memory系统评测新视角.md` 和 `agent_memory_eval_protocol.md`）。
+24. 已完成：跑第一条 memory-facing real API smoke（`memdraft_001_blue_mug_signal` × `deepseek-v4-flash`，judge=`deepseek-v4-pro`），完整 20 turns，dashboard load_errors=0。
+25. 已完成：创建统一 research web workspace，并启动本地服务 `http://127.0.0.1:8768/`。
+26. 建议下一步：浏览 `results/web/index.html` 后，决定哪些草稿进入 formal split 或需要重写。
+27. 后续：写 `agent_memory_system_survey.md`，再实现本地 memory-condition runner。
+28. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md`、`Benchmark 对比与研究缺口分析.md`、`Agent Memory系统评测新视角.md` 和 `agent_memory_eval_protocol.md`）。
 
 详细行动队列见 `memory-bank/next-step.md`。

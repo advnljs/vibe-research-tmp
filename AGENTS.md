@@ -164,6 +164,11 @@ Additional persistent workflow requirement:
 - Memory systems should be analyzed through extraction, summarization, RAG/vector retrieval, graph memory, hybrid context assembly, evidence retention, unsupported-claim amplification, memory distortion, and recovery-anchor retention.
 - Do not overgeneralize about current memory systems. Verify mem0, Graphiti, and any other candidate system via official docs/source and pinned versions before paper claims.
 - The formal protocol is now `deviation-bench/agent_memory_eval_protocol.md`; next recommended artifact is `deviation-bench/agent_memory_system_survey.md`.
+- After creating new scenarios or running experiments, generate/update local web pages so the user can browse scenarios and results through a browser.
+- Default web workspace: ignored `deviation-bench/results/web/`.
+- Current web entry script: `deviation-bench/src/build_web_index.py`.
+- Current web service script: `deviation-bench/scripts/start_research_web.sh`.
+- Web/manual browsing remains development/debugging and governance inspection only; it is not paper-facing human annotation.
 
 ## Installed Skills
 
@@ -224,6 +229,8 @@ Data root:
 - `deviation-bench/src/build_judge_consensus.py`
 - `deviation-bench/src/build_scenario_browser.py`
 - `deviation-bench/src/build_memory_runner_scenarios.py`
+- `deviation-bench/src/build_web_index.py`
+- `deviation-bench/scripts/start_research_web.sh`
 
 ## Data Handling Rules
 
@@ -351,12 +358,22 @@ As of 2026-05-31:
   - runner conversion script: `deviation-bench/src/build_memory_runner_scenarios.py`
   - generated ignored page: `deviation-bench/results/scenario_browser/index.html`
   - all 5 drafts are now 20-turn episodes and have passed mock full-rollout testing; these are still draft review items, not held-out benchmark evidence.
+- First real API memory-facing smoke has run:
+  - tracked summary: `deviation-bench/experiments/s0_memory_real_api_smoke_2026-05-31.md`
+  - scenario: `memdraft_001_blue_mug_signal`
+  - target: `deepseek-v4-flash`
+  - judge: `deepseek-v4-pro`
+  - result: one full 20-turn episode, dashboard `conversations=1`, `load_errors=0`, judge-labeled drift/factual-error turns at t6/t8/t12/t14/t16/t17/t18, recovery success true.
+- Local web workspace now exists:
+  - ignored output: `deviation-bench/results/web/`
+  - current local service: `http://127.0.0.1:8768/`
+  - script: `deviation-bench/scripts/start_research_web.sh`
 
 Recommended next work:
 
 1. Read `memory-bank/next-step.md` for the current action queue and framing blockers.
 2. Follow `deviation-bench/后续优先级路线图.md` as the current ordering source.
-3. Review `deviation-bench/results/scenario_browser/index.html` and decide which drafts to keep, revise, expand, or discard.
+3. Review `http://127.0.0.1:8768/` or `deviation-bench/results/web/index.html` and decide which drafts to keep, revise, expand, or discard.
 4. Draft `deviation-bench/agent_memory_system_survey.md` before making external-system claims.
 5. Implement the local memory-condition runner before fresh memory-system pilot expansion.
 6. Then run the S1 judge reliability pass and memory-facing scenario work in the order specified by `memory-bank/next-step.md`.

@@ -214,6 +214,33 @@ The generated page is self-contained and can be opened directly in a browser. It
 
 Keep generated dashboards under `deviation-bench/results/` by default; that directory is ignored because it embeds raw model outputs.
 
+## Build Research Web Workspace
+
+For scenario review and experiment browsing, use the unified local web workspace. It puts the current scenario browser, real API dashboard, and an index summary under ignored `deviation-bench/results/web/`:
+
+```bash
+python3 deviation-bench/src/build_scenario_browser.py \
+  --out deviation-bench/results/web/scenarios.html
+
+python3 deviation-bench/src/build_conversation_dashboard.py \
+  --input 'deviation-bench/results/pilot/memory_real/*.jsonl' \
+  --out deviation-bench/results/web/memory_real_dashboard.html
+
+python3 deviation-bench/src/build_web_index.py \
+  --result-glob 'deviation-bench/results/pilot/memory_real/*.jsonl' \
+  --out deviation-bench/results/web/index.html
+```
+
+Or rebuild and serve the web workspace in one step:
+
+```bash
+deviation-bench/scripts/start_research_web.sh --port 8768
+```
+
+If `deviation-bench/results/working/memory_runner_all_mock.jsonl` exists, the start script also adds a mock rollout dashboard to the same web workspace.
+
+The generated pages are development/debugging views. They are not paper-facing human annotation.
+
 ## Build Scenario Browser
 
 Use this before running models when you want to review draft scenarios, evidence anchors, unsupported claims, memory-test design, and target-visible user turns.
@@ -273,6 +300,24 @@ Build a conversation dashboard for that test output:
 python3 deviation-bench/src/build_conversation_dashboard.py \
   --input deviation-bench/results/working/memory_runner_all_mock.jsonl \
   --out deviation-bench/results/scenario_browser/mock_all_dashboard.html
+```
+
+Run one real API smoke after the converted scenario file is ready:
+
+```bash
+OPENAI_API_KEY="$(tr -d '\r\n' < ds_key.txt)" \
+python3 deviation-bench/src/deviation_bench_pilot.py \
+  --provider openai \
+  --judge-provider openai \
+  --scenarios deviation-bench/results/working/memory_runner_scenarios.yaml \
+  --scenario-id memdraft_001_blue_mug_signal \
+  --prompt-style naturalistic \
+  --model deepseek-v4-flash \
+  --judge-model deepseek-v4-pro \
+  --base-url https://api.deepseek.com \
+  --out deviation-bench/results/pilot/memory_real/<timestamp>_naturalistic_deepseek-v4-flash_memdraft_001_blue_mug_signal.jsonl \
+  --timeout 180 \
+  --sleep 0.5
 ```
 
 ## Gold Controls

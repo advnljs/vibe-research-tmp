@@ -28,9 +28,9 @@ The current prioritized roadmap is tracked in:
 Use that file as the ordering source, but apply the new Agent Memory framing before running the next experiment. The short version is:
 
 1. Draft `deviation-bench/agent_memory_eval_protocol.md`. **Done 2026-05-31.**
-2. Review the first 20-turn memory-facing scenario drafts and the first real API smoke in the local research web workspace. **Done enough for M1 on 2026-06-04; `memdraft_001` is now used smoke / development.**
+2. Review the first memory-facing scenario drafts and the first real API smoke in the local research web workspace. **Done enough for M1 on 2026-06-04; `memdraft_001` is now used smoke / development.**
 3. Survey mem0, Graphiti, and any other candidate memory systems for API, default write policy, retrieval policy, and reproducibility. **Done 2026-06-04.**
-4. Revise and validate memory-facing scenario drafts for runner readiness. **Done 2026-06-04; v0.2 passed browser validation, runner conversion, 5-record / 100-turn mock rollout, and dashboard generation.**
+4. Revise, expand, and validate memory-facing scenario drafts for runner readiness. **Done 2026-06-04; v0.4 has 9 longform 30-turn drafts with scenario description, mainline, related facts, real-data anchors, source pattern IDs, and passed browser validation, runner conversion, 9-record / 270-turn mock rollout, dashboard generation, and HTML refresh.**
 5. Design and implement runner changes for full transcript vs recent-window / summary / vector / fact-memory / graph / evidence-aware / external memory conditions. **Current next task.**
 6. Run S1 judge reliability pass before any claims-oriented fresh memory-system pilot.
 7. Generate Tier 2 / fresh memory-facing held-out items only after the memory runner and judge reliability path are stable.
@@ -97,7 +97,7 @@ The Agent Memory evaluation protocol is now recorded:
 - proposed conditions: full transcript, recent window, rolling summary, vector chunks, LLM fact memory, temporal graph, hybrid memory, evidence-aware memory, external mem0, and external Graphiti.
 - proposed trace fields: memory backend, write policy, retrieval policy, retrieved memory items, source turns, verification status, evidence relation, distortion flags, context tokens, full transcript tokens, compression ratio.
 
-The first memory-facing scenario drafts and browser now exist:
+The memory-facing scenario drafts and browser now exist:
 
 - draft YAML: `deviation-bench/prompts/memory_scenario_drafts.yaml`
 - browser script: `deviation-bench/src/build_scenario_browser.py`
@@ -105,13 +105,14 @@ The first memory-facing scenario drafts and browser now exist:
 - generated local page: `deviation-bench/results/scenario_browser/index.html` (ignored)
 - generated mock dashboard: `deviation-bench/results/scenario_browser/mock_all_dashboard.html` (ignored)
 - tracked experiment note: `deviation-bench/experiments/s0_memory_draft_mock_rollout_2026-05-31.md`
-- count: 5 draft scenarios, each with objective boundary, unsupported claim, memory-test design, expected memory failures, 20 target-visible dialogue turns, and recovery turn.
+- current validation note: `deviation-bench/experiments/s0_memory_scenario_expansion_validation_2026-06-04.md`
+- count: 9 draft scenarios, each with objective boundary, unsupported claim, memory-test design, expected memory failures, scenario description, mainline, related facts, real-data anchor, source pattern IDs, 30 target-visible dialogue turns, and recovery turn.
 - validation:
   - `python3 deviation-bench/src/build_scenario_browser.py --validate-only`
   - `python3 -m py_compile deviation-bench/src/build_scenario_browser.py`
   - `python3 -m py_compile deviation-bench/src/build_memory_runner_scenarios.py`
   - converted runner YAML validates through `deviation_bench_pilot.py`
-  - full mock rollout over all 5 drafts produced 5 records / 100 turns and dashboard load errors = 0
+  - full mock rollout over all 9 drafts produced 9 records / 270 turns and dashboard load errors = 0
 - first memory-facing real API smoke has now run using local ignored `ds_key.txt`:
   - tracked note: `deviation-bench/experiments/s0_memory_real_api_smoke_2026-05-31.md`
   - scenario: `memdraft_001_blue_mug_signal`
@@ -141,20 +142,24 @@ The Agent Memory system survey now exists:
 - environment blocker for external system smoke: current default `python3` is 3.8.10 and lacks `pip`; mem0 / Graphiti need Python 3.10+
 - scenario review effect: `memdraft_001_blue_mug_signal` is now a used smoke / development item; `memdraft_002` to `memdraft_005` remain fresh candidates pending runner and judge reliability.
 
-The memory-facing scenario drafts have been revised and validated:
+The memory-facing scenario drafts have been revised, expanded, and validated:
 
 - file: `deviation-bench/prompts/memory_scenario_drafts.yaml`
-- version: `0.2`
-- validation note: `deviation-bench/experiments/s0_memory_scenario_revision_validation_2026-06-04.md`
+- version: `0.4`
+- validation notes:
+  - `deviation-bench/experiments/s0_memory_scenario_revision_validation_2026-06-04.md`
+  - `deviation-bench/experiments/s0_memory_scenario_expansion_validation_2026-06-04.md`
 - `memdraft_001_blue_mug_signal`: `development_used_smoke`
-- `memdraft_002_focus_mode_thoughts`, `memdraft_003_support_template_we_see_you`, `memdraft_004_random_seat_assignment`, `memdraft_005_lms_hint_hidden_message`: `fresh_memory_candidate`
+- `memdraft_002_focus_mode_thoughts` through `memdraft_009_prediction_badge_hits`: `fresh_memory_candidate`
+- current standard: 30 target-visible turns per scenario, with scenario description, mainline, related facts, real-data anchor, and source pattern IDs
 - validation passed:
   - scenario browser validator
   - runner conversion
   - converted runner schema validation
-  - full mock rollout: 5 records / 100 turns
-  - dashboard generation: 5 conversations / 0 load errors
-- user preference: turn-count and pressure-cadence design can later reference related papers, but near-term work should prioritize validation and runner reliability.
+  - full mock rollout: 9 records / 270 turns
+  - dashboard generation: 9 conversations / 0 load errors
+  - local HTML refresh under ignored `deviation-bench/results/web/`
+- user preference: 20 turns is too short for the memory-facing drafts; current drafts should be longer, and each scenario should explicitly show mainline, related facts, and which real-data abstract patterns it reflects. Turn-count and pressure-cadence design can later reference related papers, but near-term work should prioritize validation and runner reliability.
 
 The user also clarified that “closer to real data” can include using an LLM to convert selected real data into dialogue format. The current policy is Tier 2 real-to-dialogue paraphrasing: de-identify or abstract real material first, use LLM to generate fictional opening + induction turns + recovery, then run automatic no-copy / no-identification / low-risk QC and metajudge checks before adding it to held-out scenarios.
 
@@ -341,14 +346,15 @@ These tasks are independent of the final framing and can proceed before the user
 
 23. Memory-facing scenario drafts and browser:
    - Draft YAML: `deviation-bench/prompts/memory_scenario_drafts.yaml`
-   - Current version: `0.2`
+   - Current version: `0.4`
    - Browser script: `deviation-bench/src/build_scenario_browser.py`
    - Runner conversion script: `deviation-bench/src/build_memory_runner_scenarios.py`
    - Generated local page: `deviation-bench/results/scenario_browser/index.html`
    - Generated mock dashboard: `deviation-bench/results/scenario_browser/mock_all_dashboard.html`
-   - Status: revised and validated for memory-runner design.
-   - Validation: scenario-browser validator passed; Python compile passed; runner conversion validates; full mock rollout passed with 5 records / 100 turns; dashboard generation produced 5 conversations / 0 load errors.
-   - Split status: `memdraft_001` is development used-smoke; `memdraft_002` to `005` are fresh candidates pending runner and judge reliability.
+   - Status: expanded and validated for memory-runner design.
+   - Current content: 9 longform drafts, each 30 target-visible turns, with scenario description, mainline, related facts, real-data anchor, and source pattern IDs.
+   - Validation: scenario-browser validator passed; Python compile passed; runner conversion validates; full mock rollout passed with 9 records / 270 turns; dashboard generation produced 9 conversations / 0 load errors; HTML refreshed.
+   - Split status: `memdraft_001` is development used-smoke; `memdraft_002` to `009` are fresh candidates pending runner and judge reliability.
 
 24. Memory-facing real API smoke and web workspace:
    - Tracked note: `deviation-bench/experiments/s0_memory_real_api_smoke_2026-05-31.md`
@@ -379,6 +385,10 @@ These tasks are independent of the final framing and can proceed before the user
      - `memdraft_003_support_template_we_see_you`
      - `memdraft_004_random_seat_assignment`
      - `memdraft_005_lms_hint_hidden_message`
+     - `memdraft_006_friend_bookmark_signal`
+     - `memdraft_007_secondhand_lunch_comment`
+     - `memdraft_008_window_phrase_private_meaning`
+     - `memdraft_009_prediction_badge_hits`
 
 2. **Design runner changes for memory conditions**
    - Proposed code direction:
@@ -388,7 +398,7 @@ These tasks are independent of the final framing and can proceed before the user
      - log context token counts, compression ratio, source turns, verification status, evidence relation, and distortion flags.
    - Keep raw Deviation Bench scenarios fictional and low-risk.
    - Follow `deviation-bench/agent_memory_system_survey.md`: implement local simulator first, then external `mem0` / `Graphiti`.
-   - Use revised scenario v0.2 for validation-first runner tests; do not retune turn schedule from papers until after runner and judge reliability are stable.
+   - Use revised scenario v0.4 for validation-first runner tests; do not retune turn schedule from papers until after runner and judge reliability are stable.
 
 3. **Prepare Python 3.10+ environment for external memory smoke**
    - Current default `python3`: 3.8.10.
@@ -422,7 +432,7 @@ These tasks are independent of the final framing and can proceed before the user
    - QC:
      - no copied source phrases,
      - no identifiable person/place/institution/event chain,
-     - exactly 20 target-facing turns,
+     - exactly 30 target-facing turns,
      - all induction turns add no evidence,
      - target-visible text has no benchmark/test/judge/rubric wording.
 

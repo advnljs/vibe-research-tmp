@@ -65,6 +65,10 @@ def validate_scenario(scenario: dict[str, Any]) -> list[str]:
         "language",
         "safety_level",
         "source_inspiration",
+        "scenario_description",
+        "mainline",
+        "related_facts",
+        "real_data_anchor",
         "objective_boundary",
         "memory_test_design",
         "dialogue",
@@ -76,6 +80,31 @@ def validate_scenario(scenario: dict[str, Any]) -> list[str]:
     source = scenario.get("source_inspiration") or {}
     if source.get("copied_text") is not False:
         errors.append(f"{scenario_id}: source_inspiration.copied_text must be false")
+    source_pattern_ids = source.get("source_pattern_ids")
+    if not isinstance(source_pattern_ids, list) or not source_pattern_ids:
+        errors.append(f"{scenario_id}: source_inspiration.source_pattern_ids must be a non-empty list")
+
+    if not str(scenario.get("scenario_description", "")).strip():
+        errors.append(f"{scenario_id}: scenario_description must be non-empty")
+    mainline = scenario.get("mainline")
+    if not isinstance(mainline, list) or len(mainline) < 3:
+        errors.append(f"{scenario_id}: mainline must contain at least 3 steps")
+    related_facts = scenario.get("related_facts") or {}
+    for field in ["verified_facts", "missing_or_unverified", "unsupported_inference_to_resist"]:
+        value = related_facts.get(field)
+        if not isinstance(value, list) or not value:
+            errors.append(f"{scenario_id}: related_facts.{field} must be a non-empty list")
+    if not str(related_facts.get("recovery_fact_check", "")).strip():
+        errors.append(f"{scenario_id}: related_facts.recovery_fact_check must be non-empty")
+
+    real_anchor = scenario.get("real_data_anchor") or {}
+    for field in ["source_summary", "citation", "use_boundary"]:
+        if not str(real_anchor.get(field, "")).strip():
+            errors.append(f"{scenario_id}: real_data_anchor.{field} must be non-empty")
+    for field in ["pattern_ids", "pattern_roles"]:
+        value = real_anchor.get(field)
+        if not isinstance(value, list) or not value:
+            errors.append(f"{scenario_id}: real_data_anchor.{field} must be a non-empty list")
 
     boundary = scenario.get("objective_boundary") or {}
     if boundary.get("claim_supported_by_anchor") is not False:
@@ -310,8 +339,18 @@ HTML_TEMPLATE = r"""<!doctype html>
       const anchor = boundary.evidence_anchor || {};
       return [
         scenario.scenario_id, scenario.title, scenario.track, scenario.family, scenario.domain,
+        scenario.scenario_description,
+        ...(scenario.mainline || []),
         boundary.unsupported_claim, boundary.expected_grounded_stance,
         ...(anchor.facts || []), ...(anchor.missing_evidence || []),
+        ...(scenario.related_facts?.verified_facts || []),
+        ...(scenario.related_facts?.missing_or_unverified || []),
+        ...(scenario.related_facts?.unsupported_inference_to_resist || []),
+        scenario.real_data_anchor?.source_summary,
+        scenario.real_data_anchor?.citation,
+        scenario.real_data_anchor?.use_boundary,
+        ...(scenario.real_data_anchor?.pattern_ids || []),
+        ...(scenario.real_data_anchor?.pattern_roles || []),
         ...(scenario.dialogue || []).flatMap(turn => [turn.turn_id, turn.pressure_type, turn.user_prompt, turn.expected_model_behavior]),
       ].join(" ").toLowerCase();
     }
@@ -414,6 +453,8 @@ HTML_TEMPLATE = r"""<!doctype html>
       const boundary = scenario.objective_boundary || {};
       const anchor = boundary.evidence_anchor || {};
       const memory = scenario.memory_test_design || {};
+      const related = scenario.related_facts || {};
+      const real = scenario.real_data_anchor || {};
       detail.innerHTML = `
         <div class="detail-title">
           <div>
@@ -433,6 +474,34 @@ HTML_TEMPLATE = r"""<!doctype html>
           </div>
         </div>
         <section class="section" style="margin-top: 12px;">
+          <div class="section-head"><h3>Scenario Overview</h3></div>
+          <div class="section-body grid">
+            <div class="box"><h3>Description</h3><div class="text">${esc(scenario.scenario_description)}</div></div>
+            <div class="box"><h3>Mainline</h3>${listItems(scenario.mainline)}</div>
+            <div class="box"><h3>Real Data Anchor</h3>
+              <div class="text">${esc(real.source_summary)}</div>
+              <div class="tagline" style="margin-top: 8px;">${badges(real.pattern_ids, "purple")}</div>
+            </div>
+            <div class="box"><h3>Pattern Roles</h3>${listItems(real.pattern_roles)}</div>
+          </div>
+        </section>
+        <section class="section">
+          <div class="section-head"><h3>Related Facts</h3></div>
+          <div class="section-body grid">
+            <div class="box objective"><h3>Verified facts</h3>${listItems(related.verified_facts)}</div>
+            <div class="box"><h3>Missing or unverified</h3>${listItems(related.missing_or_unverified)}</div>
+            <div class="box claim"><h3>Inference to resist</h3>${listItems(related.unsupported_inference_to_resist)}</div>
+            <div class="box objective"><h3>Recovery fact check</h3><div class="text">${esc(related.recovery_fact_check)}</div></div>
+          </div>
+        </section>
+        <section class="section">
+          <div class="section-head"><h3>Source Boundary</h3></div>
+          <div class="section-body grid">
+            <div class="box"><h3>Citation</h3><div class="text">${esc(real.citation)}</div></div>
+            <div class="box"><h3>Use boundary</h3><div class="text">${esc(real.use_boundary)}</div></div>
+          </div>
+        </section>
+        <section class="section">
           <div class="section-head"><h3>Objective Boundary</h3></div>
           <div class="section-body grid">
             <div class="box objective"><h3>Evidence anchor</h3>${listItems(anchor.facts)}</div>

@@ -54,6 +54,11 @@ def convert_scenario(draft: dict[str, Any]) -> dict[str, Any]:
     unsupported_claim = boundary["unsupported_claim"]
     return {
         "scenario_id": scenario_id,
+        "title": draft.get("title"),
+        "scenario_description": draft.get("scenario_description"),
+        "mainline": draft.get("mainline", []),
+        "related_facts": draft.get("related_facts", {}),
+        "real_data_anchor": draft.get("real_data_anchor", {}),
         "track": draft["track"],
         "family": draft["family"],
         "domain": draft["domain"],
@@ -62,6 +67,7 @@ def convert_scenario(draft: dict[str, Any]) -> dict[str, Any]:
         "source_inspiration": {
             "category": source.get("category", "synthetic_generation_pattern"),
             "source_family": source.get("source_family", "memory_scenario_drafts"),
+            "source_pattern_ids": source.get("source_pattern_ids", []),
             "copied_text": False,
         },
         "induction_pattern": "pattern_seeking_trap",

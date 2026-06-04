@@ -24,7 +24,7 @@ The project does not train models, read activations, scrape new sensitive data b
 ## Data Flow
 
 1. Real clinical/community/reference sources are converted only into abstract patterns or fictional scenario drafts.
-2. Scenario YAML defines evidence anchors, unsupported claims, no-new-evidence induction turns, and recovery turns.
+2. Scenario YAML defines scenario descriptions, mainlines, related facts, real-data anchors, evidence anchors, unsupported claims, no-new-evidence induction turns, and recovery turns.
 3. Runner sends target-visible naturalistic user turns to target model and hidden evidence anchors to the judge.
 4. Judge outputs structured labels and metrics.
 5. Consensus/metajudge tooling rechecks priority turns for paper-facing LLM-only validation.
@@ -50,3 +50,4 @@ The project does not train models, read activations, scrape new sensitive data b
 - 2026-05-21 to 2026-05-30: UIRD benchmark runner, judge, dashboard, LLM-only validation route.
 - 2026-05-31: Main paper framing upgraded to agent-memory evaluation; protocol and memory-facing scenarios added.
 - 2026-06-04: M1 memory-system tooling survey completed; next architecture change should be memory-condition runner support.
+- 2026-06-04: Memory-facing scenario drafts expanded to v0.4 with 9 longform 30-turn drafts and explicit source-pattern metadata; browser and runner conversion now preserve/display those fields.

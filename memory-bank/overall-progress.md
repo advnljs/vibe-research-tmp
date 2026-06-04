@@ -91,6 +91,48 @@ Deviation Bench has been narrowed from a broad context-induced deviation idea in
   - `deviation-bench/results/web/mock_all_dashboard.html`
   - `deviation-bench/results/web/index.html`
 
+### Memory-Facing Scenario Expansion and HTML Refresh
+
+根据用户反馈“20 轮太少，需要扩展，并且要明确主线、相关事实、每个场景体现哪个真实数据”，完成 memory-facing scenario drafts v0.4：
+
+- 修改 `deviation-bench/prompts/memory_scenario_drafts.yaml`
+  - `dataset_version`: `0.4`
+  - 9 条 scenario drafts。
+  - 每条从 20 target-visible turns 扩展到 30 target-visible turns：`opening`、`t1`-`t28`、`recovery`。
+  - 每条新增 `scenario_description`、`mainline`、`related_facts`、`real_data_anchor`。
+  - 每条 `source_inspiration.source_pattern_ids` 明确记录对应的 abstracted real-data pattern IDs。
+  - `memdraft_001` 仍为 development used-smoke；`memdraft_002` 到 `memdraft_009` 是 fresh candidates，仍需 runner / judge reliability 稳定后再做 split assignment。
+- 修改 `deviation-bench/src/build_scenario_browser.py`
+  - validator 现在检查 scenario description、mainline、related facts、real-data anchor 和 source pattern IDs。
+  - HTML 详情页展示 Scenario Overview、Related Facts、Real Data Anchor、Pattern Roles 和 Source Boundary。
+- 修改 `deviation-bench/src/build_memory_runner_scenarios.py`
+  - runner conversion 透传 description / mainline / related_facts / real_data_anchor / source_pattern_ids，便于后续 memory trace 使用。
+- 修改 `deviation-bench/prompts/real_to_dialogue_rewrite_prompt.md`
+  - 将后续 real-to-dialogue 草稿默认从 20 turns 改为 30 turns。
+  - 要求输出 scenario description、mainline、related facts 和 real-data anchor metadata。
+- 新增验证记录：
+  - `deviation-bench/experiments/s0_memory_scenario_expansion_validation_2026-06-04.md`
+
+验证结果：
+
+- `python3 -m py_compile` 覆盖 scenario browser、runner conversion、pilot runner、dashboard、web index：通过。
+- `python3 deviation-bench/src/build_scenario_browser.py --validate-only`
+  - `validation=ok scenarios=9`
+- runner conversion + validation：
+  - `wrote /tmp/deviation_memory_runner_scenarios.yaml scenarios=9`
+  - `loaded_scenarios=9 selected=9`
+  - `validation=ok`
+- full mock rollout：
+  - 9 records
+  - 270 turns
+  - 每条 30 turns，`baseline` 到 `recovery`
+- dashboard generation：
+  - `input_files=1 conversations=9 load_errors=0`
+- ignored 本地 web 已刷新：
+  - `deviation-bench/results/web/scenarios.html`
+  - `deviation-bench/results/web/mock_all_dashboard.html`
+  - `deviation-bench/results/web/index.html`
+
 ## Completed 2026-05-21
 
 ### Skills Installed
@@ -703,8 +745,9 @@ Updated:
   - Recommends Tier 1 + Tier 2 for making benchmark items closer to real data while avoiding raw-real public prompts.
 
 - `deviation-bench/prompts/real_to_dialogue_rewrite_prompt.md`
-  - New LLM rewrite prompt for converting de-identified real-data snippets or abstract source patterns into fictional 20-turn dialogue episodes.
-  - Requires opening + 18 induction turns + recovery, no target-visible benchmark/test framing, no copied source phrases, low-risk content, and `adds_new_evidence=false` for induction turns.
+  - LLM rewrite prompt for converting de-identified real-data snippets or abstract source patterns into fictional dialogue episodes.
+  - Current default is 30 turns: opening + 28 induction turns + recovery.
+  - Requires scenario description, mainline, related facts, real-data anchor, no target-visible benchmark/test framing, no copied source phrases, low-risk content, and `adds_new_evidence=false` for induction turns.
 
 - `deviation-bench/src/rewrite_real_to_dialogue.py`
   - New OpenAI-compatible rewrite script.
@@ -1331,9 +1374,10 @@ Important caveat:
 25. 已完成：创建统一 research web workspace，并启动本地服务 `http://127.0.0.1:8768/`。
 26. 已完成：写 `agent_memory_system_survey.md`，确认第一批外部主 baseline 为 mem0 和 Graphiti，并把 Zep / LangGraph / LlamaIndex / Letta 的实验位置降为 appendix / future / implementation reference。
 27. 已完成：按验证优先原则修订 `memory_scenario_drafts.yaml` 到 v0.2，并跑通 browser validation、runner conversion、5-record/100-turn mock rollout 和 dashboard generation。
-28. 建议下一步：实现本地 memory-condition runner skeleton，先支持 full transcript / recent window / rolling summary 和 trace schema。
-29. 后续：补 vector / fact / evidence-aware memory 条件，准备 Python 3.10+ 外部系统环境，再接 mem0 / Graphiti smoke。
-30. turns 的 paper-based schedule / pressure cadence 参考可以后置到 runner/judge reliability 稳定之后。
-31. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md`、`Benchmark 对比与研究缺口分析.md`、`Agent Memory系统评测新视角.md`、`agent_memory_eval_protocol.md` 和 `agent_memory_system_survey.md`）。
+28. 已完成：根据真实数据抽象 patterns 扩展 `memory_scenario_drafts.yaml` 到 v0.4，当前 9 条 / 每条 30 turns，并补 scenario description、mainline、related facts、real-data anchor、source pattern IDs，跑通 9-record/270-turn mock rollout、dashboard generation 和 HTML refresh。
+29. 建议下一步：实现本地 memory-condition runner skeleton，先支持 full transcript / recent window / rolling summary 和 trace schema。
+30. 后续：补 vector / fact / evidence-aware memory 条件，准备 Python 3.10+ 外部系统环境，再接 mem0 / Graphiti smoke。
+31. turns 的 paper-based schedule / pressure cadence 参考可以后置到 runner/judge reliability 稳定之后。
+32. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md`、`Benchmark 对比与研究缺口分析.md`、`Agent Memory系统评测新视角.md`、`agent_memory_eval_protocol.md` 和 `agent_memory_system_survey.md`）。
 
 详细行动队列见 `memory-bank/next-step.md`。

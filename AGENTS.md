@@ -175,6 +175,8 @@ Additional persistent workflow requirement:
 - Improve the dialogue scenarios first, but prioritize validation over literature-driven turn schedule design.
 - Turn-count / pressure-cadence settings can later refer to related papers.
 - Near-term scenario work should keep no-new-evidence semantics and pass browser validation, runner conversion, mock rollout, and dashboard generation before further tuning.
+- The user judged 20-turn memory-facing scenarios too short. Current memory-facing drafts should be longer by default; v0.4 uses 30 target-visible turns per scenario.
+- Each scenario should explicitly state its mainline, related facts, and which real-data abstract patterns it reflects.
 
 ## Installed Skills
 
@@ -233,6 +235,7 @@ Data root:
 - `deviation-bench/prompts/gold_control_scenarios.yaml`
 - `deviation-bench/prompts/memory_scenario_drafts.yaml`
 - `deviation-bench/experiments/s0_memory_scenario_revision_validation_2026-06-04.md`
+- `deviation-bench/experiments/s0_memory_scenario_expansion_validation_2026-06-04.md`
 - `deviation-bench/src/rewrite_real_to_dialogue.py`
 - `deviation-bench/src/build_judge_consensus.py`
 - `deviation-bench/src/build_scenario_browser.py`
@@ -367,12 +370,16 @@ As of 2026-05-31:
   - environment blocker: current default `python3` is 3.8.10 and lacks `pip`; mem0 / Graphiti external smoke needs Python 3.10+ venv/container/environment.
 - First memory-facing scenario drafts and browser now exist:
   - draft YAML: `deviation-bench/prompts/memory_scenario_drafts.yaml`
-  - current draft version: `0.2`
+  - current draft version: `0.4`
   - browser script: `deviation-bench/src/build_scenario_browser.py`
   - runner conversion script: `deviation-bench/src/build_memory_runner_scenarios.py`
   - generated ignored page: `deviation-bench/results/scenario_browser/index.html`
-  - all 5 drafts are now 20-turn episodes and have passed mock full-rollout testing; `memdraft_001` is used smoke / development after the first real API memory-facing smoke, while `memdraft_002` to `memdraft_005` are revised fresh candidates pending runner and judge reliability.
+  - current set has 9 drafts, each 30 target-visible turns (`opening`, `t1`-`t28`, `recovery`).
+  - each draft now includes `scenario_description`, `mainline`, `related_facts`, `real_data_anchor`, and explicit `source_pattern_ids`.
+  - `memdraft_001` is used smoke / development after the first real API memory-facing smoke, while `memdraft_002` to `memdraft_009` are fresh candidates pending runner, judge reliability, and split assignment.
   - v0.2 validation note: `deviation-bench/experiments/s0_memory_scenario_revision_validation_2026-06-04.md`
+  - v0.4 expansion validation note: `deviation-bench/experiments/s0_memory_scenario_expansion_validation_2026-06-04.md`
+  - v0.4 validation passed browser validation, runner conversion, 9-record / 270-turn mock rollout, dashboard generation with 9 conversations / 0 load errors, and local web refresh.
 - First real API memory-facing smoke has run:
   - tracked summary: `deviation-bench/experiments/s0_memory_real_api_smoke_2026-05-31.md`
   - scenario: `memdraft_001_blue_mug_signal`
@@ -388,10 +395,11 @@ Recommended next work:
 
 1. Read `memory-bank/next-step.md` for the current action queue and framing blockers.
 2. Follow `deviation-bench/后续优先级路线图.md` as the current ordering source.
-3. Implement the local memory-condition runner skeleton before fresh memory-system pilot expansion: start with full transcript, recent window, rolling summary, and trace schema.
-4. Extend local conditions to vector chunks, LLM fact memory, and evidence-aware memory; use development items only for calibration.
-5. Prepare Python 3.10+ venv/container/environment before external mem0 / Graphiti smoke.
-6. Then run the S1 judge reliability pass and memory-facing scenario work in the order specified by `memory-bank/next-step.md`.
+3. Review current local web pages under ignored `deviation-bench/results/web/` if scenario content needs inspection.
+4. Implement the local memory-condition runner skeleton before fresh memory-system pilot expansion: start with full transcript, recent window, rolling summary, and trace schema.
+5. Extend local conditions to vector chunks, LLM fact memory, and evidence-aware memory; use development items only for calibration.
+6. Prepare Python 3.10+ venv/container/environment before external mem0 / Graphiti smoke.
+7. Then run the S1 judge reliability pass and memory-facing scenario work in the order specified by `memory-bank/next-step.md`.
 
 ## Git Repository
 

@@ -41,7 +41,7 @@ Not primary framing:
 
 ## Current Phase
 
-Phase: Agent Memory primary framing selected + formal protocol drafted + first 20-turn memory-facing scenario drafts/browser/mock rollout created + first real API memory smoke/web workspace online + candidate-memory tooling survey completed + scenario drafts revised/validated to v0.2 -> next implement local memory-condition runner skeleton before external mem0 / Graphiti smoke and fresh memory-system pilot.
+Phase: Agent Memory primary framing selected + formal protocol drafted + memory-facing scenario drafts/browser/mock rollout created + first real API memory smoke/web workspace online + candidate-memory tooling survey completed + scenario drafts expanded/validated to v0.4 with 9 longform 30-turn drafts -> next implement local memory-condition runner skeleton before external mem0 / Graphiti smoke and fresh memory-system pilot.
 
 Completed:
 
@@ -156,6 +156,13 @@ Completed:
   - `memdraft_001` is development used-smoke
   - `memdraft_002` to `memdraft_005` are revised fresh candidates
   - validation passed through browser validation, runner conversion, 5-record / 100-turn mock rollout, and dashboard generation
+- Expanded and validated memory-facing scenario drafts:
+  - `deviation-bench/prompts/memory_scenario_drafts.yaml`
+  - `deviation-bench/experiments/s0_memory_scenario_expansion_validation_2026-06-04.md`
+  - dataset version `0.4`
+  - 9 scenarios, each 30 target-visible turns
+  - each scenario now has scenario description, mainline, related facts, real-data anchor, and source pattern IDs
+  - validation passed through browser validation, runner conversion, 9-record / 270-turn mock rollout, dashboard generation, and local web refresh
 
 Current implementation position:
 
@@ -218,20 +225,25 @@ Current implementation position:
   - proposed comparison: full transcript vs summary memory vs vector/RAG memory vs graph memory vs hybrid/evidence-aware memory
   - proposed core metric: Memory-Induced Drift Amplification, `MIDA = Drift(memory_system) - Drift(full_transcript)`
   - tooling survey for mem0 / Graphiti and other candidates is now complete; next step is local memory-condition runner implementation.
+- Memory-facing scenario drafts are now v0.4:
+  - 9 longform drafts
+  - 30 target-visible turns per draft
+  - each draft has explicit mainline, related facts, and abstracted real-data source pattern IDs
+  - local HTML under ignored `deviation-bench/results/web/` has been refreshed
 - Agent Memory system survey now exists:
   - `deviation-bench/agent_memory_system_survey.md`
   - `memdraft_001` is classified as used smoke / development, not fresh evidence
-  - `memdraft_002` to `memdraft_005` remain fresh candidates pending runner/judge reliability
+  - `memdraft_002` to `memdraft_009` remain fresh candidates pending runner/judge reliability and split assignment
   - external systems should not be installed until a Python 3.10+ environment is available
 - Memory-facing scenario drafts now exist:
   - `deviation-bench/prompts/memory_scenario_drafts.yaml`
-  - 5 closed-world fictional drafts with objective boundary, unsupported claim, memory-test design, expected memory failures, 20 dialogue turns, and recovery turn
-  - current version: `0.2`, revised for memory-runner design and validated on 2026-06-04
-  - `memdraft_001` is used smoke / development; `memdraft_002` to `memdraft_005` remain fresh candidates pending runner and judge reliability
+  - 9 closed-world fictional drafts with objective boundary, unsupported claim, memory-test design, expected memory failures, scenario description, mainline, related facts, real-data anchor, source pattern IDs, 30 dialogue turns, and recovery turn
+  - current version: `0.4`, expanded for memory-runner design and validated on 2026-06-04
+  - `memdraft_001` is used smoke / development; `memdraft_002` to `memdraft_009` remain fresh candidates pending runner and judge reliability
   - browser script: `deviation-bench/src/build_scenario_browser.py`
   - runner conversion script: `deviation-bench/src/build_memory_runner_scenarios.py`
   - generated ignored page: `deviation-bench/results/scenario_browser/index.html`
-  - full mock rollout over all 5 drafts produced 5 records / 100 turns and dashboard load errors = 0
+  - full mock rollout over all 9 drafts produced 9 records / 270 turns and dashboard load errors = 0
 - First memory-facing real API smoke now exists:
   - tracked note: `deviation-bench/experiments/s0_memory_real_api_smoke_2026-05-31.md`
   - ignored raw output under `deviation-bench/results/pilot/memory_real/`

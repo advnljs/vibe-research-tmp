@@ -170,6 +170,12 @@ Additional persistent workflow requirement:
 - Current web service script: `deviation-bench/scripts/start_research_web.sh`.
 - Web/manual browsing remains development/debugging and governance inspection only; it is not paper-facing human annotation.
 
+## User Direction From 2026-06-04
+
+- Improve the dialogue scenarios first, but prioritize validation over literature-driven turn schedule design.
+- Turn-count / pressure-cadence settings can later refer to related papers.
+- Near-term scenario work should keep no-new-evidence semantics and pass browser validation, runner conversion, mock rollout, and dashboard generation before further tuning.
+
 ## Installed Skills
 
 Installed in the workspace root:
@@ -226,6 +232,7 @@ Data root:
 - `deviation-bench/prompts/metajudge_rubric.md`
 - `deviation-bench/prompts/gold_control_scenarios.yaml`
 - `deviation-bench/prompts/memory_scenario_drafts.yaml`
+- `deviation-bench/experiments/s0_memory_scenario_revision_validation_2026-06-04.md`
 - `deviation-bench/src/rewrite_real_to_dialogue.py`
 - `deviation-bench/src/build_judge_consensus.py`
 - `deviation-bench/src/build_scenario_browser.py`
@@ -360,10 +367,12 @@ As of 2026-05-31:
   - environment blocker: current default `python3` is 3.8.10 and lacks `pip`; mem0 / Graphiti external smoke needs Python 3.10+ venv/container/environment.
 - First memory-facing scenario drafts and browser now exist:
   - draft YAML: `deviation-bench/prompts/memory_scenario_drafts.yaml`
+  - current draft version: `0.2`
   - browser script: `deviation-bench/src/build_scenario_browser.py`
   - runner conversion script: `deviation-bench/src/build_memory_runner_scenarios.py`
   - generated ignored page: `deviation-bench/results/scenario_browser/index.html`
-  - all 5 drafts are now 20-turn episodes and have passed mock full-rollout testing; `memdraft_001` is used smoke / development after the first real API memory-facing smoke, while `memdraft_002` to `memdraft_005` remain fresh candidates pending runner and judge reliability.
+  - all 5 drafts are now 20-turn episodes and have passed mock full-rollout testing; `memdraft_001` is used smoke / development after the first real API memory-facing smoke, while `memdraft_002` to `memdraft_005` are revised fresh candidates pending runner and judge reliability.
+  - v0.2 validation note: `deviation-bench/experiments/s0_memory_scenario_revision_validation_2026-06-04.md`
 - First real API memory-facing smoke has run:
   - tracked summary: `deviation-bench/experiments/s0_memory_real_api_smoke_2026-05-31.md`
   - scenario: `memdraft_001_blue_mug_signal`

@@ -18,7 +18,8 @@ Canonical project navigation is `研究导航.md`. This file is a compact memory
 
 - `deviation-bench/agent_memory_eval_protocol.md`: formal agent-memory evaluation protocol.
 - `deviation-bench/agent_memory_system_survey.md`: current M1 tooling survey and external-system selection.
-- `deviation-bench/prompts/memory_scenario_drafts.yaml`: first memory-facing 20-turn drafts.
+- `deviation-bench/prompts/memory_scenario_drafts.yaml`: memory-facing 20-turn drafts, current version `0.2`.
+- `deviation-bench/experiments/s0_memory_scenario_revision_validation_2026-06-04.md`: scenario v0.2 validation note.
 - `deviation-bench/src/deviation_bench_pilot.py`: current API-only runner.
 - `deviation-bench/src/build_judge_consensus.py`: LLM-only metajudge/consensus tooling.
 - `deviation-bench/后续优先级路线图.md`: priority ordering.

@@ -11,6 +11,7 @@ This module covers the current main Deviation Bench framing: evaluating whether 
 - Protocol: `deviation-bench/agent_memory_eval_protocol.md`
 - System survey: `deviation-bench/agent_memory_system_survey.md`
 - Scenario drafts: `deviation-bench/prompts/memory_scenario_drafts.yaml`
+- Scenario validation note: `deviation-bench/experiments/s0_memory_scenario_revision_validation_2026-06-04.md`
 - Runner conversion: `deviation-bench/src/build_memory_runner_scenarios.py`
 - Main runner: `deviation-bench/src/deviation_bench_pilot.py`
 
@@ -51,4 +52,5 @@ Proposed next CLI additions:
 
 - Current local Python is 3.8.10 and lacks `pip`; external memory-system testing needs Python 3.10+ environment.
 - `memdraft_001_blue_mug_signal` is already used in real smoke and should be development-only.
+- `memory_scenario_drafts.yaml` v0.2 passed browser validation, runner conversion, 5-record / 100-turn mock rollout, and dashboard generation.
 - The next implementation should not install mem0/Graphiti yet; implement local simulator and trace schema first.

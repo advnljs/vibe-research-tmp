@@ -41,7 +41,7 @@ Not primary framing:
 
 ## Current Phase
 
-Phase: Agent Memory primary framing selected + formal protocol drafted + first 20-turn memory-facing scenario drafts/browser/mock rollout created + first real API memory smoke/web workspace online + candidate-memory tooling survey completed -> next implement local memory-condition runner skeleton before external mem0 / Graphiti smoke and fresh memory-system pilot.
+Phase: Agent Memory primary framing selected + formal protocol drafted + first 20-turn memory-facing scenario drafts/browser/mock rollout created + first real API memory smoke/web workspace online + candidate-memory tooling survey completed + scenario drafts revised/validated to v0.2 -> next implement local memory-condition runner skeleton before external mem0 / Graphiti smoke and fresh memory-system pilot.
 
 Completed:
 
@@ -149,6 +149,13 @@ Completed:
   - recommended first external baselines: `external_mem0` and `external_graphiti`
   - recommended first implementation path: local simulator before external systems
   - identified environment blocker for external systems: current `python3` is 3.8.10 and lacks `pip`; mem0 / Graphiti need Python 3.10+
+- Revised and validated memory-facing scenario drafts:
+  - `deviation-bench/prompts/memory_scenario_drafts.yaml`
+  - `deviation-bench/experiments/s0_memory_scenario_revision_validation_2026-06-04.md`
+  - dataset version `0.2`
+  - `memdraft_001` is development used-smoke
+  - `memdraft_002` to `memdraft_005` are revised fresh candidates
+  - validation passed through browser validation, runner conversion, 5-record / 100-turn mock rollout, and dashboard generation
 
 Current implementation position:
 
@@ -219,6 +226,8 @@ Current implementation position:
 - Memory-facing scenario drafts now exist:
   - `deviation-bench/prompts/memory_scenario_drafts.yaml`
   - 5 closed-world fictional drafts with objective boundary, unsupported claim, memory-test design, expected memory failures, 20 dialogue turns, and recovery turn
+  - current version: `0.2`, revised for memory-runner design and validated on 2026-06-04
+  - `memdraft_001` is used smoke / development; `memdraft_002` to `memdraft_005` remain fresh candidates pending runner and judge reliability
   - browser script: `deviation-bench/src/build_scenario_browser.py`
   - runner conversion script: `deviation-bench/src/build_memory_runner_scenarios.py`
   - generated ignored page: `deviation-bench/results/scenario_browser/index.html`
@@ -236,7 +245,7 @@ Current implementation position:
   - Priority 2 completed: gold-control scenarios,
   - Priority M0 completed: formalize Agent Memory evaluation protocol,
   - Priority M1 completed: tooling survey for mem0 / Graphiti / other memory systems,
-  - Scenario review current: `memdraft_001` is used smoke; `memdraft_002` to `005` are fresh candidates pending review,
+  - Scenario review completed enough for validation-first workflow: `memdraft_001` is used smoke; `memdraft_002` to `005` are revised fresh candidates pending runner/judge reliability,
   - Priority M2 next: runner design and implementation for full transcript vs memory conditions,
   - Priority 3: S1 judge reliability pass with real metajudge before fresh memory-system evidence,
   - Priority 4/5: Tier 2 / fresh memory-facing held-out expansion if still needed,
@@ -510,3 +519,5 @@ Detailed handoff queue:
 - Recorded that `memdraft_001_blue_mug_signal` is now a used smoke / development item; `memdraft_002` to `memdraft_005` remain fresh candidates pending runner and judge reliability.
 - Identified a local environment constraint: default `python3` is 3.8.10 and `pip` is unavailable, while mem0 / Graphiti require Python 3.10+; external system smoke needs a new venv/container/environment.
 - Current next implementation task: local memory-condition runner skeleton with trace schema.
+- Scenario drafts were revised to v0.2 and validated end to end in mock mode.
+- User clarified that turn-count / pressure schedule can later reference related papers, but the near-term priority is validation rather than literature-driven turn design.

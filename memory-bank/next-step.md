@@ -30,10 +30,11 @@ Use that file as the ordering source, but apply the new Agent Memory framing bef
 1. Draft `deviation-bench/agent_memory_eval_protocol.md`. **Done 2026-05-31.**
 2. Review the first 20-turn memory-facing scenario drafts and the first real API smoke in the local research web workspace. **Done enough for M1 on 2026-06-04; `memdraft_001` is now used smoke / development.**
 3. Survey mem0, Graphiti, and any other candidate memory systems for API, default write policy, retrieval policy, and reproducibility. **Done 2026-06-04.**
-4. Design and implement runner changes for full transcript vs recent-window / summary / vector / fact-memory / graph / evidence-aware / external memory conditions. **Current next task.**
-5. Run S1 judge reliability pass before any claims-oriented fresh memory-system pilot.
-6. Generate Tier 2 / fresh memory-facing held-out items only after the memory runner and judge reliability path are stable.
-7. Draft Section 2 Task and Design Goals around the final agent-memory framing.
+4. Revise and validate memory-facing scenario drafts for runner readiness. **Done 2026-06-04; v0.2 passed browser validation, runner conversion, 5-record / 100-turn mock rollout, and dashboard generation.**
+5. Design and implement runner changes for full transcript vs recent-window / summary / vector / fact-memory / graph / evidence-aware / external memory conditions. **Current next task.**
+6. Run S1 judge reliability pass before any claims-oriented fresh memory-system pilot.
+7. Generate Tier 2 / fresh memory-facing held-out items only after the memory runner and judge reliability path are stable.
+8. Draft Section 2 Task and Design Goals around the final agent-memory framing.
 
 The project can continue on the Framing A path. The first S0 real API smoke confirmed the real API path works. The naturalistic 20-turn development calibration on `uird_pilot_001` induced strong factual errors in both DeepSeek target models under a stricter factual-error definition. Do not treat `uird_pilot_001` as held-out evidence; use it as a development calibration item.
 
@@ -139,6 +140,21 @@ The Agent Memory system survey now exists:
 - first implementation path recommended: local simulator before external systems
 - environment blocker for external system smoke: current default `python3` is 3.8.10 and lacks `pip`; mem0 / Graphiti need Python 3.10+
 - scenario review effect: `memdraft_001_blue_mug_signal` is now a used smoke / development item; `memdraft_002` to `memdraft_005` remain fresh candidates pending runner and judge reliability.
+
+The memory-facing scenario drafts have been revised and validated:
+
+- file: `deviation-bench/prompts/memory_scenario_drafts.yaml`
+- version: `0.2`
+- validation note: `deviation-bench/experiments/s0_memory_scenario_revision_validation_2026-06-04.md`
+- `memdraft_001_blue_mug_signal`: `development_used_smoke`
+- `memdraft_002_focus_mode_thoughts`, `memdraft_003_support_template_we_see_you`, `memdraft_004_random_seat_assignment`, `memdraft_005_lms_hint_hidden_message`: `fresh_memory_candidate`
+- validation passed:
+  - scenario browser validator
+  - runner conversion
+  - converted runner schema validation
+  - full mock rollout: 5 records / 100 turns
+  - dashboard generation: 5 conversations / 0 load errors
+- user preference: turn-count and pressure-cadence design can later reference related papers, but near-term work should prioritize validation and runner reliability.
 
 The user also clarified that “closer to real data” can include using an LLM to convert selected real data into dialogue format. The current policy is Tier 2 real-to-dialogue paraphrasing: de-identify or abstract real material first, use LLM to generate fictional opening + induction turns + recovery, then run automatic no-copy / no-identification / low-risk QC and metajudge checks before adding it to held-out scenarios.
 
@@ -325,12 +341,14 @@ These tasks are independent of the final framing and can proceed before the user
 
 23. Memory-facing scenario drafts and browser:
    - Draft YAML: `deviation-bench/prompts/memory_scenario_drafts.yaml`
+   - Current version: `0.2`
    - Browser script: `deviation-bench/src/build_scenario_browser.py`
    - Runner conversion script: `deviation-bench/src/build_memory_runner_scenarios.py`
    - Generated local page: `deviation-bench/results/scenario_browser/index.html`
    - Generated mock dashboard: `deviation-bench/results/scenario_browser/mock_all_dashboard.html`
-   - Status: first review set complete with 5 closed-world fictional 20-turn drafts.
-   - Validation: scenario-browser validator passed; Python compile passed; runner conversion validates; full mock rollout passed with 100 turns.
+   - Status: revised and validated for memory-runner design.
+   - Validation: scenario-browser validator passed; Python compile passed; runner conversion validates; full mock rollout passed with 5 records / 100 turns; dashboard generation produced 5 conversations / 0 load errors.
+   - Split status: `memdraft_001` is development used-smoke; `memdraft_002` to `005` are fresh candidates pending runner and judge reliability.
 
 24. Memory-facing real API smoke and web workspace:
    - Tracked note: `deviation-bench/experiments/s0_memory_real_api_smoke_2026-05-31.md`
@@ -370,6 +388,7 @@ These tasks are independent of the final framing and can proceed before the user
      - log context token counts, compression ratio, source turns, verification status, evidence relation, and distortion flags.
    - Keep raw Deviation Bench scenarios fictional and low-risk.
    - Follow `deviation-bench/agent_memory_system_survey.md`: implement local simulator first, then external `mem0` / `Graphiti`.
+   - Use revised scenario v0.2 for validation-first runner tests; do not retune turn schedule from papers until after runner and judge reliability are stable.
 
 3. **Prepare Python 3.10+ environment for external memory smoke**
    - Current default `python3`: 3.8.10.
@@ -432,9 +451,15 @@ These tasks are independent of the final framing and can proceed before the user
      - G3 Scalability,
      - G4 Quality,
      - safety boundary,
-     - why API-only is part of the design.
+   - why API-only is part of the design.
 
-9. **Implement larger synthesis script after memory-system S0 passes**
+9. **Later: compare turn schedules against related papers**
+   - The user noted turn settings can reference related papers, but this is lower priority than validation.
+   - Do this after local memory runner and S1 judge reliability are stable.
+   - Output could be a short tracked note under `deviation-bench/experiments/` or `deviation-bench/paper/`.
+   - Keep any changes to turn count / pressure cadence separated from validation-only scenario revisions.
+
+10. **Implement larger synthesis script after memory-system S0 passes**
    - Proposed output: `deviation-bench/src/synthesize_from_patterns.py`
    - Input: `deviation-bench/data_sources/patterns/seed_pattern_bank.jsonl` and `deviation-bench/prompts/utterance_schema.yaml`.
    - Output: generated draft items under an ignored results/work directory unless the user asks to track generated data.

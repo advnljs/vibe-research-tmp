@@ -17,10 +17,12 @@ This file records persistent user requirements and project constraints in compac
 - Core comparison: full transcript context vs memory systems within token ranges where full transcript still fits.
 - Preserve the hypothesis that direct full transcript may be more reality-grounded than current memory systems in those token regimes.
 - Verify mem0, Graphiti, and any other external memory system via official docs/source and pinned versions before paper claims.
+- Turn-count / pressure-cadence choices may later be aligned with related papers, but near-term work should prioritize validation and runner reliability.
 
 ## Current Acceptance Criteria For Next Task
 
 - Memory runner changes must support mock/offline validation first.
+- Revised memory-facing scenarios should keep no-new-evidence semantics and pass browser validation, runner conversion, mock rollout, and dashboard generation before use.
 - Each memory condition must record trace fields: backend/config, write policy, retrieval policy, context tokens, compression ratio, source turns, evidence relation, verification status, and distortion flags.
 - Generated raw results remain under ignored `deviation-bench/results/`.
 - Every completed durable task must update memory-bank, commit, and push to `origin/main`.

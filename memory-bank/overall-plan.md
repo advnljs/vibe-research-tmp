@@ -1,6 +1,6 @@
 # Overall Plan
 
-Last updated: 2026-05-31
+Last updated: 2026-06-04
 
 This file records the overall plan and the current implementation position. Update it whenever the plan, current phase, or next action changes.
 
@@ -41,7 +41,7 @@ Not primary framing:
 
 ## Current Phase
 
-Phase: Agent Memory primary framing selected + formal protocol drafted + first 20-turn memory-facing scenario drafts/browser/mock rollout created + first real API memory smoke/web workspace online -> user review of drafts/results, then candidate-memory tooling survey and local memory-condition runner before fresh memory-system pilot.
+Phase: Agent Memory primary framing selected + formal protocol drafted + first 20-turn memory-facing scenario drafts/browser/mock rollout created + first real API memory smoke/web workspace online + candidate-memory tooling survey completed -> next implement local memory-condition runner skeleton before external mem0 / Graphiti smoke and fresh memory-system pilot.
 
 Completed:
 
@@ -143,6 +143,12 @@ Completed:
   - `deviation-bench/scripts/start_research_web.sh`
   - ignored pages under `deviation-bench/results/web/`
   - current service: `http://127.0.0.1:8768/`
+- Completed the Agent Memory system tooling survey:
+  - `deviation-bench/agent_memory_system_survey.md`
+  - official-source mechanism survey for mem0, Graphiti, Zep, LangGraph Store, LlamaIndex Memory, and Letta
+  - recommended first external baselines: `external_mem0` and `external_graphiti`
+  - recommended first implementation path: local simulator before external systems
+  - identified environment blocker for external systems: current `python3` is 3.8.10 and lacks `pip`; mem0 / Graphiti need Python 3.10+
 
 Current implementation position:
 
@@ -204,7 +210,12 @@ Current implementation position:
   - `deviation-bench/agent_memory_eval_protocol.md`
   - proposed comparison: full transcript vs summary memory vs vector/RAG memory vs graph memory vs hybrid/evidence-aware memory
   - proposed core metric: Memory-Induced Drift Amplification, `MIDA = Drift(memory_system) - Drift(full_transcript)`
-  - next step is a tooling survey for mem0 / Graphiti before any external-system claim, followed by memory-condition runner implementation.
+  - tooling survey for mem0 / Graphiti and other candidates is now complete; next step is local memory-condition runner implementation.
+- Agent Memory system survey now exists:
+  - `deviation-bench/agent_memory_system_survey.md`
+  - `memdraft_001` is classified as used smoke / development, not fresh evidence
+  - `memdraft_002` to `memdraft_005` remain fresh candidates pending runner/judge reliability
+  - external systems should not be installed until a Python 3.10+ environment is available
 - Memory-facing scenario drafts now exist:
   - `deviation-bench/prompts/memory_scenario_drafts.yaml`
   - 5 closed-world fictional drafts with objective boundary, unsupported claim, memory-test design, expected memory failures, 20 dialogue turns, and recovery turn
@@ -224,9 +235,9 @@ Current implementation position:
   - Priority 1 completed: judge-consensus / reliability script,
   - Priority 2 completed: gold-control scenarios,
   - Priority M0 completed: formalize Agent Memory evaluation protocol,
-  - Scenario review current: browse and revise first memory-facing drafts,
-  - Priority M1 next: tooling survey for mem0 / Graphiti / other memory systems,
-  - Priority M2 after survey/review: runner design for full transcript vs memory conditions,
+  - Priority M1 completed: tooling survey for mem0 / Graphiti / other memory systems,
+  - Scenario review current: `memdraft_001` is used smoke; `memdraft_002` to `005` are fresh candidates pending review,
+  - Priority M2 next: runner design and implementation for full transcript vs memory conditions,
   - Priority 3: S1 judge reliability pass with real metajudge before fresh memory-system evidence,
   - Priority 4/5: Tier 2 / fresh memory-facing held-out expansion if still needed,
   - Priority 6+: memory-system pilot, paper Section 2 and v1 scaling.
@@ -392,10 +403,11 @@ Detailed handoff queue:
    - 已完成：写 `agent_memory_eval_protocol.md`，定义 full transcript vs memory system 的 token-window sweep、memory traces、metrics 和 runner 改造。
    - 已完成：写 `memory_scenario_drafts.yaml`、`build_scenario_browser.py` 和 `build_memory_runner_scenarios.py`，生成本地 scenario browser，并用 mock full rollout 跑通 5 条 20-turn 草稿。
    - 已完成：跑第一条 memory-facing real API smoke，并生成 `results/web/` 统一网页入口；本地服务为 `http://127.0.0.1:8768/`。
-   - 下一步：用户浏览 research web workspace 后，筛选/修改 memory-facing drafts；然后写 `agent_memory_system_survey.md`，完成 mem0 / Graphiti / 其他候选系统的版本、API、写入策略、检索策略和可复现实验配置调查。
-   - 后续：实现本地 memory-condition runner，再跑 S1 judge reliability、Tier 2 drafts、fresh memory-facing scenarios 和 memory-system pilot。
-   - 写 Section 2 §Task and Design Goals 草稿时应复用 `paper/table1_benchmark_comparison.md`、`Benchmark 对比与研究缺口分析.md`、`Agent Memory系统评测新视角.md` 和 `agent_memory_eval_protocol.md`。
-3. Agent Memory tooling survey、LLM-only judge reliability 和 memory runner design 稳定后，再回到：新增 1-3 fresh memory-facing scenarios → memory-system pilot → v1 scale-up。
+   - 已完成：写 `agent_memory_system_survey.md`，确认 mem0 / Graphiti / 其他候选系统的 API、默认写入策略、检索策略、可复现实验配置和当前环境约束。
+   - 下一步：实现本地 memory-condition runner skeleton，先支持 full transcript / recent window / rolling summary 和 memory trace，再扩 vector / fact / evidence-aware memory。
+   - 后续：准备 Python 3.10+ 外部系统环境，接 mem0 / Graphiti smoke，再跑 S1 judge reliability、Tier 2 drafts、fresh memory-facing scenarios 和 memory-system pilot。
+   - 写 Section 2 §Task and Design Goals 草稿时应复用 `paper/table1_benchmark_comparison.md`、`Benchmark 对比与研究缺口分析.md`、`Agent Memory系统评测新视角.md`、`agent_memory_eval_protocol.md` 和 `agent_memory_system_survey.md`。
+3. Memory runner design、LLM-only judge reliability 和 external system smoke 稳定后，再回到：新增 1-3 fresh memory-facing scenarios → memory-system pilot → v1 scale-up。
 
 ## Decision Log
 
@@ -481,7 +493,7 @@ Detailed handoff queue:
   - the key comparison is direct full transcript vs memory systems within specified context-token windows;
   - user hypothesis: full transcript should produce less deviation while it still fits in context.
 - Added `deviation-bench/agent_memory_eval_protocol.md`.
-- Updated the roadmap so the next tasks are:
+- Updated the roadmap so the next tasks were:
   - `agent_memory_system_survey.md`;
   - local memory-condition runner;
   - S1 judge reliability pass before fresh memory-system pilot.
@@ -489,3 +501,12 @@ Detailed handoff queue:
   - mem0 has add/search memory workflow and default LLM + embedding + vector-store setup in its Python docs;
   - Graphiti is a temporal context graph framework with episode provenance and hybrid retrieval.
 - These checks are recorded as preliminary; formal paper claims still require the planned tooling survey and version/config pinning.
+
+2026-06-04：
+
+- Produced `deviation-bench/agent_memory_system_survey.md` as the formal M1 tooling survey.
+- Recommended first external baselines: mem0 OSS for fact-memory / hybrid retrieval, Graphiti OSS for temporal graph / provenance.
+- Deferred Zep, LangGraph Store, LlamaIndex Memory, and Letta to appendix / future / implementation-reference roles for the first runner iteration.
+- Recorded that `memdraft_001_blue_mug_signal` is now a used smoke / development item; `memdraft_002` to `memdraft_005` remain fresh candidates pending runner and judge reliability.
+- Identified a local environment constraint: default `python3` is 3.8.10 and `pip` is unavailable, while mem0 / Graphiti require Python 3.10+; external system smoke needs a new venv/container/environment.
+- Current next implementation task: local memory-condition runner skeleton with trace schema.

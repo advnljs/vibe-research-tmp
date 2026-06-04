@@ -1,6 +1,6 @@
 # Overall Progress
 
-Last updated: 2026-05-31
+Last updated: 2026-06-04
 
 This file records completed work and the current state of the Deviation Bench project. Update it after any meaningful research, data, implementation, or planning change.
 
@@ -14,6 +14,39 @@ Deviation Bench has been narrowed from a broad context-induced deviation idea in
 - Intended contribution: measure whether memory extraction / retrieval / summarization / graph construction amplifies reality drift relative to direct full transcript context within defined token-window regimes.
 - Compute constraint: low GPU / API-only. The benchmark should not depend on model training, activation extraction, or high-cost inference infrastructure.
 - Safety boundary: induction designs should test reality-grounding failure in controlled, fictional, low-risk settings. They should not be jailbreaks, safety bypasses, or prompts that escalate real-world harm.
+
+## Completed 2026-06-04
+
+### Agent Memory System Survey
+
+完成当前 todo 队列中的 M1 tooling survey：
+
+- 新增 `deviation-bench/agent_memory_system_survey.md`
+  - 核查 mem0、Graphiti、Zep、LangGraph Store、LlamaIndex Memory、Letta 的官方文档 / 官方仓库信息。
+  - 明确第一批外部主 baseline 只建议接 `external_mem0` 和 `external_graphiti`。
+  - 建议先实现本地 simulator：`full_transcript`、`recent_window`、`rolling_summary`、`vector_chunks`、`llm_fact_memory`、`evidence_aware_memory`。
+  - 将 Zep、LangGraph Store、LlamaIndex Memory、Letta 暂定位为 managed/appendix/future 或 implementation reference。
+  - 把 runner 需要记录的 memory backend、write policy、retrieval policy、turn-level trace、provenance 和 distortion fields 写成最小 trace spec。
+
+场景审阅结论：
+
+- `memdraft_001_blue_mug_signal` 已跑真实 API smoke，应视为 development / used-smoke，不再作为 fresh paper evidence。
+- `memdraft_002` 到 `memdraft_005` 仍可作为 fresh memory-facing candidates，但应等 memory runner 和 judge reliability 稳定后再正式 split。
+
+环境约束：
+
+- 本机默认 `python3` 为 `3.8.10`，且无 `pip`。
+- mem0 和 Graphiti 官方文档均要求 Python 3.10+；外部系统 smoke 前需要新建 Python 3.10+ venv、容器或切换运行环境。
+
+同步补齐项目记忆：
+
+- 新增全局工作流要求的简短索引文件：
+  - `memory-bank/todo.md`
+  - `memory-bank/architecture.md`
+  - `memory-bank/nav.md`
+  - `memory-bank/specs.md`
+  - `memory-bank/module-agent-memory-eval.md`
+- 这些文件是对现有三份核心 memory-bank 的补充；详细接力状态仍以 `overall-progress.md`、`overall-plan.md`、`next-step.md` 为主。
 
 ## Completed 2026-05-21
 
@@ -1205,9 +1238,10 @@ Important caveat:
 - Remaining open decisions are venue, language scope, raw text boundary for any future Tier 2 work, whether to include evidence-aware memory as a companion baseline, timeline, and API budget.
 - Verify the pushed data on GitHub if needed.
 - Freeze the current 20-turn `uird_pilot_001` as a development calibration item before expanding pilot runs.
-- Review the local web workspace at `http://127.0.0.1:8768/` and decide which memory-facing drafts to keep, revise, or discard.
-- Run a tooling survey for mem0, Graphiti, and any other candidate memory systems before writing claims about their mechanisms.
-- Implement the local memory-condition runner for full transcript vs recent window / rolling summary / vector chunks / LLM fact memory / evidence-aware memory.
+- Review the local web workspace at `http://127.0.0.1:8768/` and decide whether `memdraft_002` to `memdraft_005` need light edits before fresh split assignment.
+- Use `deviation-bench/agent_memory_system_survey.md` as the mechanism source before writing claims about mem0, Graphiti, or other memory systems.
+- Implement the local memory-condition runner skeleton for full transcript vs recent window / rolling summary first, then vector chunks / LLM fact memory / evidence-aware memory.
+- Prepare a Python 3.10+ environment before external mem0 / Graphiti smoke; the current default `python3` is 3.8.10 and lacks `pip`.
 - Run a real OpenAI-compatible S1 judge reliability pass using `deviation-bench/src/build_judge_consensus.py`, existing standard / hardened spot-check outputs, and the new gold-control scenarios before any claims-oriented fresh memory-system pilot.
 - Use `run_standard_pilot.sh` for held-out full episodes so dashboard comparisons are not mixed with smoke/calibration fragments.
 - Use `rewrite_real_to_dialogue.py` to create 1-2 Tier 2 real-to-dialogue held-out drafts from de-identified DAIS-C / first-episode friendship snippets or abstract patterns, then run automatic QC / metajudge checks before copying into `pilot_scenarios.yaml`.
@@ -1219,11 +1253,11 @@ Important caveat:
 
 ## Current Best Next Step
 
-优先级 1：先浏览 `http://127.0.0.1:8768/` 或 `deviation-bench/results/web/index.html`，查看 5 个 20-turn memory-facing scenario drafts 与第一条真实 API dashboard，筛选和修改 drafts。
+优先级 1：实现本地 memory-condition runner skeleton，先支持 `full_transcript`、`recent_window`、`rolling_summary`，并输出最小 memory trace。
 
-优先级 2：写 `deviation-bench/agent_memory_system_survey.md`，完成 mem0、Graphiti 等 candidate memory systems 的 tooling / mechanism survey，确认 API、默认写入策略、检索策略和可复现实验配置。
+优先级 2：补 `vector_chunks`、`llm_fact_memory`、`evidence_aware_memory` 本地条件；用 `memdraft_001` / `uird_pilot_001` 做 development calibration，不写成 paper evidence。
 
-优先级 3：实现本地 memory-condition runner，先支持 full transcript、recent window、rolling summary、vector chunks、LLM fact memory 和 evidence-aware memory；之后跑 S1 real metajudge reliability pass。
+优先级 3：准备 Python 3.10+ venv / 容器，为后续 `external_mem0` 和 `external_graphiti` smoke pin 版本与配置；之后跑 S1 real metajudge reliability pass。
 
 已完成的 Framing-A 主线准备动作：
 
@@ -1252,8 +1286,9 @@ Important caveat:
 23. 已完成：将 5 条 memory-facing scenario drafts 全部扩到 20 轮，并用 mock full rollout 跑通 5 records / 100 turns。
 24. 已完成：跑第一条 memory-facing real API smoke（`memdraft_001_blue_mug_signal` × `deepseek-v4-flash`，judge=`deepseek-v4-pro`），完整 20 turns，dashboard load_errors=0。
 25. 已完成：创建统一 research web workspace，并启动本地服务 `http://127.0.0.1:8768/`。
-26. 建议下一步：浏览 `results/web/index.html` 后，决定哪些草稿进入 formal split 或需要重写。
-27. 后续：写 `agent_memory_system_survey.md`，再实现本地 memory-condition runner。
-28. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md`、`Benchmark 对比与研究缺口分析.md`、`Agent Memory系统评测新视角.md` 和 `agent_memory_eval_protocol.md`）。
+26. 已完成：写 `agent_memory_system_survey.md`，确认第一批外部主 baseline 为 mem0 和 Graphiti，并把 Zep / LangGraph / LlamaIndex / Letta 的实验位置降为 appendix / future / implementation reference。
+27. 建议下一步：实现本地 memory-condition runner skeleton，先支持 full transcript / recent window / rolling summary 和 trace schema。
+28. 后续：补 vector / fact / evidence-aware memory 条件，准备 Python 3.10+ 外部系统环境，再接 mem0 / Graphiti smoke。
+29. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md`、`Benchmark 对比与研究缺口分析.md`、`Agent Memory系统评测新视角.md`、`agent_memory_eval_protocol.md` 和 `agent_memory_system_survey.md`）。
 
 详细行动队列见 `memory-bank/next-step.md`。

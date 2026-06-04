@@ -1,6 +1,6 @@
 # Next Step
 
-Last updated: 2026-05-31
+Last updated: 2026-06-04
 
 This file is the actionable handoff queue for Deviation Bench. Future agents should read it together with `memory-bank/overall-progress.md` and `memory-bank/overall-plan.md` before doing substantive work.
 
@@ -28,9 +28,9 @@ The current prioritized roadmap is tracked in:
 Use that file as the ordering source, but apply the new Agent Memory framing before running the next experiment. The short version is:
 
 1. Draft `deviation-bench/agent_memory_eval_protocol.md`. **Done 2026-05-31.**
-2. Review the first 20-turn memory-facing scenario drafts and the first real API smoke in the local research web workspace. **Current next task.**
-3. Survey mem0, Graphiti, and any other candidate memory systems for API, default write policy, retrieval policy, and reproducibility.
-4. Design runner changes for full transcript vs recent-window / summary / vector / fact-memory / graph / evidence-aware / external memory conditions.
+2. Review the first 20-turn memory-facing scenario drafts and the first real API smoke in the local research web workspace. **Done enough for M1 on 2026-06-04; `memdraft_001` is now used smoke / development.**
+3. Survey mem0, Graphiti, and any other candidate memory systems for API, default write policy, retrieval policy, and reproducibility. **Done 2026-06-04.**
+4. Design and implement runner changes for full transcript vs recent-window / summary / vector / fact-memory / graph / evidence-aware / external memory conditions. **Current next task.**
 5. Run S1 judge reliability pass before any claims-oriented fresh memory-system pilot.
 6. Generate Tier 2 / fresh memory-facing held-out items only after the memory runner and judge reliability path are stable.
 7. Draft Section 2 Task and Design Goals around the final agent-memory framing.
@@ -129,6 +129,16 @@ The local research web workspace now exists:
   - `deviation-bench/results/web/mock_all_dashboard.html`
 - current service: `http://127.0.0.1:8768/`
 - use this as the default browsing surface after new scenarios or experiment results are generated.
+
+The Agent Memory system survey now exists:
+
+- file: `deviation-bench/agent_memory_system_survey.md`
+- status: M1 tooling survey complete as of 2026-06-04
+- official-source candidates reviewed: mem0, Graphiti, Zep, LangGraph Store, LlamaIndex Memory, Letta
+- first external main baselines recommended: `external_mem0` and `external_graphiti`
+- first implementation path recommended: local simulator before external systems
+- environment blocker for external system smoke: current default `python3` is 3.8.10 and lacks `pip`; mem0 / Graphiti need Python 3.10+
+- scenario review effect: `memdraft_001_blue_mug_signal` is now a used smoke / development item; `memdraft_002` to `memdraft_005` remain fresh candidates pending runner and judge reliability.
 
 The user also clarified that “closer to real data” can include using an LLM to convert selected real data into dialogue format. The current policy is Tier 2 real-to-dialogue paraphrasing: de-identify or abstract real material first, use LLM to generate fictional opening + induction turns + recovery, then run automatic no-copy / no-identification / low-risk QC and metajudge checks before adding it to held-out scenarios.
 
@@ -273,7 +283,7 @@ These tasks are independent of the final framing and can proceed before the user
 
 19. Prioritized roadmap:
    - Output: `deviation-bench/后续优先级路线图.md`
-   - Status: next work was originally ordered by benchmark-paper dependency; after the Agent Memory idea, the immediate order is protocol -> memory-system tooling survey -> memory-condition runner design -> S1 judge reliability pass / memory pilot.
+   - Status: next work was originally ordered by benchmark-paper dependency; after the Agent Memory idea, the immediate order became protocol -> memory-system tooling survey -> memory-condition runner design -> S1 judge reliability pass / memory pilot. As of 2026-06-04, the tooling survey step is complete and the runner design/implementation step is next.
 
 20. Judge-consensus validation script:
    - Code: `deviation-bench/src/build_judge_consensus.py`
@@ -311,7 +321,7 @@ These tasks are independent of the final framing and can proceed before the user
    - Core hypothesis: in specified context-token intervals, full transcript should outperform memory systems on Deviation Bench because memory extraction/retrieval can lose evidence and amplify unsupported claims.
    - Candidate systems named by user: mem0 and Graphiti.
    - Protocol defines token-window sweep, memory traces, MIDA, evidence retention, unsupported-claim retention, memory distortion, and external-system fairness rules.
-   - Next artifact: `deviation-bench/agent_memory_system_survey.md`.
+   - Follow-up artifact now complete: `deviation-bench/agent_memory_system_survey.md`.
 
 23. Memory-facing scenario drafts and browser:
    - Draft YAML: `deviation-bench/prompts/memory_scenario_drafts.yaml`
@@ -352,29 +362,20 @@ These tasks are independent of the final framing and can proceed before the user
      - `memdraft_004_random_seat_assignment`
      - `memdraft_005_lms_hint_hidden_message`
 
-2. **Survey candidate memory systems**
-   - Output:
-     `deviation-bench/agent_memory_system_survey.md`
-   - Candidate systems named by the user:
-     - mem0
-     - Graphiti
-   - Check:
-     - current API / SDK,
-     - storage backend,
-     - write policy,
-     - retrieval policy,
-     - graph / vector / summary behavior,
-     - reproducibility controls,
-     - whether raw user text, summaries, or entity relations are stored.
-   - Record findings before making claims that these systems are RAG-like or graph-based.
-
-3. **Design runner changes for memory conditions**
+2. **Design runner changes for memory conditions**
    - Proposed code direction:
      - add `--memory-condition full_transcript|recent_window|rolling_summary|vector_chunks|llm_fact_memory|temporal_graph|evidence_aware_memory|external`
      - add `--token-window`
      - record memory write / retrieval traces,
      - log context token counts, compression ratio, source turns, verification status, evidence relation, and distortion flags.
    - Keep raw Deviation Bench scenarios fictional and low-risk.
+   - Follow `deviation-bench/agent_memory_system_survey.md`: implement local simulator first, then external `mem0` / `Graphiti`.
+
+3. **Prepare Python 3.10+ environment for external memory smoke**
+   - Current default `python3`: 3.8.10.
+   - Current package manager state: no `pip` / `pip3` / `uv` available in PATH.
+   - Do not install new production dependencies into the repo without user confirmation.
+   - Prepare a venv/container or alternate environment before testing `mem0ai` / `graphiti-core`.
 
 4. **Run S1 judge reliability pass with real metajudge**
    - Script:

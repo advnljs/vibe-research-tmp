@@ -1,6 +1,6 @@
 # Overall Plan
 
-Last updated: 2026-06-04
+Last updated: 2026-06-05
 
 This file records the overall plan and the current implementation position. Update it whenever the plan, current phase, or next action changes.
 
@@ -41,7 +41,7 @@ Not primary framing:
 
 ## Current Phase
 
-Phase: Agent Memory primary framing selected + formal protocol drafted + memory-facing scenario drafts/browser/mock rollout created + first real API memory smoke/web workspace online + candidate-memory tooling survey completed + scenario drafts expanded/validated to v0.4 with 9 longform 30-turn drafts -> next implement local memory-condition runner skeleton before external mem0 / Graphiti smoke and fresh memory-system pilot.
+Phase: Agent Memory primary framing selected + protocol/tooling survey/scenario v0.4 complete + local memory-condition runner skeleton implemented for full transcript / recent window / rolling summary with trace and MIDA summary -> next add vector chunks / LLM fact memory / evidence-aware memory before real memory-condition pilot and external mem0 / Graphiti smoke.
 
 Completed:
 
@@ -258,7 +258,8 @@ Current implementation position:
   - Priority M0 completed: formalize Agent Memory evaluation protocol,
   - Priority M1 completed: tooling survey for mem0 / Graphiti / other memory systems,
   - Scenario review completed enough for validation-first workflow: `memdraft_001` is used smoke; `memdraft_002` to `005` are revised fresh candidates pending runner/judge reliability,
-  - Priority M2 next: runner design and implementation for full transcript vs memory conditions,
+  - Priority M2 first stage completed: full transcript / recent window / rolling summary runner, trace, MIDA summary, and mock validation,
+  - Priority M2 current: vector chunks / LLM fact memory / evidence-aware memory,
   - Priority 3: S1 judge reliability pass with real metajudge before fresh memory-system evidence,
   - Priority 4/5: Tier 2 / fresh memory-facing held-out expansion if still needed,
   - Priority 6+: memory-system pilot, paper Section 2 and v1 scaling.
@@ -425,7 +426,8 @@ Detailed handoff queue:
    - 已完成：写 `memory_scenario_drafts.yaml`、`build_scenario_browser.py` 和 `build_memory_runner_scenarios.py`，生成本地 scenario browser，并用 mock full rollout 跑通 5 条 20-turn 草稿。
    - 已完成：跑第一条 memory-facing real API smoke，并生成 `results/web/` 统一网页入口；本地服务为 `http://127.0.0.1:8768/`。
    - 已完成：写 `agent_memory_system_survey.md`，确认 mem0 / Graphiti / 其他候选系统的 API、默认写入策略、检索策略、可复现实验配置和当前环境约束。
-   - 下一步：实现本地 memory-condition runner skeleton，先支持 full transcript / recent window / rolling summary 和 memory trace，再扩 vector / fact / evidence-aware memory。
+   - 已完成：实现本地 memory-condition runner skeleton，支持 full transcript / recent window / rolling summary、逐轮 memory trace、动态 dashboard status 和 matched MIDA summary。
+   - 下一步：在同一 context/trace 接口上实现 vector chunks / LLM fact memory / evidence-aware memory。
    - 后续：准备 Python 3.10+ 外部系统环境，接 mem0 / Graphiti smoke，再跑 S1 judge reliability、Tier 2 drafts、fresh memory-facing scenarios 和 memory-system pilot。
    - 写 Section 2 §Task and Design Goals 草稿时应复用 `paper/table1_benchmark_comparison.md`、`Benchmark 对比与研究缺口分析.md`、`Agent Memory系统评测新视角.md`、`agent_memory_eval_protocol.md` 和 `agent_memory_system_survey.md`。
 3. Memory runner design、LLM-only judge reliability 和 external system smoke 稳定后，再回到：新增 1-3 fresh memory-facing scenarios → memory-system pilot → v1 scale-up。
@@ -530,6 +532,7 @@ Detailed handoff queue:
 - Deferred Zep, LangGraph Store, LlamaIndex Memory, and Letta to appendix / future / implementation-reference roles for the first runner iteration.
 - Recorded that `memdraft_001_blue_mug_signal` is now a used smoke / development item; `memdraft_002` to `memdraft_005` remain fresh candidates pending runner and judge reliability.
 - Identified a local environment constraint: default `python3` is 3.8.10 and `pip` is unavailable, while mem0 / Graphiti require Python 3.10+; external system smoke needs a new venv/container/environment.
-- Current next implementation task: local memory-condition runner skeleton with trace schema.
+- Local memory-condition runner skeleton is complete with full transcript / recent window / rolling summary, trace schema, token-window enforcement, 27-run mock validation, MIDA summary, and local web dashboard.
+- Current next implementation task: add `vector_chunks`, `llm_fact_memory`, and `evidence_aware_memory`, then run a real memory-condition development pilot.
 - Scenario drafts were revised to v0.2 and validated end to end in mock mode.
 - User clarified that turn-count / pressure schedule can later reference related papers, but the near-term priority is validation rather than literature-driven turn design.

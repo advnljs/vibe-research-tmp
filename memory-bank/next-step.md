@@ -1,6 +1,6 @@
 # Next Step
 
-Last updated: 2026-06-04
+Last updated: 2026-06-05
 
 This file is the actionable handoff queue for Deviation Bench. Future agents should read it together with `memory-bank/overall-progress.md` and `memory-bank/overall-plan.md` before doing substantive work.
 
@@ -31,7 +31,7 @@ Use that file as the ordering source, but apply the new Agent Memory framing bef
 2. Review the first memory-facing scenario drafts and the first real API smoke in the local research web workspace. **Done enough for M1 on 2026-06-04; `memdraft_001` is now used smoke / development.**
 3. Survey mem0, Graphiti, and any other candidate memory systems for API, default write policy, retrieval policy, and reproducibility. **Done 2026-06-04.**
 4. Revise, expand, and validate memory-facing scenario drafts for runner readiness. **Done 2026-06-04; v0.4 has 9 longform 30-turn drafts with scenario description, mainline, related facts, real-data anchors, source pattern IDs, and passed browser validation, runner conversion, 9-record / 270-turn mock rollout, dashboard generation, and HTML refresh.**
-5. Design and implement runner changes for full transcript vs recent-window / summary / vector / fact-memory / graph / evidence-aware / external memory conditions. **Current next task.**
+5. Design and implement runner changes for full transcript vs recent-window / summary / vector / fact-memory / graph / evidence-aware / external memory conditions. **First skeleton done 2026-06-05: full transcript / recent window / rolling summary + trace + MIDA summary. Current next task: vector chunks / LLM fact memory / evidence-aware memory.**
 6. Run S1 judge reliability pass before any claims-oriented fresh memory-system pilot.
 7. Generate Tier 2 / fresh memory-facing held-out items only after the memory runner and judge reliability path are stable.
 8. Draft Section 2 Task and Design Goals around the final agent-memory framing.
@@ -304,7 +304,7 @@ These tasks are independent of the final framing and can proceed before the user
 
 19. Prioritized roadmap:
    - Output: `deviation-bench/后续优先级路线图.md`
-   - Status: next work was originally ordered by benchmark-paper dependency; after the Agent Memory idea, the immediate order became protocol -> memory-system tooling survey -> memory-condition runner design -> S1 judge reliability pass / memory pilot. As of 2026-06-04, the tooling survey step is complete and the runner design/implementation step is next.
+   - Status: the runner skeleton is complete as of 2026-06-05; current work is local vector/fact/evidence-aware conditions before S1 reliability and real memory pilot.
 
 20. Judge-consensus validation script:
    - Code: `deviation-bench/src/build_judge_consensus.py`
@@ -390,12 +390,18 @@ These tasks are independent of the final framing and can proceed before the user
      - `memdraft_008_window_phrase_private_meaning`
      - `memdraft_009_prediction_badge_hits`
 
-2. **Design runner changes for memory conditions**
-   - Proposed code direction:
-     - add `--memory-condition full_transcript|recent_window|rolling_summary|vector_chunks|llm_fact_memory|temporal_graph|evidence_aware_memory|external`
-     - add `--token-window`
-     - record memory write / retrieval traces,
-     - log context token counts, compression ratio, source turns, verification status, evidence relation, and distortion flags.
+2. **Extend the implemented local memory-condition runner**
+   - Completed 2026-06-05:
+     - `full_transcript`, `recent_window`, `rolling_summary`;
+     - `--token-window`, `--memory-trace-out`, independent memory model/provider config;
+     - per-turn tokens, compression, write/retrieval policy, source turns, provenance, verification, evidence relation,
+       distortion and trimming flags;
+     - matched MIDA summary and memory-condition dashboard;
+     - 9 scenarios × 3 conditions = 27 records / 810 turns / 810 traces.
+   - Current implementation target:
+     - add `vector_chunks`, `llm_fact_memory`, `evidence_aware_memory`;
+     - use `memdraft_001` development-only for real API calibration;
+     - do not claim summary semantic evidence retention until metajudge evaluation exists.
    - Keep raw Deviation Bench scenarios fictional and low-risk.
    - Follow `deviation-bench/agent_memory_system_survey.md`: implement local simulator first, then external `mem0` / `Graphiti`.
    - Use revised scenario v0.4 for validation-first runner tests; do not retune turn schedule from papers until after runner and judge reliability are stable.

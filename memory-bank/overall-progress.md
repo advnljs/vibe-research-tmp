@@ -1,6 +1,6 @@
 # Overall Progress
 
-Last updated: 2026-06-04
+Last updated: 2026-06-05
 
 This file records completed work and the current state of the Deviation Bench project. Update it after any meaningful research, data, implementation, or planning change.
 
@@ -14,6 +14,42 @@ Deviation Bench has been narrowed from a broad context-induced deviation idea in
 - Intended contribution: measure whether memory extraction / retrieval / summarization / graph construction amplifies reality drift relative to direct full transcript context within defined token-window regimes.
 - Compute constraint: low GPU / API-only. The benchmark should not depend on model training, activation extraction, or high-cost inference infrastructure.
 - Safety boundary: induction designs should test reality-grounding failure in controlled, fictional, low-risk settings. They should not be jailbreaks, safety bypasses, or prompts that escalate real-world harm.
+
+## Completed 2026-06-05
+
+### Local Memory-Condition Runner Skeleton
+
+完成 M2 第一阶段本地 memory-condition runner：
+
+- `deviation-bench/src/deviation_bench_pilot.py`
+  - 新增统一 context assembly 层，支持 `full_transcript`、`recent_window`、`rolling_summary`。
+  - 新增 `--memory-condition`、`--token-window`、`--recent-turns`、`--memory-trace-out` 和独立 memory
+    provider/model 配置。
+  - 每轮记录近似 full/condition tokens、compression ratio、write/retrieval policy、memory writes、
+    context/retrieval items、source turns、provenance、verification status、evidence relation、distortion 和
+    token-window trimming flags。
+  - `full_transcript` 显式窗口超限时失败；其他本地条件按窗口裁剪。
+- `deviation-bench/src/summarize_memory_runs.py`
+  - 新增 matched full-transcript 对照与 MIDA 汇总。
+- `deviation-bench/src/build_memory_runner_scenarios.py`
+  - 透传 `memory_test_design` 和 `memory_probe_tags`。
+- Dashboard/web：
+  - dashboard 使用动态 expected turn count 并展示 memory condition。
+  - local web workspace 新增 memory-condition mock dashboard。
+- 验证记录：
+  - `deviation-bench/experiments/s0_memory_condition_runner_skeleton_validation_2026-06-05.md`
+
+验证：
+
+- 9 scenarios × 3 conditions = 27 records / 810 target turns / 810 traces。
+- `rolling_summary` 产生 234 次 mock summary writes。
+- MIDA summary：27 matched comparisons。
+- dashboard：27 conversations / 0 load errors / 27 full。
+- 700-token rolling-summary 边界严格封顶并记录裁剪 flags。
+- 700-token full-transcript 边界按预期失败，不静默截断。
+
+当前下一步：在同一 context/trace 接口上实现 `vector_chunks`、`llm_fact_memory` 和
+`evidence_aware_memory`；之后再跑真实 memory-condition pilot 与外部 mem0 / Graphiti smoke。
 
 ## Completed 2026-06-04
 
@@ -1375,8 +1411,8 @@ Important caveat:
 26. 已完成：写 `agent_memory_system_survey.md`，确认第一批外部主 baseline 为 mem0 和 Graphiti，并把 Zep / LangGraph / LlamaIndex / Letta 的实验位置降为 appendix / future / implementation reference。
 27. 已完成：按验证优先原则修订 `memory_scenario_drafts.yaml` 到 v0.2，并跑通 browser validation、runner conversion、5-record/100-turn mock rollout 和 dashboard generation。
 28. 已完成：根据真实数据抽象 patterns 扩展 `memory_scenario_drafts.yaml` 到 v0.4，当前 9 条 / 每条 30 turns，并补 scenario description、mainline、related facts、real-data anchor、source pattern IDs，跑通 9-record/270-turn mock rollout、dashboard generation 和 HTML refresh。
-29. 建议下一步：实现本地 memory-condition runner skeleton，先支持 full transcript / recent window / rolling summary 和 trace schema。
-30. 后续：补 vector / fact / evidence-aware memory 条件，准备 Python 3.10+ 外部系统环境，再接 mem0 / Graphiti smoke。
+29. 已完成：实现本地 memory-condition runner skeleton，支持 full transcript / recent window / rolling summary、trace schema、MIDA summary 和 local dashboard。
+30. 当前下一步：补 vector / fact / evidence-aware memory 条件，准备 Python 3.10+ 外部系统环境，再接 mem0 / Graphiti smoke。
 31. turns 的 paper-based schedule / pressure cadence 参考可以后置到 runner/judge reliability 稳定之后。
 32. 写 Section 2 §Task and Design Goals 草稿（覆盖 G1-G4，复用 `paper/table1_benchmark_comparison.md`、`Benchmark 对比与研究缺口分析.md`、`Agent Memory系统评测新视角.md`、`agent_memory_eval_protocol.md` 和 `agent_memory_system_survey.md`）。
 

@@ -67,6 +67,12 @@ if [[ -f "$ROOT/results/working/memory_runner_all_mock.jsonl" ]]; then
     --out "$OUT_DIR/mock_all_dashboard.html"
 fi
 
+if compgen -G "$ROOT/results/working/memory_condition_*_mock.jsonl" > /dev/null; then
+  python3 "$ROOT/src/build_conversation_dashboard.py" \
+    --input "$ROOT/results/working/memory_condition_*_mock.jsonl" \
+    --out "$OUT_DIR/memory_conditions_mock_dashboard.html"
+fi
+
 python3 "$ROOT/src/build_web_index.py" \
   --result-glob "$RESULT_GLOB" \
   --out "$OUT_DIR/index.html"

@@ -152,6 +152,9 @@ def summarize_turns(turns: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def expected_turn_count(record: dict[str, Any], prompt_style: str) -> int | None:
+    recorded = record.get("expected_turn_count")
+    if isinstance(recorded, int) and recorded > 0:
+        return recorded
     if prompt_style == "structured":
         return 5
     if prompt_style == "naturalistic":
@@ -188,7 +191,8 @@ def normalize_conversation(raw: dict[str, Any], source_file: Path, line_no: int)
     scenario_id = record.get("scenario_id") or raw.get("scenario_id") or "unknown_scenario"
     model = raw.get("model") or record.get("model") or "unknown_model"
     prompt_style = raw.get("prompt_style") or record.get("prompt_style") or "unknown_style"
-    conv_id = f"{source_file.stem}:{line_no}:{scenario_id}:{model}:{prompt_style}"
+    memory_condition = raw.get("memory_condition") or record.get("memory_condition") or "full_transcript"
+    conv_id = f"{source_file.stem}:{line_no}:{scenario_id}:{model}:{prompt_style}:{memory_condition}"
     summary = summarize_turns(turns)
     status = run_status(record, prompt_style)
     source_inspiration = record.get("source_inspiration") or {}
@@ -212,6 +216,7 @@ def normalize_conversation(raw: dict[str, Any], source_file: Path, line_no: int)
         "source_copied_text": copied_text,
         "unsupported_claim": record.get("unsupported_claim"),
         "prompt_style": prompt_style,
+        "memory_condition": memory_condition,
         "run_status": status,
         "stopped_early": status["stopped_early"],
         "metrics": metrics,
@@ -542,6 +547,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         conversation.family,
         conversation.domain,
         conversation.source_family,
+        conversation.memory_condition,
         conversation.source_file,
         ...conversation.turns.flatMap(turn => [turn.turn_id, turn.user_prompt, turn.model_output, turn.judge?.rationale]),
       ].join(" ").toLowerCase();
@@ -715,7 +721,7 @@ HTML_TEMPLATE = r"""<!doctype html>
         return `
           <button class="conversation-item ${conversation.id === state.selectedId ? "active" : ""}" data-conv-id="${esc(conversation.id)}" type="button">
             <div class="item-title"><span>${esc(conversation.scenario_id)}</span><span class="subtle">${esc(conversation.model)}</span></div>
-            <div class="item-grid"><span>${esc(conversation.prompt_style)}</span><span>${summary.turn_count || 0}/${conversation.run_status?.expected_turn_count || "?"} turns</span><span>max ${summary.max_stance_score ?? 0}</span></div>
+            <div class="item-grid"><span>${esc(conversation.memory_condition)}</span><span>${summary.turn_count || 0}/${conversation.run_status?.expected_turn_count || "?"} turns</span><span>max ${summary.max_stance_score ?? 0}</span></div>
             <div class="badge-row">${badges}</div>
           </button>
         `;
@@ -871,6 +877,7 @@ HTML_TEMPLATE = r"""<!doctype html>
               <span>${esc(conversation.family)}</span>
               <span>${esc(conversation.domain)}</span>
               <span>${esc(conversation.prompt_style)}</span>
+              <span>${esc(conversation.memory_condition)}</span>
               <span>${esc(conversation.source_family)}</span>
               <span>${esc(conversation.run_status?.status || "unknown")}: ${esc(conversation.run_status?.turn_count || 0)}/${esc(conversation.run_status?.expected_turn_count || "?")} turns</span>
               <span>${esc(conversation.source_file)}</span>

@@ -1,6 +1,6 @@
 # Module: Agent Memory Evaluation
 
-Last updated: 2026-06-04
+Last updated: 2026-06-05
 
 ## Responsibility
 
@@ -15,6 +15,8 @@ This module covers the current main Deviation Bench framing: evaluating whether 
 - Scenario expansion validation note: `deviation-bench/experiments/s0_memory_scenario_expansion_validation_2026-06-04.md`
 - Runner conversion: `deviation-bench/src/build_memory_runner_scenarios.py`
 - Main runner: `deviation-bench/src/deviation_bench_pilot.py`
+- Memory summary: `deviation-bench/src/summarize_memory_runs.py`
+- Runner validation note: `deviation-bench/experiments/s0_memory_condition_runner_skeleton_validation_2026-06-05.md`
 
 ## Key Interfaces
 
@@ -25,16 +27,21 @@ python3 deviation-bench/src/deviation_bench_pilot.py \
   --provider mock \
   --judge-provider mock \
   --prompt-style naturalistic \
-  --scenarios deviation-bench/results/working/memory_runner_scenarios.yaml
+  --scenarios deviation-bench/results/working/memory_runner_scenarios.yaml \
+  --memory-condition rolling_summary \
+  --token-window 16000 \
+  --memory-trace-out deviation-bench/results/working/memory_trace.jsonl
 ```
 
-Proposed next CLI additions:
+Implemented conditions:
 
 ```text
---memory-condition full_transcript|recent_window|rolling_summary|vector_chunks|llm_fact_memory|evidence_aware_memory|external
---token-window <int>
---memory-trace-out <path>
+full_transcript
+recent_window
+rolling_summary
 ```
+
+Next conditions: `vector_chunks`, `llm_fact_memory`, `evidence_aware_memory`.
 
 ## Internal Dependencies
 
@@ -55,4 +62,6 @@ Proposed next CLI additions:
 - `memdraft_001_blue_mug_signal` is already used in real smoke and should be development-only.
 - `memory_scenario_drafts.yaml` v0.4 contains 9 longform 30-turn drafts with scenario description, mainline, related facts, real-data anchor, and source pattern IDs.
 - v0.4 passed browser validation, runner conversion, 9-record / 270-turn mock rollout, dashboard generation, and local HTML refresh.
-- The next implementation should not install mem0/Graphiti yet; implement local simulator and trace schema first.
+- The local runner skeleton and trace schema passed 27-record / 810-turn mock validation.
+- Summary semantic evidence relation/distortion is deliberately `not_evaluated` until metajudge support exists.
+- The next implementation should not install mem0/Graphiti yet; extend the local simulator with vector/fact/evidence-aware conditions first.

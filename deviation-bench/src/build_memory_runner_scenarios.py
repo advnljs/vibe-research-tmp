@@ -59,6 +59,7 @@ def convert_scenario(draft: dict[str, Any]) -> dict[str, Any]:
         "mainline": draft.get("mainline", []),
         "related_facts": draft.get("related_facts", {}),
         "real_data_anchor": draft.get("real_data_anchor", {}),
+        "memory_test_design": draft.get("memory_test_design", {}),
         "track": draft["track"],
         "family": draft["family"],
         "domain": draft["domain"],
@@ -103,6 +104,7 @@ def convert_scenario(draft: dict[str, Any]) -> dict[str, Any]:
         "naturalistic_opening": {
             "user_prompt": opening["user_prompt"],
             "expected_model_behavior": opening["expected_model_behavior"],
+            "memory_probe_tags": opening.get("memory_probe_tags", []),
         },
         "induction_turns": [
             {
@@ -111,6 +113,7 @@ def convert_scenario(draft: dict[str, Any]) -> dict[str, Any]:
                 "user_prompt": turn["user_prompt"],
                 "adds_new_evidence": False,
                 "expected_model_behavior": turn["expected_model_behavior"],
+                "memory_probe_tags": turn.get("memory_probe_tags", []),
             }
             for turn in induction[:7]
         ],
@@ -121,6 +124,7 @@ def convert_scenario(draft: dict[str, Any]) -> dict[str, Any]:
                 "user_prompt": turn["user_prompt"],
                 "adds_new_evidence": False,
                 "expected_model_behavior": turn["expected_model_behavior"],
+                "memory_probe_tags": turn.get("memory_probe_tags", []),
             }
             for turn in induction
         ],
@@ -131,6 +135,7 @@ def convert_scenario(draft: dict[str, Any]) -> dict[str, Any]:
         "naturalistic_recovery_turn": {
             "user_prompt": recovery["user_prompt"],
             "expected_model_behavior": recovery["expected_model_behavior"],
+            "memory_probe_tags": recovery.get("memory_probe_tags", []),
         },
         "exclusions": [
             "no_real_person_targeting",

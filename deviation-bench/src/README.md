@@ -2,7 +2,7 @@
 
 This directory contains the first API-only pilot runner.
 
-Current main framing: **Framing A, real-corpus-anchored context-retest reliability benchmark**. The runner should be used first to check whether a target model keeps reality-grounded judgment stable under controlled context pressure and recovery turns.
+Current main framing: **agent memory can be delusive**. Framing A remains the real-corpus-anchored construction substrate; the runner compares whether direct full transcript or memory-conditioned context better preserves reality-grounded judgment under controlled context pressure and recovery turns.
 
 ## S0 Real API Smoke Goal
 
@@ -283,7 +283,7 @@ python3 deviation-bench/src/deviation_bench_pilot.py \
   --validate-only
 ```
 
-Run an offline full 20-turn mock rollout over all memory drafts:
+Run an offline full 30-turn mock rollout over all memory drafts:
 
 ```bash
 python3 deviation-bench/src/deviation_bench_pilot.py \
@@ -319,6 +319,62 @@ python3 deviation-bench/src/deviation_bench_pilot.py \
   --timeout 180 \
   --sleep 0.5
 ```
+
+## Run Local Memory Conditions
+
+The first local memory-runner skeleton supports:
+
+- `full_transcript`: direct complete history; raises an error if an explicit token window is exceeded.
+- `recent_window`: current user turn plus the most recent `--recent-turns` turn pairs.
+- `rolling_summary`: a memory summary of older history plus the most recent turn pairs.
+
+Each target turn embeds a `memory_trace` in the normal result record. Use `--memory-trace-out` to also write one
+trace-only JSONL record per target turn:
+
+```bash
+python3 deviation-bench/src/deviation_bench_pilot.py \
+  --provider mock \
+  --judge-provider mock \
+  --scenarios deviation-bench/results/working/memory_runner_scenarios.yaml \
+  --scenario-id memdraft_001_blue_mug_signal \
+  --prompt-style naturalistic \
+  --memory-condition rolling_summary \
+  --recent-turns 4 \
+  --token-window 16000 \
+  --out deviation-bench/results/working/memory_rolling_summary_mock.jsonl \
+  --memory-trace-out deviation-bench/results/working/memory_rolling_summary_trace.jsonl
+```
+
+`--token-window 0` keeps the previous unbounded behavior. Nonzero windows use the dependency-free
+`utf8_bytes_div_4_v1` input-token approximation; this is for local context assembly and must not be reported as
+provider billing-token usage.
+
+For real `rolling_summary` runs, the memory summarizer defaults to the target provider/model. It can be isolated with
+`MEMORY_MODEL`, `MEMORY_BASE_URL`, and `MEMORY_API_KEY`, or the corresponding `--memory-*` flags. Mock mode uses a
+deterministic engineering summary and is only a contract/trace smoke test.
+
+The trace records:
+
+- approximate full-transcript and condition-context tokens plus compression ratio,
+- memory condition, write policy, retrieval policy, and source turn IDs,
+- memory writes, retrieved/context items, provenance, verification status, evidence relation, and distortion flags,
+- token-window trimming flags.
+
+`rolling_summary` trace items deliberately mark semantic evidence relation and distortion as `not_evaluated`. A later
+metajudge pass is required before those fields can be treated as benchmark measurements.
+
+Run matched conditions with the same scenario/model/judge/prompt style/token window, then compute MIDA:
+
+```bash
+python3 deviation-bench/src/summarize_memory_runs.py \
+  --input 'deviation-bench/results/working/memory_*_mock.jsonl' \
+  --out deviation-bench/results/working/memory_mida_summary.json
+```
+
+The summary reports `condition metric - matched full_transcript metric`, context-token/compression statistics, and
+rule-derived memory metrics. Recovery-anchor retention remains `null` until a scenario contains a post-recovery probe.
+When `memory_condition_*_mock.jsonl` files exist under `results/working/`, `start_research_web.sh` also builds and links
+`memory_conditions_mock_dashboard.html`.
 
 ## Gold Controls
 
@@ -371,7 +427,7 @@ python3 deviation-bench/src/rewrite_real_to_dialogue.py \
   --out deviation-bench/results/working/real_to_dialogue_drafts.jsonl
 ```
 
-The script uses `deviation-bench/prompts/real_to_dialogue_rewrite_prompt.md`, asks for opening + 18 induction turns + recovery, and does not write the source excerpt into the output record by default. It adds basic quality flags for turn count, target-marker leakage, no-new-evidence, and source-text overlap.
+The script uses `deviation-bench/prompts/real_to_dialogue_rewrite_prompt.md`, asks for opening + 28 induction turns + recovery, and does not write the source excerpt into the output record by default. It adds basic quality flags for turn count, target-marker leakage, no-new-evidence, and source-text overlap.
 
 ## Common Failures
 

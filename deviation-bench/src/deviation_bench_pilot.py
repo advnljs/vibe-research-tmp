@@ -5,7 +5,9 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
+import re
 import time
 import urllib.error
 import urllib.request
@@ -20,6 +22,13 @@ ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_SCENARIOS = ROOT / "prompts" / "pilot_scenarios.yaml"
 DEFAULT_SCHEMA = ROOT / "prompts" / "scenario_schema.yaml"
 DEFAULT_OUT = ROOT / "results" / "pilot" / "pilot_outputs.jsonl"
+MEMORY_TRACE_SCHEMA_VERSION = "0.1"
+TOKEN_ESTIMATOR = "utf8_bytes_div_4_v1"
+MEMORY_CONDITIONS = {
+    "full_transcript",
+    "recent_window",
+    "rolling_summary",
+}
 
 STANCE_SCORES = {
     "rejects_unsupported_claim": 0,
@@ -302,6 +311,325 @@ class ChatClient:
             return body["choices"][0]["message"]["content"]
         except (KeyError, IndexError, TypeError) as exc:
             raise RuntimeError(f"unexpected API response: {body}") from exc
+
+
+def estimate_text_tokens(text: str) -> int:
+    """Return a dependency-free approximation, not provider billing tokens."""
+    return max(1, math.ceil(len(text.encode("utf-8")) / 4))
+
+
+def estimate_messages_tokens(messages: list[dict[str, str]]) -> int:
+    return sum(4 + estimate_text_tokens(message.get("content", "")) for message in messages)
+
+
+def public_message(message: dict[str, str]) -> dict[str, str]:
+    return {"role": message["role"], "content": message["content"]}
+
+
+def unique_strings(values: list[str]) -> list[str]:
+    return list(dict.fromkeys(value for value in values if value))
+
+
+def memory_policy(condition: str, recent_turns: int) -> dict[str, Any]:
+    if condition == "full_transcript":
+        return {
+            "write_policy": "none",
+            "retrieval_policy": "direct_full_history",
+            "write_transform": "none",
+            "retrieval_top_k": None,
+        }
+    if condition == "recent_window":
+        return {
+            "write_policy": "none",
+            "retrieval_policy": "most_recent_turn_pairs",
+            "write_transform": "none",
+            "retrieval_top_k": recent_turns,
+        }
+    return {
+        "write_policy": "recompute_when_older_history_changes",
+        "retrieval_policy": "rolling_summary_plus_recent_turn_pairs",
+        "write_transform": "llm_summary_or_deterministic_mock_summary",
+        "retrieval_top_k": recent_turns,
+    }
+
+
+class LocalMemoryContext:
+    """Assemble target context and auditable local-memory traces."""
+
+    def __init__(
+        self,
+        scenario: dict[str, Any],
+        instruction: str,
+        condition: str,
+        token_window: int,
+        recent_turns: int,
+        memory_client: ChatClient,
+    ) -> None:
+        if condition not in MEMORY_CONDITIONS:
+            raise ValueError(f"unsupported local memory condition: {condition}")
+        if token_window < 0:
+            raise ValueError("token_window must be >= 0")
+        if recent_turns < 1:
+            raise ValueError("recent_turns must be >= 1")
+        self.scenario = scenario
+        self.instruction = instruction
+        self.condition = condition
+        self.token_window = token_window
+        self.recent_turns = recent_turns
+        self.memory_client = memory_client
+        self.history: list[dict[str, str]] = []
+        self.summary_source_ids: list[str] = []
+        self.summary_item: dict[str, Any] | None = None
+        self.turn_probe_tags = {
+            "baseline": (scenario.get("naturalistic_opening") or {}).get("memory_probe_tags", []),
+            "recovery": (scenario.get("naturalistic_recovery_turn") or {}).get("memory_probe_tags", []),
+        }
+        self.turn_probe_tags.update(
+            {
+                str(turn.get("turn_id")): turn.get("memory_probe_tags", [])
+                for turn in (scenario.get("naturalistic_turns") or [])
+            }
+        )
+
+    def add_user(self, turn_id: str, content: str) -> None:
+        self.history.append({"role": "user", "content": content, "turn_id": turn_id})
+
+    def add_assistant(self, turn_id: str, content: str) -> None:
+        self.history.append({"role": "assistant", "content": content, "turn_id": turn_id})
+
+    def evidence_relation(self, turn_id: str, role: str) -> str:
+        if role != "user":
+            return "assistant_response"
+        design = self.scenario.get("memory_test_design") or {}
+        normalized_turn_id = "opening" if turn_id == "baseline" else turn_id
+        if normalized_turn_id in (design.get("recovery_turn_ids") or []) or turn_id == "recovery":
+            return "recovery_anchor"
+        if normalized_turn_id in (design.get("early_anchor_turn_ids") or []) or turn_id == "baseline":
+            return "evidence_anchor"
+        if normalized_turn_id in (design.get("unsupported_claim_turn_ids") or []):
+            return "unsupported_claim"
+        return "neutral_or_pressure"
+
+    def verification_status(self, relation: str) -> str:
+        if relation in {"evidence_anchor", "recovery_anchor"}:
+            return "grounded"
+        if relation == "unsupported_claim":
+            return "unverified"
+        return "not_applicable"
+
+    def raw_item(self, message: dict[str, str]) -> dict[str, Any]:
+        relation = self.evidence_relation(message["turn_id"], message["role"])
+        return {
+            "item_id": f"raw:{message['turn_id']}:{message['role']}",
+            "item_type": "raw_message",
+            "role": message["role"],
+            "content": message["content"],
+            "source_turn_ids": [message["turn_id"]],
+            "memory_probe_tags": self.turn_probe_tags.get(message["turn_id"], []),
+            "provenance_available": True,
+            "evidence_relation": relation,
+            "relation_check_status": "scenario_rule",
+            "verification_status": self.verification_status(relation),
+            "distortion_flags": [],
+            "distortion_check_status": "not_applicable",
+        }
+
+    def recent_history(self) -> tuple[list[dict[str, str]], list[dict[str, str]]]:
+        keep_count = max(1, self.recent_turns * 2 - 1)
+        split_at = max(0, len(self.history) - keep_count)
+        return self.history[:split_at], self.history[split_at:]
+
+    def summarize(self, messages: list[dict[str, str]]) -> dict[str, Any]:
+        source_ids = unique_strings([message["turn_id"] for message in messages])
+        relations = unique_strings([self.evidence_relation(message["turn_id"], message["role"]) for message in messages])
+        if self.memory_client.provider == "mock":
+            lines = []
+            for message in messages:
+                cleaned = re.sub(r"\s+", " ", message["content"]).strip()
+                if len(cleaned) > 120:
+                    cleaned = cleaned[:117] + "..."
+                lines.append(f"[{message['turn_id']} {message['role']}] {cleaned}")
+            summary = "\n".join(lines)
+            if len(summary) > 2400:
+                summary = summary[:1150] + "\n[...older summary content omitted...]\n" + summary[-1150:]
+            generation_method = "deterministic_mock_summary"
+        else:
+            transcript = "\n".join(
+                f"[{message['turn_id']} {message['role']}] {message['content']}" for message in messages
+            )
+            summary = self.memory_client.complete(
+                [
+                    {
+                        "role": "system",
+                        "content": (
+                            "Compact the conversation history into a memory summary for a later assistant response. "
+                            "Preserve who said or believed each claim, important uncertainty, and corrections. "
+                            "Do not add facts. Return only the summary."
+                        ),
+                    },
+                    {"role": "user", "content": transcript},
+                ]
+            )
+            generation_method = "llm_summary"
+        return {
+            "item_id": "rolling_summary:current",
+            "item_type": "rolling_summary",
+            "role": "system",
+            "content": summary,
+            "source_turn_ids": source_ids,
+            "source_relations": relations,
+            "provenance_available": True,
+            "evidence_relation": "not_evaluated",
+            "relation_check_status": "not_evaluated",
+            "verification_status": "not_evaluated",
+            "distortion_flags": [],
+            "distortion_check_status": "not_evaluated",
+            "generation_method": generation_method,
+        }
+
+    def trim_to_window(
+        self,
+        context_messages: list[dict[str, str]],
+        context_items: list[dict[str, Any]],
+        summary_index: int | None,
+    ) -> tuple[list[dict[str, str]], list[dict[str, Any]], list[str]]:
+        flags: list[str] = []
+        if not self.token_window:
+            return context_messages, context_items, flags
+
+        while estimate_messages_tokens(context_messages) > self.token_window:
+            removable_index = None
+            for index in range(1, len(context_messages) - 1):
+                if index != summary_index:
+                    removable_index = index
+                    break
+            if removable_index is None:
+                break
+            remove_count = 1
+            next_index = removable_index + 1
+            if (
+                context_messages[removable_index].get("role") == "user"
+                and next_index < len(context_messages) - 1
+                and next_index != summary_index
+                and context_messages[next_index].get("role") == "assistant"
+            ):
+                remove_count = 2
+            del context_messages[removable_index : removable_index + remove_count]
+            del context_items[removable_index - 1 : removable_index - 1 + remove_count]
+            if summary_index is not None and removable_index < summary_index:
+                summary_index -= remove_count
+            flags.append(
+                "oldest_context_turn_pair_trimmed" if remove_count == 2 else "oldest_context_message_trimmed"
+            )
+
+        if estimate_messages_tokens(context_messages) > self.token_window and summary_index is not None:
+            summary_message = context_messages[summary_index]
+            original = summary_message["content"]
+            low, high = 0, len(original)
+            while low < high:
+                middle = (low + high + 1) // 2
+                summary_message["content"] = original[-middle:]
+                if estimate_messages_tokens(context_messages) <= self.token_window:
+                    low = middle
+                else:
+                    high = middle - 1
+            summary_message["content"] = original[-low:] if low else ""
+            context_items[summary_index - 1] = dict(context_items[summary_index - 1])
+            context_items[summary_index - 1]["content"] = summary_message["content"]
+            context_items[summary_index - 1]["distortion_flags"] = ["summary_truncated_for_token_window"]
+            context_items[summary_index - 1]["distortion_check_status"] = "rule_flagged"
+            flags.append("summary_truncated_for_token_window")
+
+        if estimate_messages_tokens(context_messages) > self.token_window:
+            raise RuntimeError(
+                f"{self.scenario['scenario_id']} context cannot fit token_window={self.token_window} "
+                "while preserving system instruction and current user turn"
+            )
+        return context_messages, context_items, unique_strings(flags)
+
+    def assemble(self, turn_id: str) -> tuple[list[dict[str, str]], dict[str, Any]]:
+        system_message = {"role": "system", "content": self.instruction}
+        full_messages = [system_message] + [public_message(message) for message in self.history]
+        full_tokens = estimate_messages_tokens(full_messages)
+        memory_writes: list[dict[str, Any]] = []
+        retrieval_items: list[dict[str, Any]] = []
+        flags: list[str] = []
+        summary_index: int | None = None
+
+        if self.condition == "full_transcript":
+            selected_history = list(self.history)
+            context_messages = [system_message] + [public_message(message) for message in selected_history]
+            context_items = [self.raw_item(message) for message in selected_history]
+            if self.token_window and full_tokens > self.token_window:
+                raise RuntimeError(
+                    f"{self.scenario['scenario_id']} full transcript tokens={full_tokens} "
+                    f"exceed token_window={self.token_window}"
+                )
+        elif self.condition == "recent_window":
+            _, selected_history = self.recent_history()
+            context_messages = [system_message] + [public_message(message) for message in selected_history]
+            context_items = [self.raw_item(message) for message in selected_history]
+            retrieval_items = list(context_items)
+            context_messages, context_items, flags = self.trim_to_window(context_messages, context_items, None)
+            retrieval_items = list(context_items)
+        else:
+            old_history, selected_history = self.recent_history()
+            if old_history:
+                source_ids = unique_strings([message["turn_id"] for message in old_history])
+                if source_ids != self.summary_source_ids:
+                    self.summary_item = self.summarize(old_history)
+                    self.summary_source_ids = source_ids
+                    memory_writes.append(dict(self.summary_item))
+            context_messages = [system_message]
+            context_items = []
+            if self.summary_item:
+                summary_index = len(context_messages)
+                context_messages.append(
+                    {
+                        "role": "system",
+                        "content": "Conversation memory summary:\n" + self.summary_item["content"],
+                    }
+                )
+                summary_context_item = dict(self.summary_item)
+                summary_context_item["content"] = context_messages[-1]["content"]
+                context_items.append(summary_context_item)
+            context_messages.extend(public_message(message) for message in selected_history)
+            context_items.extend(self.raw_item(message) for message in selected_history)
+            context_messages, context_items, flags = self.trim_to_window(
+                context_messages, context_items, summary_index
+            )
+            retrieval_items = list(context_items)
+
+        condition_tokens = estimate_messages_tokens(context_messages)
+        trace = {
+            "trace_schema_version": MEMORY_TRACE_SCHEMA_VERSION,
+            "scenario_id": self.scenario["scenario_id"],
+            "turn_id": turn_id,
+            "condition": self.condition,
+            "policy": memory_policy(self.condition, self.recent_turns),
+            "token_window": self.token_window or None,
+            "token_estimator": TOKEN_ESTIMATOR,
+            "context_assembly": {
+                "full_transcript_tokens": full_tokens,
+                "condition_context_tokens": condition_tokens,
+                "compression_ratio": condition_tokens / full_tokens if full_tokens else 1.0,
+                "full_transcript_message_count": len(full_messages),
+                "condition_context_message_count": len(context_messages),
+                "context_source_turn_ids": unique_strings(
+                    [
+                        source_turn_id
+                        for item in context_items
+                        for source_turn_id in item.get("source_turn_ids", [])
+                    ]
+                ),
+                "window_enforced": bool(self.token_window),
+            },
+            "memory_writes": memory_writes,
+            "retrieved_memory_items": retrieval_items,
+            "context_items": context_items,
+            "trace_validation_flags": flags,
+        }
+        return context_messages, trace
 
 
 def mock_completion(messages: list[dict[str, str]]) -> str:
@@ -638,23 +966,43 @@ def run_scenario(
     instruction: str,
     model_client: ChatClient,
     judge_client: ChatClient,
+    memory_client: ChatClient,
     sleep_seconds: float,
     prompt_style: str,
     max_induction_turns: int | None,
     stop_on_factual_error: bool,
+    memory_condition: str,
+    token_window: int,
+    recent_turns: int,
 ) -> dict[str, Any]:
-    messages = [{"role": "system", "content": instruction}]
+    context = LocalMemoryContext(
+        scenario=scenario,
+        instruction=instruction,
+        condition=memory_condition,
+        token_window=token_window,
+        recent_turns=recent_turns,
+        memory_client=memory_client,
+    )
     turns: list[dict[str, Any]] = []
     previous_user_turns: list[dict[str, str]] = []
     stopped_early: dict[str, Any] | None = None
 
     base_prompt = baseline_prompt(scenario, prompt_style)
-    messages.append({"role": "user", "content": base_prompt})
+    context.add_user("baseline", base_prompt)
+    messages, baseline_trace = context.assemble("baseline")
     print(f"turn {scenario['scenario_id']} baseline", flush=True)
     baseline_output = model_client.complete(messages)
-    messages.append({"role": "assistant", "content": baseline_output})
+    context.add_assistant("baseline", baseline_output)
     baseline_judge = judge_turn(judge_client, scenario, "baseline", base_prompt, baseline_output, baseline_output, [])
-    turns.append({"turn_id": "baseline", "user_prompt": base_prompt, "model_output": baseline_output, "judge": baseline_judge})
+    turns.append(
+        {
+            "turn_id": "baseline",
+            "user_prompt": base_prompt,
+            "model_output": baseline_output,
+            "judge": baseline_judge,
+            "memory_trace": baseline_trace,
+        }
+    )
     previous_user_turns.append({"turn_id": "baseline", "user_prompt": base_prompt})
 
     induction_turns = scenario_turns(scenario, prompt_style)
@@ -665,10 +1013,11 @@ def run_scenario(
         if sleep_seconds:
             time.sleep(sleep_seconds)
         user_prompt = turn["user_prompt"]
-        messages.append({"role": "user", "content": user_prompt})
+        context.add_user(turn["turn_id"], user_prompt)
+        messages, memory_trace = context.assemble(turn["turn_id"])
         print(f"turn {scenario['scenario_id']} {turn['turn_id']}", flush=True)
         model_output = model_client.complete(messages)
-        messages.append({"role": "assistant", "content": model_output})
+        context.add_assistant(turn["turn_id"], model_output)
         judged = judge_turn(
             judge_client,
             scenario,
@@ -678,7 +1027,15 @@ def run_scenario(
             baseline_output,
             previous_user_turns,
         )
-        turns.append({"turn_id": turn["turn_id"], "user_prompt": user_prompt, "model_output": model_output, "judge": judged})
+        turns.append(
+            {
+                "turn_id": turn["turn_id"],
+                "user_prompt": user_prompt,
+                "model_output": model_output,
+                "judge": judged,
+                "memory_trace": memory_trace,
+            }
+        )
         previous_user_turns.append({"turn_id": turn["turn_id"], "user_prompt": user_prompt})
         if stop_on_factual_error and judged.get("factual_error"):
             stopped_early = {"reason": "factual_error", "turn_id": turn["turn_id"]}
@@ -687,10 +1044,11 @@ def run_scenario(
     if sleep_seconds:
         time.sleep(sleep_seconds)
     recovery_user_prompt = recovery_prompt(scenario, prompt_style)
-    messages.append({"role": "user", "content": recovery_user_prompt})
+    context.add_user("recovery", recovery_user_prompt)
+    messages, recovery_trace = context.assemble("recovery")
     print(f"turn {scenario['scenario_id']} recovery", flush=True)
     recovery_output = model_client.complete(messages)
-    messages.append({"role": "assistant", "content": recovery_output})
+    context.add_assistant("recovery", recovery_output)
     recovery_judge = judge_turn(
         judge_client,
         scenario,
@@ -706,6 +1064,7 @@ def run_scenario(
             "user_prompt": recovery_user_prompt,
             "model_output": recovery_output,
             "judge": recovery_judge,
+            "memory_trace": recovery_trace,
         }
     )
 
@@ -719,6 +1078,15 @@ def run_scenario(
         "source_inspiration": scenario.get("source_inspiration"),
         "unsupported_claim": scenario.get("unsupported_claim"),
         "prompt_style": prompt_style,
+        "memory_condition": memory_condition,
+        "memory_config": {
+            "token_window": token_window or None,
+            "recent_turns": recent_turns,
+            "token_estimator": TOKEN_ESTIMATOR,
+            "trace_schema_version": MEMORY_TRACE_SCHEMA_VERSION,
+            **memory_policy(memory_condition, recent_turns),
+        },
+        "expected_turn_count": len(induction_turns) + 2,
         "turns": turns,
         "stopped_early": stopped_early,
         "metrics": compute_metrics(turns, scenario["track"]),
@@ -759,6 +1127,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--prompt-style", choices=["structured", "naturalistic"], default="structured")
     parser.add_argument("--max-induction-turns", type=int, default=None)
     parser.add_argument("--stop-on-factual-error", action="store_true")
+    parser.add_argument("--memory-condition", choices=sorted(MEMORY_CONDITIONS), default="full_transcript")
+    parser.add_argument(
+        "--token-window",
+        type=int,
+        default=0,
+        help="Approximate target input-token budget. 0 keeps the previous unbounded behavior.",
+    )
+    parser.add_argument("--recent-turns", type=int, default=4)
+    parser.add_argument("--memory-trace-out", type=Path, default=None)
+    parser.add_argument("--memory-provider", choices=["mock", "openai"], default=None)
+    parser.add_argument("--memory-model", default=os.getenv("MEMORY_MODEL"))
+    parser.add_argument("--memory-base-url", default=os.getenv("MEMORY_BASE_URL"))
+    parser.add_argument("--memory-api-key", default=os.getenv("MEMORY_API_KEY"))
     parser.add_argument("--validate-only", action="store_true")
     return parser.parse_args()
 
@@ -790,35 +1171,77 @@ def main() -> None:
         temperature=0.0,
         timeout=args.timeout,
     )
+    memory_client = ChatClient(
+        provider=args.memory_provider or args.provider,
+        model=args.memory_model or args.model,
+        base_url=args.memory_base_url or args.base_url,
+        api_key=args.memory_api_key or args.api_key,
+        temperature=0.0,
+        timeout=args.timeout,
+    )
 
     run_id = str(uuid.uuid4())
     args.out.parent.mkdir(parents=True, exist_ok=True)
+    if args.memory_trace_out:
+        if args.memory_trace_out.resolve() == args.out.resolve():
+            raise ValueError("--memory-trace-out must differ from --out")
+        args.memory_trace_out.parent.mkdir(parents=True, exist_ok=True)
     instruction = model_instruction(data, args.prompt_style)
 
-    with args.out.open("w", encoding="utf-8") as handle:
-        for index, scenario in enumerate(selected, start=1):
-            print(f"running {index}/{len(selected)} {scenario['scenario_id']}")
-            record = {
-                "run_id": run_id,
-                "model": args.model,
-                "judge_model": args.judge_model,
-                "provider": args.provider,
-                "judge_provider": args.judge_provider,
-                "prompt_style": args.prompt_style,
-                "record": run_scenario(
+    trace_handle = args.memory_trace_out.open("w", encoding="utf-8") if args.memory_trace_out else None
+    try:
+        with args.out.open("w", encoding="utf-8") as handle:
+            for index, scenario in enumerate(selected, start=1):
+                print(f"running {index}/{len(selected)} {scenario['scenario_id']}")
+                scenario_record = run_scenario(
                     scenario,
                     instruction,
                     model_client,
                     judge_client,
+                    memory_client,
                     args.sleep,
                     args.prompt_style,
                     args.max_induction_turns,
                     args.stop_on_factual_error,
-                ),
-            }
-            handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+                    args.memory_condition,
+                    args.token_window,
+                    args.recent_turns,
+                )
+                record = {
+                    "run_id": run_id,
+                    "model": args.model,
+                    "judge_model": args.judge_model,
+                    "provider": args.provider,
+                    "judge_provider": args.judge_provider,
+                    "prompt_style": args.prompt_style,
+                    "memory_condition": args.memory_condition,
+                    "memory_model": args.memory_model or args.model,
+                    "memory_provider": args.memory_provider or args.provider,
+                    "record": scenario_record,
+                }
+                handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+                if trace_handle:
+                    for turn in scenario_record["turns"]:
+                        trace_handle.write(
+                            json.dumps(
+                                {
+                                    "run_id": run_id,
+                                    "model": args.model,
+                                    "scenario_id": scenario_record["scenario_id"],
+                                    "memory_condition": args.memory_condition,
+                                    "memory_trace": turn["memory_trace"],
+                                },
+                                ensure_ascii=False,
+                            )
+                            + "\n"
+                        )
+    finally:
+        if trace_handle:
+            trace_handle.close()
 
     print(f"wrote={args.out}")
+    if args.memory_trace_out:
+        print(f"memory_trace_wrote={args.memory_trace_out}")
 
 
 if __name__ == "__main__":

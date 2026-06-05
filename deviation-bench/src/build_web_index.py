@@ -77,6 +77,7 @@ def render_index(out: Path, result_pattern: str) -> str:
     scenarios = web_dir / "scenarios.html"
     real_dashboard = web_dir / "memory_real_dashboard.html"
     mock_dashboard = web_dir / "mock_all_dashboard.html"
+    memory_conditions_dashboard = web_dir / "memory_conditions_mock_dashboard.html"
     records = load_records(result_pattern)
     summaries = [summarize_record(record) for _, record in records]
     updated = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -123,6 +124,12 @@ def render_index(out: Path, result_pattern: str) -> str:
             rel_link(mock_dashboard, out),
             "Optional engineering smoke dashboard for offline runner checks.",
             mock_dashboard.exists(),
+        ),
+        page_card(
+            "Memory Conditions Mock Dashboard",
+            rel_link(memory_conditions_dashboard, out),
+            "Compare local full transcript, recent window, and rolling summary engineering runs.",
+            memory_conditions_dashboard.exists(),
         ),
     ]
 

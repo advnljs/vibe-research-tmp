@@ -1,6 +1,6 @@
 # Memory Bank Navigation
 
-Last updated: 2026-06-04
+Last updated: 2026-06-05
 
 Canonical project navigation is `研究导航.md`. This file is a compact memory-bank-local index.
 
@@ -21,7 +21,9 @@ Canonical project navigation is `研究导航.md`. This file is a compact memory
 - `deviation-bench/prompts/memory_scenario_drafts.yaml`: memory-facing 30-turn drafts, current version `0.4`.
 - `deviation-bench/experiments/s0_memory_scenario_revision_validation_2026-06-04.md`: scenario v0.2 validation note.
 - `deviation-bench/experiments/s0_memory_scenario_expansion_validation_2026-06-04.md`: scenario v0.4 expansion validation note.
+- `deviation-bench/experiments/s0_memory_condition_runner_skeleton_validation_2026-06-05.md`: local memory runner/trace/MIDA validation.
 - `deviation-bench/src/deviation_bench_pilot.py`: current API-only runner.
+- `deviation-bench/src/summarize_memory_runs.py`: matched full-transcript MIDA and memory-trace summary.
 - `deviation-bench/src/build_judge_consensus.py`: LLM-only metajudge/consensus tooling.
 - `deviation-bench/后续优先级路线图.md`: priority ordering.
 
@@ -30,6 +32,7 @@ Canonical project navigation is `研究导航.md`. This file is a compact memory
 ```bash
 python3 deviation-bench/src/deviation_bench_pilot.py --validate-only
 python3 deviation-bench/src/build_scenario_browser.py --validate-only
+python3 deviation-bench/src/summarize_memory_runs.py --input 'deviation-bench/results/working/memory_condition_*_mock.jsonl'
 python3 -m py_compile deviation-bench/src/deviation_bench_pilot.py
 python3 -m py_compile deviation-bench/src/build_judge_consensus.py
 ```

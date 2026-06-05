@@ -1,6 +1,6 @@
 # Todo
 
-Last updated: 2026-06-04
+Last updated: 2026-06-05
 
 This file mirrors the actionable queue in `memory-bank/next-step.md`. The detailed handoff source remains `next-step.md`; this file exists to satisfy the global memory-bank workflow with a compact task index.
 
@@ -8,8 +8,7 @@ This file mirrors the actionable queue in `memory-bank/next-step.md`. The detail
 
 | Task | Priority | Status | Blocker | Next step |
 |---|---|---|---|---|
-| Implement local memory-condition runner skeleton | P0 | pending | none for local mock/full transcript/recent window/rolling summary | Add CLI flags, trace schema, and mock validation without external dependencies. |
-| Add local retrieval/fact/evidence-aware memory conditions | P1 | pending | runner skeleton first | Implement `vector_chunks`, `llm_fact_memory`, `evidence_aware_memory`; use development items only. |
+| Add local retrieval/fact/evidence-aware memory conditions | P0 | in progress | none; runner skeleton complete | Implement `vector_chunks`, `llm_fact_memory`, `evidence_aware_memory`; use development items only. |
 | Prepare external memory environment | P1 | blocked | current `python3` is 3.8.10 and no `pip`; mem0/Graphiti require Python 3.10+ | Create venv/container or alternate environment before installing `mem0ai` / `graphiti-core`. |
 | Run S1 judge reliability pass | P1 | pending | should follow runner design or run in parallel if API budget exists | Use `build_judge_consensus.py` with real metajudge and gold controls. |
 | Fresh memory-facing scenario split | P2 | pending | runner and judge reliability should stabilize first | Current v0.4 drafts validated; keep `memdraft_002` to `memdraft_009` as candidates; `memdraft_001` is used smoke/development. |
@@ -18,6 +17,7 @@ This file mirrors the actionable queue in `memory-bank/next-step.md`. The detail
 
 ## Completed Recently
 
+- 2026-06-05: Implemented full transcript / recent window / rolling summary runner skeleton, trace schema, token-window enforcement, MIDA summary, dynamic dashboard status, and 27-run / 810-turn mock validation.
 - 2026-06-04: Completed `deviation-bench/agent_memory_system_survey.md`.
 - 2026-06-04: Revised `memory_scenario_drafts.yaml` to v0.2 and validated 5 records / 100-turn mock rollout.
 - 2026-06-04: Expanded `memory_scenario_drafts.yaml` to v0.4 with 9 longform 30-turn drafts, explicit mainline/facts/real-data anchors, HTML refresh, and 9 records / 270-turn mock rollout.

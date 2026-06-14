@@ -32,3 +32,16 @@ npm run verify:screenshot
 - Chrome 网络请求中没有 `ui-proto.png`
 
 点击右页右下角的折角区域可以在场景面板与 Case Archive 页面之间翻页。
+
+## 纯 Web 前端版本
+
+`web/` 使用 HTML、CSS 和原生 JavaScript 复刻 Phaser 版本的视觉与操作，并直接复用同一份
+`assets/generated/` 素材，不依赖 Phaser。
+
+打开 `http://127.0.0.1:4173/web/`。
+
+与 Phaser 基准截图对比：
+
+```bash
+npm run verify:web
+```

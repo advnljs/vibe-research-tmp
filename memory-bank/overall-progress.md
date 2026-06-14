@@ -24,6 +24,22 @@ This file records completed work and the current state of the Deviation Bench pr
 - 翻页中间态浏览器截图已读取，并确认页面宽度、页边和阴影随 Tween 移动。
 - 该辅助任务不改变 Deviation Bench 当前研究阶段、待办优先级或实验路线。
 
+### Pure Web Frontend Counterpart
+
+完成 `tmp-webgame-ui/web/` 纯 Web 前端版本：
+
+- 使用 HTML、CSS 和原生 JavaScript；不加载 Phaser。
+- 直接复用 Phaser 版本使用的 `assets/generated/` 素材，不复制素材、不使用截图背景。
+- 复刻固定 `1672x941` 设计空间、响应式缩放、桌面、书本、纸页阴影、导航、剧情选项、卡片、关系图、笔记与底部控制。
+- 复刻导航反馈、选择状态、Toast 和双阶段翻页动画；翻页后切换 live scene / Case Archive。
+- 新增 `scripts/capture-web-and-compare.sh`，自动抓取 Phaser 基准和 Web 前端截图并比较。
+- 浏览器验证：
+  - `window.Phaser === undefined`
+  - 复用 33 个 `assets/generated/` 图片实例
+  - 7 个导航按钮、4 个剧情选项和翻页交互通过
+  - 控制台无 error/warn
+  - Phaser / Web 初始帧相似度：`0.948118`
+
 ## Current Project State
 
 Deviation Bench has been narrowed from a broad context-induced deviation idea into a more feasible, API-only benchmark direction:

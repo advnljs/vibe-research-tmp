@@ -134,6 +134,7 @@ Additional persistent workflow requirement:
 - Read real browser screenshots during implementation and compare them against the prototype.
 - Preserve paper depth through page-stack, book, crease, and drop shadows.
 - Provide an interactive page-turn animation.
+- Maintain a pure Web frontend counterpart that reuses the generated reference assets and mirrors the Phaser version's appearance and interactions.
 
 ## User Decision From 2026-05-29
 

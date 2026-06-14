@@ -7,6 +7,7 @@ This file records the overall plan and the current implementation position. Upda
 ## Auxiliary Workspace Status
 
 - `tmp-webgame-ui/` 已于 2026-06-14 完成基于 `refer/` 素材的 Phaser 3 分层 UI 重建、纸张阴影、翻页动画与浏览器截图验证；运行时不加载原始原型图。
+- `tmp-webgame-ui/web/` 已完成纯 Web 前端等价实现，并与 Phaser 初始帧达到 `0.948118` 截图相似度。
 - 该子项目是独立辅助实现，不改变 Deviation Bench 的 North Star、当前 phase 或 recommended next work。
 
 ## North Star

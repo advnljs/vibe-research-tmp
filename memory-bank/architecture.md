@@ -46,6 +46,8 @@ The project does not train models, read activations, scrape new sensitive data b
 - The auxiliary UI prototype uses Phaser 3 for scene lifecycle, scaling, scene composition, interactions, and
   page-turn tweens. `scripts/build-assets.sh` derives transparent sprites and textures from `tmp-webgame-ui/refer/`;
   the runtime must not load `ui-proto.png`.
+- `tmp-webgame-ui/web/` is the engine-free counterpart. It uses the same generated assets and fixed design
+  coordinates with DOM/CSS layers, responsive stage scaling, native event handlers, and CSS page-turn animations.
 
 ## Important Constraints
 
@@ -63,3 +65,4 @@ The project does not train models, read activations, scrape new sensitive data b
 - 2026-06-05: Added local full-transcript / recent-window / rolling-summary context assembly, auditable memory trace,
   token-window enforcement, matched MIDA summary, and memory-condition dashboard support.
 - 2026-06-14: Rebuilt `tmp-webgame-ui/` from `refer/` assets with Phaser scene objects, paper/book shadows, page-turn animation, and browser screenshot validation.
+- 2026-06-14: Added pure Web frontend counterpart with shared assets and Phaser/Web browser screenshot comparison.

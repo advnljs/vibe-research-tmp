@@ -23,6 +23,7 @@ This file records persistent user requirements and project constraints in compac
 - For `tmp-webgame-ui/`, use an industry Web game engine and verify the replica by reading and comparing real browser screenshots.
 - Build the runtime UI from `tmp-webgame-ui/refer/`; `ui-proto.png` may only be used for offline comparison.
 - Preserve paper/book depth with shadows and provide an interactive page-turn animation.
+- Keep a pure Web frontend implementation that reuses the same generated assets and mirrors the Phaser version's appearance and operations.
 
 ## Current Acceptance Criteria For Next Task
 

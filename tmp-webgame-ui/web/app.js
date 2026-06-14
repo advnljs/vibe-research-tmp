@@ -1,5 +1,6 @@
 const stage = document.querySelector("#stage");
 const A = "../assets/generated/";
+const TEXT_SCALE = 1.12;
 let pageIndex = 0;
 let isTurning = false;
 
@@ -21,10 +22,11 @@ function box(className, x, y, w, h, parent = stage) {
 }
 
 function txt(value, x, y, size, className = "", parent = stage, styles = {}) {
+  const readableSize = Math.max(size + 1, Math.round(size * TEXT_SCALE));
   const node = el("div", `text ${className}`, {
     left: `${x}px`,
     top: `${y}px`,
-    fontSize: `${size}px`,
+    fontSize: `${readableSize}px`,
     ...styles,
   }, parent);
   node.textContent = value;

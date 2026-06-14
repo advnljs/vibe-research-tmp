@@ -38,7 +38,13 @@ This file records completed work and the current state of the Deviation Bench pr
   - 复用 33 个 `assets/generated/` 图片实例
   - 7 个导航按钮、4 个剧情选项和翻页交互通过
   - 控制台无 error/warn
-  - Phaser / Web 初始帧相似度：`0.948118`
+  - 初版 Phaser / Web 初始帧相似度：`0.948118`
+- 根据用户反馈完成纯 Web 可读性修订：
+  - 所有动态文字统一放大，导航、剧情选项、底部控制和 Toast 单独增大。
+  - 左半页叙事文字支持浏览器原生拖选；按钮保持不可选，点击行为不受影响。
+  - 修复全屏右页透明内容层拦截左页鼠标事件的问题。
+  - 浏览器脚本验证左页段落 `userSelect=text`、成功选中 182 个字符，导航、选项与双向翻页仍通过。
+  - 可读性修订后的 Phaser / Web 初始帧相似度：`0.941140`。
 
 ## Current Project State
 

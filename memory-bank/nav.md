@@ -29,8 +29,8 @@ Canonical project navigation is `研究导航.md`. This file is a compact memory
 - `deviation-bench/后续优先级路线图.md`: priority ordering.
 - `tmp-webgame-ui/src/game.js`: Phaser Scene, hotspots, and UI state feedback.
 - `tmp-webgame-ui/web/index.html`: pure Web frontend entrypoint.
-- `tmp-webgame-ui/web/styles.css`: DOM visual layers, shared-asset styling, responsive scaling, and page-turn animation.
-- `tmp-webgame-ui/web/app.js`: pure JavaScript scene composition and interactions.
+- `tmp-webgame-ui/web/styles.css`: DOM visual layers, shared-asset styling, responsive scaling, readable controls, selectable left-page text, and page-turn animation.
+- `tmp-webgame-ui/web/app.js`: pure JavaScript scene composition, centralized text-size scaling, and interactions.
 - `tmp-webgame-ui/refer/`: user-supplied source material sheets.
 - `tmp-webgame-ui/assets/generated/`: deterministic transparent sprites generated from `refer/`.
 - `tmp-webgame-ui/scripts/build-assets.sh`: source-sheet crop and transparency build pipeline.

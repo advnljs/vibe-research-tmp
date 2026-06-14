@@ -35,6 +35,10 @@ source material sheets under `refer/`. The prototype image is comparison-only an
 - A clickable right-page corner drives a two-phase Phaser Tween and switches between live-scene and Case Archive page states.
 - The pure Web counterpart directly reuses `assets/generated/`, uses no Phaser runtime, and mirrors the same fixed
   coordinates and operations through DOM/CSS/native JS.
+- Pure Web text uses one centralized readability scale. Left-page narrative text uses native browser selection,
+  while choices and controls remain non-selectable interactive elements.
+- Right/archive content layers ignore pointer events so their transparent full-stage boxes do not block left-page
+  text selection; the independent page-corner control remains interactive.
 
 ## External Dependencies
 
@@ -57,8 +61,10 @@ Current reference-resolution result:
 - `similarity=0.890142`
 - runtime network requests do not include `ui-proto.png`
 - page-turn middle-state screenshot inspected with moving page/shadow
-- pure Web / Phaser initial-frame similarity: `0.948118`
+- pure Web / Phaser initial-frame similarity after readability changes: `0.941140`
 - pure Web runtime: `window.Phaser === undefined`, no console errors/warnings
+- pure Web left-page selection: `userSelect=text`, 182-character paragraph selection verified
+- pure Web navigation, choice selection, Toast, and two-way page turn verified after the selection-layer change
 
 ## Common Modification Points
 
@@ -66,4 +72,5 @@ Current reference-resolution result:
 - Keep `ui-proto.png` comparison-only; never add it to Phaser preload or DOM background.
 - Preserve paper-shadow and page-turn behavior when changing the book layout.
 - Keep Phaser and pure Web interactions aligned when changing navigation, choices, Toast, or page states.
+- Preserve left-page native text selection when changing full-stage content layers or pointer-event behavior.
 - Update the screenshot calibration if the installed Chrome version changes its window/content height offset.

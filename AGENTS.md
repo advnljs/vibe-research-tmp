@@ -135,6 +135,7 @@ Additional persistent workflow requirement:
 - Preserve paper depth through page-stack, book, crease, and drop shadows.
 - Provide an interactive page-turn animation.
 - Maintain a pure Web frontend counterpart that reuses the generated reference assets and mirrors the Phaser version's appearance and interactions.
+- Keep the pure Web frontend's text and controls comfortably readable, and keep left-page narrative text selectable without breaking button or page-turn interactions.
 
 ## User Decision From 2026-05-29
 

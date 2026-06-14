@@ -48,6 +48,8 @@ The project does not train models, read activations, scrape new sensitive data b
   the runtime must not load `ui-proto.png`.
 - `tmp-webgame-ui/web/` is the engine-free counterpart. It uses the same generated assets and fixed design
   coordinates with DOM/CSS layers, responsive stage scaling, native event handlers, and CSS page-turn animations.
+- The pure Web counterpart centralizes text readability scaling and separates selection/interactions by pointer-event
+  ownership: left narrative text is selectable, controls are not, and transparent right-page layers do not intercept it.
 
 ## Important Constraints
 
@@ -66,3 +68,4 @@ The project does not train models, read activations, scrape new sensitive data b
   token-window enforcement, matched MIDA summary, and memory-condition dashboard support.
 - 2026-06-14: Rebuilt `tmp-webgame-ui/` from `refer/` assets with Phaser scene objects, paper/book shadows, page-turn animation, and browser screenshot validation.
 - 2026-06-14: Added pure Web frontend counterpart with shared assets and Phaser/Web browser screenshot comparison.
+- 2026-06-14: Increased pure Web text/control readability and enabled native left-page narrative selection without regressing interactions.

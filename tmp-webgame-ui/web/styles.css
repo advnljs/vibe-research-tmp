@@ -166,16 +166,17 @@ body {
 
 .nav-button {
   position: absolute;
-  left: 107px;
-  width: 150px;
-  height: 60px;
+  left: 102px;
+  width: 160px;
+  height: 64px;
   border: 0;
   padding: 0;
   color: #f2dfb8;
-  font: bold 10px Georgia, serif;
+  font: bold 12px Georgia, serif;
   text-shadow: 0 1px 2px #21160e;
-  background: transparent center / 150px 60px no-repeat;
+  background: transparent center / 160px 64px no-repeat;
   cursor: pointer;
+  user-select: none;
   transition: transform 130ms ease, filter 130ms ease;
 }
 
@@ -188,7 +189,7 @@ body {
   position: absolute;
   width: 100%;
   left: 0;
-  top: 38px;
+  top: 40px;
   text-align: center;
 }
 
@@ -215,6 +216,35 @@ body {
   inset: 0;
   z-index: 12;
   transition: opacity 130ms ease;
+}
+
+.left-content {
+  cursor: text;
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.left-content .text {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.left-content .asset,
+.left-content .message,
+.left-content .rule {
+  pointer-events: none;
+}
+
+.left-content .choice,
+.left-content .control {
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.right-content,
+.archive-content {
+  pointer-events: none;
 }
 
 .hidden {
@@ -279,13 +309,13 @@ body {
 .choice {
   position: absolute;
   width: 438px;
-  height: 31px;
-  padding: 0 14px;
+  height: 34px;
+  padding: 0 15px;
   border: 1px solid rgba(104, 87, 70, 0.72);
   border-radius: 6px;
   color: var(--ink);
   background: rgba(232, 222, 202, 0.56);
-  font: 10px Georgia, serif;
+  font: 12px Georgia, serif;
   text-align: left;
   cursor: pointer;
   transition: background 120ms ease, box-shadow 120ms ease;
@@ -312,13 +342,14 @@ body {
 
 .control {
   position: absolute;
-  height: 34px;
+  height: 36px;
   border: 1px solid rgba(130, 107, 81, 0.48);
   border-radius: 5px;
   background: rgba(233, 221, 199, 0.56);
   color: var(--ink);
-  font: 9px Georgia, serif;
+  font: 11px Georgia, serif;
   cursor: pointer;
+  user-select: none;
   transition: filter 120ms ease;
 }
 
@@ -405,7 +436,7 @@ body {
   height: 75px;
   border: 1px solid rgba(141, 128, 108, 0.5);
   padding: 14px 10px 5px;
-  font-size: 8px;
+  font-size: 10px;
   line-height: 1.45;
   white-space: pre-line;
   box-shadow: 0 2px 4px rgba(43, 31, 20, 0.18);
@@ -525,7 +556,7 @@ body {
   border: 1px solid rgba(192, 145, 77, 0.8);
   color: #f0dfbd;
   background: rgba(27, 18, 11, 0.93);
-  font-size: 13px;
+  font-size: 15px;
   text-align: center;
   opacity: 0;
   pointer-events: none;

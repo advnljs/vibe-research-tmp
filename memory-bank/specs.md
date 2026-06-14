@@ -24,6 +24,7 @@ This file records persistent user requirements and project constraints in compac
 - Build the runtime UI from `tmp-webgame-ui/refer/`; `ui-proto.png` may only be used for offline comparison.
 - Preserve paper/book depth with shadows and provide an interactive page-turn animation.
 - Keep a pure Web frontend implementation that reuses the same generated assets and mirrors the Phaser version's appearance and operations.
+- Keep the pure Web frontend's overall text and buttons readable at the reference viewport, and allow users to select left-page narrative text.
 
 ## Current Acceptance Criteria For Next Task
 

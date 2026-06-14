@@ -36,7 +36,8 @@ npm run verify:screenshot
 ## 纯 Web 前端版本
 
 `web/` 使用 HTML、CSS 和原生 JavaScript 复刻 Phaser 版本的视觉与操作，并直接复用同一份
-`assets/generated/` 素材，不依赖 Phaser。
+`assets/generated/` 素材，不依赖 Phaser。纯 Web 版统一放大了文字和按钮，并支持选择左页叙事文字；
+剧情选项、控制按钮和翻页交互保持可点击。
 
 打开 `http://127.0.0.1:4173/web/`。
 
@@ -45,3 +46,5 @@ npm run verify:screenshot
 ```bash
 npm run verify:web
 ```
+
+当前可读性修订后的 Phaser / Web 初始帧相似度为 `0.941140`。

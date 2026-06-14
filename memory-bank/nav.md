@@ -1,6 +1,6 @@
 # Memory Bank Navigation
 
-Last updated: 2026-06-05
+Last updated: 2026-06-14
 
 Canonical project navigation is `研究导航.md`. This file is a compact memory-bank-local index.
 
@@ -13,6 +13,7 @@ Canonical project navigation is `研究导航.md`. This file is a compact memory
 - `architecture.md`: compact system architecture.
 - `specs.md`: persistent user requirements and constraints.
 - `module-agent-memory-eval.md`: current main module notes.
+- `module-webgame-ui.md`: Phaser UI replica module notes.
 
 ## Current High-Value Project Files
 
@@ -26,6 +27,8 @@ Canonical project navigation is `研究导航.md`. This file is a compact memory
 - `deviation-bench/src/summarize_memory_runs.py`: matched full-transcript MIDA and memory-trace summary.
 - `deviation-bench/src/build_judge_consensus.py`: LLM-only metajudge/consensus tooling.
 - `deviation-bench/后续优先级路线图.md`: priority ordering.
+- `tmp-webgame-ui/src/game.js`: Phaser Scene, hotspots, and UI state feedback.
+- `tmp-webgame-ui/scripts/capture-and-compare.sh`: Chrome screenshot and pixel comparison entrypoint.
 
 ## Common Commands
 
@@ -35,4 +38,6 @@ python3 deviation-bench/src/build_scenario_browser.py --validate-only
 python3 deviation-bench/src/summarize_memory_runs.py --input 'deviation-bench/results/working/memory_condition_*_mock.jsonl'
 python3 -m py_compile deviation-bench/src/deviation_bench_pilot.py
 python3 -m py_compile deviation-bench/src/build_judge_consensus.py
+cd tmp-webgame-ui && npm start
+cd tmp-webgame-ui && npm run verify:screenshot
 ```

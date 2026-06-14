@@ -1,6 +1,6 @@
 # Todo
 
-Last updated: 2026-06-05
+Last updated: 2026-06-14
 
 This file mirrors the actionable queue in `memory-bank/next-step.md`. The detailed handoff source remains `next-step.md`; this file exists to satisfy the global memory-bank workflow with a compact task index.
 
@@ -17,6 +17,7 @@ This file mirrors the actionable queue in `memory-bank/next-step.md`. The detail
 
 ## Completed Recently
 
+- 2026-06-14: Completed `tmp-webgame-ui/` Phaser 3 UI replica and verified the browser screenshot against the reference with zero changed channels.
 - 2026-06-05: Implemented full transcript / recent window / rolling summary runner skeleton, trace schema, token-window enforcement, MIDA summary, dynamic dashboard status, and 27-run / 810-turn mock validation.
 - 2026-06-04: Completed `deviation-bench/agent_memory_system_survey.md`.
 - 2026-06-04: Revised `memory_scenario_drafts.yaml` to v0.2 and validated 5 records / 100-turn mock rollout.

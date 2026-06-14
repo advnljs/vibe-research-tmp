@@ -1,0 +1,13 @@
+{
+  "name": "whispers-in-the-fog-ui-replica",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Phaser 3 game UI replica of the supplied prototype.",
+  "scripts": {
+    "start": "python3 -m http.server 4173",
+    "verify:screenshot": "bash scripts/capture-and-compare.sh"
+  },
+  "dependencies": {
+    "phaser": "^3.90.0"
+  }
+}

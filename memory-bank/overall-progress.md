@@ -1,8 +1,25 @@
 # Overall Progress
 
-Last updated: 2026-06-05
+Last updated: 2026-06-14
 
 This file records completed work and the current state of the Deviation Bench project. Update it after any meaningful research, data, implementation, or planning change.
+
+## Completed 2026-06-14
+
+### Phaser Web Game UI Replica
+
+完成独立辅助子项目 `tmp-webgame-ui/`：
+
+- 使用业界 Web 游戏引擎 Phaser 3 复刻用户提供的 `ui-proto.png`。
+- Phaser Scene 管理设计坐标、响应式缩放、导航、剧情选项、信息卡片、关系节点和底部控制的交互命中层。
+- 为避免 Canvas/WebGL 纹理颜色空间转换，Scene 挂载 DOM 底图层，透明 Phaser Canvas 层负责交互和状态反馈。
+- 新增 Chrome 浏览器截图与逐通道 PNG 对比脚本。
+- 最终浏览器截图验证：
+  - `dimensions=1672x941`
+  - `mean_absolute_error=0.000000`
+  - `max_channel_error=0`
+  - `changed_channels=0/4720056`
+- 该辅助任务不改变 Deviation Bench 当前研究阶段、待办优先级或实验路线。
 
 ## Current Project State
 

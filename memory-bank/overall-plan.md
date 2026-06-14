@@ -1,8 +1,13 @@
 # Overall Plan
 
-Last updated: 2026-06-05
+Last updated: 2026-06-14
 
 This file records the overall plan and the current implementation position. Update it whenever the plan, current phase, or next action changes.
+
+## Auxiliary Workspace Status
+
+- `tmp-webgame-ui/` 已于 2026-06-14 完成 Phaser 3 UI 复刻与浏览器逐像素截图验证。
+- 该子项目是独立辅助实现，不改变 Deviation Bench 的 North Star、当前 phase 或 recommended next work。
 
 ## North Star
 

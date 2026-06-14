@@ -1,6 +1,6 @@
 # Architecture
 
-Last updated: 2026-06-05
+Last updated: 2026-06-14
 
 This is a compact architecture memory file. Detailed research state lives in `memory-bank/overall-plan.md`, `memory-bank/next-step.md`, and `研究导航.md`.
 
@@ -21,6 +21,7 @@ The project does not train models, read activations, scrape new sensitive data b
 - Dashboard/web tooling: `build_conversation_dashboard.py`, `build_web_index.py`, `scripts/start_research_web.sh`
 - Data/source notes: `deviation-bench/data_sources/`
 - Project memory: `memory-bank/`
+- Auxiliary Phaser UI prototype: `tmp-webgame-ui/`
 
 ## Data Flow
 
@@ -42,6 +43,9 @@ The project does not train models, read activations, scrape new sensitive data b
 - Implement local memory simulator before external systems.
 - Treat dependency-free token counts as context-assembly approximations, not provider billing tokens.
 - Summary evidence relation/distortion remains `not_evaluated` until a semantic metajudge pass exists.
+- The auxiliary UI prototype uses Phaser 3 for scene lifecycle, scaling, hotspots, and state feedback. Its
+  pixel-stable base artwork is a Scene-controlled DOM layer because browser Canvas/WebGL texture rendering
+  changes the supplied image's colors.
 
 ## Important Constraints
 
@@ -58,3 +62,4 @@ The project does not train models, read activations, scrape new sensitive data b
 - 2026-06-04: Memory-facing scenario drafts expanded to v0.4 with 9 longform 30-turn drafts and explicit source-pattern metadata; browser and runner conversion now preserve/display those fields.
 - 2026-06-05: Added local full-transcript / recent-window / rolling-summary context assembly, auditable memory trace,
   token-window enforcement, matched MIDA summary, and memory-condition dashboard support.
+- 2026-06-14: Added independent `tmp-webgame-ui/` Phaser 3 prototype with browser screenshot zero-difference validation.

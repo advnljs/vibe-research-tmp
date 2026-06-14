@@ -1,6 +1,11 @@
 # Next Step
 
-Last updated: 2026-06-05
+## Auxiliary Task Note 2026-06-14
+
+- `tmp-webgame-ui/` Phaser 3 UI 复刻已完成并通过浏览器截图零差异验证。
+- Deviation Bench 的行动队列、阻塞项和推荐下一步保持不变。
+
+Last updated: 2026-06-14
 
 This file is the actionable handoff queue for Deviation Bench. Future agents should read it together with `memory-bank/overall-progress.md` and `memory-bank/overall-plan.md` before doing substantive work.
 

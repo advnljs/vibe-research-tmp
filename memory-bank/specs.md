@@ -1,6 +1,6 @@
 # Specs
 
-Last updated: 2026-06-04
+Last updated: 2026-06-14
 
 This file records persistent user requirements and project constraints in compact form. The full source of truth remains `AGENTS.md` plus the three primary memory-bank files.
 
@@ -20,6 +20,7 @@ This file records persistent user requirements and project constraints in compac
 - Turn-count / pressure-cadence choices may later be aligned with related papers, but near-term work should prioritize validation and runner reliability.
 - Current memory-facing scenario drafts should be longer than 20 turns by default; v0.4 uses 30 target-visible turns.
 - Each memory-facing scenario should explicitly include mainline, related facts, and the real-data abstract pattern IDs it reflects.
+- For `tmp-webgame-ui/`, use an industry Web game engine and verify the replica by reading and comparing real browser screenshots.
 
 ## Current Acceptance Criteria For Next Task
 

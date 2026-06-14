@@ -72,8 +72,10 @@ def read_png_rgb(path: pathlib.Path):
 
 
 def main():
-    reference_path = pathlib.Path(sys.argv[1])
-    screenshot_path = pathlib.Path(sys.argv[2])
+    strict = "--strict" in sys.argv
+    paths = [argument for argument in sys.argv[1:] if argument != "--strict"]
+    reference_path = pathlib.Path(paths[0])
+    screenshot_path = pathlib.Path(paths[1])
     ref_width, ref_height, reference = read_png_rgb(reference_path)
     shot_width, shot_height, screenshot = read_png_rgb(screenshot_path)
     if (ref_width, ref_height) != (shot_width, shot_height):
@@ -95,7 +97,9 @@ def main():
     print(f"mean_absolute_error={absolute_error / channel_count:.6f}")
     print(f"max_channel_error={max_error}")
     print(f"changed_channels={changed_channels}/{channel_count}")
-    if changed_channels:
+    similarity = 1 - (absolute_error / channel_count / 255)
+    print(f"similarity={similarity:.6f}")
+    if strict and changed_channels:
         raise SystemExit(1)
 
 

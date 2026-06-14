@@ -28,6 +28,9 @@ Canonical project navigation is `研究导航.md`. This file is a compact memory
 - `deviation-bench/src/build_judge_consensus.py`: LLM-only metajudge/consensus tooling.
 - `deviation-bench/后续优先级路线图.md`: priority ordering.
 - `tmp-webgame-ui/src/game.js`: Phaser Scene, hotspots, and UI state feedback.
+- `tmp-webgame-ui/refer/`: user-supplied source material sheets.
+- `tmp-webgame-ui/assets/generated/`: deterministic transparent sprites generated from `refer/`.
+- `tmp-webgame-ui/scripts/build-assets.sh`: source-sheet crop and transparency build pipeline.
 - `tmp-webgame-ui/scripts/capture-and-compare.sh`: Chrome screenshot and pixel comparison entrypoint.
 
 ## Common Commands
@@ -39,5 +42,6 @@ python3 deviation-bench/src/summarize_memory_runs.py --input 'deviation-bench/re
 python3 -m py_compile deviation-bench/src/deviation_bench_pilot.py
 python3 -m py_compile deviation-bench/src/build_judge_consensus.py
 cd tmp-webgame-ui && npm start
+cd tmp-webgame-ui && npm run build:assets
 cd tmp-webgame-ui && npm run verify:screenshot
 ```

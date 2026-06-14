@@ -43,9 +43,9 @@ The project does not train models, read activations, scrape new sensitive data b
 - Implement local memory simulator before external systems.
 - Treat dependency-free token counts as context-assembly approximations, not provider billing tokens.
 - Summary evidence relation/distortion remains `not_evaluated` until a semantic metajudge pass exists.
-- The auxiliary UI prototype uses Phaser 3 for scene lifecycle, scaling, hotspots, and state feedback. Its
-  pixel-stable base artwork is a Scene-controlled DOM layer because browser Canvas/WebGL texture rendering
-  changes the supplied image's colors.
+- The auxiliary UI prototype uses Phaser 3 for scene lifecycle, scaling, scene composition, interactions, and
+  page-turn tweens. `scripts/build-assets.sh` derives transparent sprites and textures from `tmp-webgame-ui/refer/`;
+  the runtime must not load `ui-proto.png`.
 
 ## Important Constraints
 
@@ -62,4 +62,4 @@ The project does not train models, read activations, scrape new sensitive data b
 - 2026-06-04: Memory-facing scenario drafts expanded to v0.4 with 9 longform 30-turn drafts and explicit source-pattern metadata; browser and runner conversion now preserve/display those fields.
 - 2026-06-05: Added local full-transcript / recent-window / rolling-summary context assembly, auditable memory trace,
   token-window enforcement, matched MIDA summary, and memory-condition dashboard support.
-- 2026-06-14: Added independent `tmp-webgame-ui/` Phaser 3 prototype with browser screenshot zero-difference validation.
+- 2026-06-14: Rebuilt `tmp-webgame-ui/` from `refer/` assets with Phaser scene objects, paper/book shadows, page-turn animation, and browser screenshot validation.

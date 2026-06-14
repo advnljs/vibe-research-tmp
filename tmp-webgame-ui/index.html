@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="data:," />
     <title>Whispers in the Fog</title>
     <style>
       * {
@@ -15,25 +16,22 @@
         height: 100%;
         margin: 0;
         overflow: hidden;
-        background: #120d09;
+        background: #160f0a;
       }
 
       body {
-        display: grid;
-        place-items: center;
+        position: relative;
       }
 
       canvas {
         display: block;
-        width: 100%;
-        height: 100%;
         touch-action: none;
       }
 
       #game {
-        width: 100%;
-        height: 100%;
-        position: relative;
+        position: absolute;
+        inset: 0;
+        overflow: hidden;
       }
     </style>
   </head>

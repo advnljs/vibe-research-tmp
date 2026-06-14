@@ -4,6 +4,7 @@
   "private": true,
   "description": "Phaser 3 game UI replica of the supplied prototype.",
   "scripts": {
+    "build:assets": "bash scripts/build-assets.sh",
     "start": "python3 -m http.server 4173",
     "verify:screenshot": "bash scripts/capture-and-compare.sh"
   },

@@ -127,6 +127,14 @@ Additional persistent workflow requirement:
 - Do not pursue component-selection UI/tooling work in this repository unless the user explicitly re-requests it for Deviation Bench.
 - The mistakenly added component registry and tag should be removed from the active project state.
 
+## Auxiliary Web Game UI Requirements From 2026-06-14
+
+- For `tmp-webgame-ui/`, reconstruct the supplied prototype with an industry Web game engine.
+- Build the runtime scene from assets under `tmp-webgame-ui/refer/`; do not use `ui-proto.png` as a runtime background or texture.
+- Read real browser screenshots during implementation and compare them against the prototype.
+- Preserve paper depth through page-stack, book, crease, and drop shadows.
+- Provide an interactive page-turn animation.
+
 ## User Decision From 2026-05-29
 
 - Continue Deviation Bench based on **Framing A**: real-corpus-anchored context-retest reliability benchmark.

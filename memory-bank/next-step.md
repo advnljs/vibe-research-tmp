@@ -2,7 +2,7 @@
 
 ## Auxiliary Task Note 2026-06-14
 
-- `tmp-webgame-ui/` Phaser 3 UI 复刻已完成并通过浏览器截图零差异验证。
+- `tmp-webgame-ui/` 已改为基于 `refer/` 素材的 Phaser 3 分层重建；运行时不加载原图，纸张阴影与翻页动画已通过浏览器截图检查。
 - Deviation Bench 的行动队列、阻塞项和推荐下一步保持不变。
 
 Last updated: 2026-06-14

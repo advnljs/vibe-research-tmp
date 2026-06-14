@@ -21,6 +21,8 @@ This file records persistent user requirements and project constraints in compac
 - Current memory-facing scenario drafts should be longer than 20 turns by default; v0.4 uses 30 target-visible turns.
 - Each memory-facing scenario should explicitly include mainline, related facts, and the real-data abstract pattern IDs it reflects.
 - For `tmp-webgame-ui/`, use an industry Web game engine and verify the replica by reading and comparing real browser screenshots.
+- Build the runtime UI from `tmp-webgame-ui/refer/`; `ui-proto.png` may only be used for offline comparison.
+- Preserve paper/book depth with shadows and provide an interactive page-turn animation.
 
 ## Current Acceptance Criteria For Next Task
 

@@ -1,16 +1,16 @@
 # Whispers in the Fog UI Replica
 
-基于业界 Web 游戏引擎 **Phaser 3** 复刻 `ui-proto.png`。Phaser Scene 以原始
-`1672×941` 设计坐标渲染，并管理纹理加载、响应式缩放、导航、剧情选项、信息卡片、
-关系节点和底部控制区域的交互命中层。
+基于业界 Web 游戏引擎 **Phaser 3** 重新搭建 `ui-proto.png` 的界面结构。运行时不加载
+`ui-proto.png`；桌面、皮革、纸页、导航、地图、卡片、图标和装饰都来自 `refer/`，
+经 `scripts/build-assets.sh` 裁切为透明 sprites 后，由 Phaser 的 Scene、Graphics、
+TileSprite、Image、Text、Container 和 Tween 组合。
 
-为避免浏览器 Canvas/WebGL 对参考图进行颜色空间转换，Phaser Scene 会挂载与其缩放坐标
-一致的 DOM 底图层，透明 Phaser WebGL 层负责交互和状态反馈。这样初始帧能保持参考图的
-原始颜色与纹理。
+界面包含多层书本/纸张阴影、页边堆叠、中缝阴影，以及点击右下页角触发的翻页动画。
 
 ## 运行
 
 ```bash
+npm run build:assets
 npm start
 ```
 
@@ -22,4 +22,13 @@ npm start
 npm run verify:screenshot
 ```
 
-脚本会使用 Chrome 在 `1672×941` 视口截图，并将浏览器截图逐通道与参考图比较。
+脚本会使用 Chrome 在 `1672×941` 视口截图，输出与参考图的逐通道差异和相似度指标。
+参考图只用于离线截图对比，不参与运行时渲染。
+
+当前重建初始帧验证：
+
+- `dimensions=1672x941`
+- `similarity=0.890142`
+- Chrome 网络请求中没有 `ui-proto.png`
+
+点击右页右下角的折角区域可以在场景面板与 Case Archive 页面之间翻页。

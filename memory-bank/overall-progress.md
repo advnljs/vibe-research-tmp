@@ -10,15 +10,18 @@ This file records completed work and the current state of the Deviation Bench pr
 
 完成独立辅助子项目 `tmp-webgame-ui/`：
 
-- 使用业界 Web 游戏引擎 Phaser 3 复刻用户提供的 `ui-proto.png`。
-- Phaser Scene 管理设计坐标、响应式缩放、导航、剧情选项、信息卡片、关系节点和底部控制的交互命中层。
-- 为避免 Canvas/WebGL 纹理颜色空间转换，Scene 挂载 DOM 底图层，透明 Phaser Canvas 层负责交互和状态反馈。
-- 新增 Chrome 浏览器截图与逐通道 PNG 对比脚本。
-- 最终浏览器截图验证：
+- 使用业界 Web 游戏引擎 Phaser 3 重建用户提供的 `ui-proto.png` 界面。
+- 用户新增 `refer/` 素材后，旧的原图背景实现已被彻底替换：
+  - 运行时不加载 `ui-proto.png`。
+  - `scripts/build-assets.sh` 从 8 张 `refer/` 素材表裁切木纹、皮革、纸张、导航、地图、面板、图标和装饰。
+  - Phaser Scene 使用 TileSprite、Image、Graphics、Text、Container 和 Tween 组合完整界面。
+- 新增多层书本阴影、纸页堆叠、中缝阴影和右下页角翻页动画。
+- 翻页后可在 live scene 与 Case Archive 页面之间切换。
+- Chrome 网络请求检查确认无 `ui-proto.png` 请求。
+- 最终初始帧浏览器截图验证：
   - `dimensions=1672x941`
-  - `mean_absolute_error=0.000000`
-  - `max_channel_error=0`
-  - `changed_channels=0/4720056`
+  - `similarity=0.890142`
+- 翻页中间态浏览器截图已读取，并确认页面宽度、页边和阴影随 Tween 移动。
 - 该辅助任务不改变 Deviation Bench 当前研究阶段、待办优先级或实验路线。
 
 ## Current Project State

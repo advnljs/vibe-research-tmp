@@ -1,71 +1,52 @@
 # Architecture
 
-Last updated: 2026-06-14
-
-This is a compact architecture memory file. Detailed research state lives in `memory-bank/overall-plan.md`, `memory-bank/next-step.md`, and `研究导航.md`.
+Last updated: 2026-06-22
 
 ## System Boundary
 
-Deviation Bench is a low-GPU, API-only research workspace for evaluating reality-grounded judgment under multi-turn pressure. The current primary framing is agent-memory evaluation: compare direct full transcript context with memory-conditioned generation on fictional, evidence-bound scenarios.
+当前主系统 `deviation-bench-new/` 是低 GPU、API-only 的真实数据派生层。它读取已下载且访问/许可状态已记录的真实访谈或社区数据，输出可追溯的多轮 session 和候选现实边界文本信号。
 
-The project does not train models, read activations, scrape new sensitive data by default, or use human annotation as paper evidence.
+旧 `deviation-bench/` 保留 benchmark、judge、memory-condition runner 和历史研究材料，但其 agent-memory/UIRD 扩展已暂停。
 
 ## Main Components
 
-- Research docs: `deviation-bench/*.md`
-- Scenario specs: `deviation-bench/prompts/*.yaml` and rewrite/judge prompts.
-- Runner/context assembly: `deviation-bench/src/deviation_bench_pilot.py`
-- Memory-run summary: `deviation-bench/src/summarize_memory_runs.py`
-- Scenario tooling: `build_scenario_browser.py`, `build_memory_runner_scenarios.py`
-- Judge reliability tooling: `build_judge_consensus.py`
-- Dashboard/web tooling: `build_conversation_dashboard.py`, `build_web_index.py`, `scripts/start_research_web.sh`
-- Data/source notes: `deviation-bench/data_sources/`
-- Project memory: `memory-bank/`
-- Auxiliary Phaser UI prototype: `tmp-webgame-ui/`
+- Source parsers/manifests：`prepare_cases.py`、`prepare_reddit_cases.py`、`data/manifests/`。
+- Interview transform：`build_sessions.py` + chunk/consolidation/repair prompts。
+- Community route：`build_reddit_sessions.py` + screen/generation prompts。
+- Contract/QC：`session_contract.py`、`session.schema.json`、`validate_sessions.py`。
+- Processed outputs：`data/processed/`、`data/screened/`。
+- Private working state：ignored `data/work/`。
+- Local inspection：`build_dataset_browser.py` -> ignored HTML。
+- Historical benchmark system：`deviation-bench/`。
+- Project state：`memory-bank/`、`研究导航.md`、`AGENTS.md`。
 
 ## Data Flow
 
-1. Real clinical/community/reference sources are converted only into abstract patterns or fictional scenario drafts.
-2. Scenario YAML defines scenario descriptions, mainlines, related facts, real-data anchors, evidence anchors, unsupported claims, no-new-evidence induction turns, and recovery turns.
-3. Runner assembles target context under `full_transcript`, `recent_window`, or `rolling_summary`, then records
-   per-turn memory/context traces before target generation.
-4. Runner sends target-visible naturalistic user turns/context to target model and hidden evidence anchors to the judge.
-5. Judge outputs structured labels and metrics.
-6. `summarize_memory_runs.py` matches conditions against full transcript and computes MIDA plus trace-derived summaries.
-7. Consensus/metajudge tooling rechecks priority turns for paper-facing LLM-only validation.
+1. DAIS-C/FEP：真实多轮 transcript -> deterministic parser -> normalized source turns -> DeepSeek Pro semantic paraphrase -> point consolidation -> structural/PII/overlap QC -> interview/control JSONL。
+2. Reddit：真实 single post -> hash dedupe/local exclusion/probe -> DeepSeek Pro semantic screening -> fictional 12-message expansion -> strict PII/overlap QC -> community-fictionalized JSONL。
+3. 所有 processed records 保存 source/model/prompt hashes、64k budget、thinking mode、license、parser 和 QC provenance；不保存 source/API raw text。
 
 ## Key Technical Decisions
 
-- Use OpenAI-compatible chat completions for target and judge APIs.
-- Keep generated raw results under ignored `deviation-bench/results/`.
-- Do not use human annotation as paper-facing labels.
-- Treat mem0 and Graphiti as first external memory-system baselines only after version/config pinning.
-- Implement local memory simulator before external systems.
-- Treat dependency-free token counts as context-assembly approximations, not provider billing tokens.
-- Summary evidence relation/distortion remains `not_evaluated` until a semantic metajudge pass exists.
-- The auxiliary UI prototype uses Phaser 3 for scene lifecycle, scaling, scene composition, interactions, and
-  page-turn tweens. `scripts/build-assets.sh` derives transparent sprites and textures from `tmp-webgame-ui/refer/`;
-  the runtime must not load `ui-proto.png`.
-- `tmp-webgame-ui/web/` is the engine-free counterpart. It uses the same generated assets and fixed design
-  coordinates with DOM/CSS layers, responsive stage scaling, native event handlers, and CSS page-turn animations.
-- The pure Web counterpart centralizes text readability scaling and separates selection/interactions by pointer-event
-  ownership: left narrative text is selectable, controls are not, and transparent right-page layers do not intercept it.
+- One case = one JSONL session；对话主体统一为 OpenAI-style `messages`。
+- 正式模型 `deepseek-v4-pro`，smoke 可用 `deepseek-v4-flash`。
+- 本地 context window 固定 65,536，输出预留 8,192；不向 provider 发送非标准 context-window 字段。
+- DAIS/FEP source turn 一对一语义改写；连续来源词重叠 `>=32` 失败。
+- Reddit 只作为文本信号，经虚构扩写；连续来源词重叠 `>=12` 失败。
+- `delusion_points` 允许为空，只是 LLM candidate，不是 diagnosis/gold label。
+- control、psychosis-related interviews、community-fictionalized sessions 必须分 split 处理。
 
 ## Important Constraints
 
-- Use fictional low-risk scenarios; do not copy raw patient/community text into prompts.
-- Do not turn the work into jailbreak/safety-bypass research.
-- External memory systems need traceable provenance, memory write policy, retrieval policy, token counts, and per-turn context records.
-- Current environment has Python 3.8.10 and no `pip`; external mem0/Graphiti smoke needs Python 3.10+ environment.
+- `data/work/` 不提交；禁止提交 API key、请求/响应、normalized raw text。
+- Reddit 社区归属不能当临床 ground truth，输出不能称为真实对话。
+- 自动 PII/QC 不能替代发布前治理审查。
+- 新增来源前先更新许可/访问状态；不默认抓取新平台数据。
+- 不把当前数据用于诊断，也不扩展为 jailbreak/safety-bypass 研究。
 
 ## Architecture Change History
 
 - 2026-05-21 to 2026-05-30: UIRD benchmark runner, judge, dashboard, LLM-only validation route.
-- 2026-05-31: Main paper framing upgraded to agent-memory evaluation; protocol and memory-facing scenarios added.
-- 2026-06-04: M1 memory-system tooling survey completed; next architecture change should be memory-condition runner support.
-- 2026-06-04: Memory-facing scenario drafts expanded to v0.4 with 9 longform 30-turn drafts and explicit source-pattern metadata; browser and runner conversion now preserve/display those fields.
-- 2026-06-05: Added local full-transcript / recent-window / rolling-summary context assembly, auditable memory trace,
-  token-window enforcement, matched MIDA summary, and memory-condition dashboard support.
-- 2026-06-14: Rebuilt `tmp-webgame-ui/` from `refer/` assets with Phaser scene objects, paper/book shadows, page-turn animation, and browser screenshot validation.
-- 2026-06-14: Added pure Web frontend counterpart with shared assets and Phaser/Web browser screenshot comparison.
-- 2026-06-14: Increased pure Web text/control readability and enabled native left-page narrative selection without regressing interactions.
+- 2026-05-31 to 2026-06-05: agent-memory framing, memory scenarios and local memory-condition runner.
+- 2026-06-14: auxiliary Phaser/pure-Web UI task completed.
+- 2026-06-22: current route changed to `deviation-bench-new/`; completed real interview transformation and screened community-to-fictional session pipeline. Old agent-memory route paused.

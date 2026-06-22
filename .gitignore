@@ -25,3 +25,6 @@ venv/
 # Common generated experiment outputs
 deviation-bench/results/
 deviation-bench/runs/
+
+# Deviation Bench New: normalized source turns, API checkpoints, and raw model responses
+deviation-bench-new/data/work/

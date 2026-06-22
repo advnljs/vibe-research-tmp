@@ -72,12 +72,34 @@ Run this checklist explicitly before declaring the task done in the chat:
 
 ## Current Research Focus
 
-Deviation Bench is currently focused on User-Induced Reality Drift:
+As of 2026-06-22, the active workstream is `deviation-bench-new/`: prepare a traceable real-data-derived multi-turn session corpus before redefining the benchmark task. The older User-Induced Reality Drift / agent-memory work remains available but is paused.
+
+Current data objective:
+
+- One source case becomes one OpenAI-style multi-turn `messages` session.
+- Formal transformation/extraction uses `deepseek-v4-pro` with a 64k context budget; `deepseek-v4-flash` is smoke-only.
+- Extract candidate delusion/reality-boundary points, allow empty lists, and never infer them solely from diagnosis group or community membership.
+- Keep real interview normalization separate from fictional expansion of community text signals.
+
+Historical research motivation to preserve:
 
 - Multi-turn user interaction may push an LLM from grounded, evidence-constrained responses toward unsupported delusional elaboration, inappropriate validation, unjustified reversal of earlier determinations, or action-oriented escalation.
 - The benchmark should measure whether models maintain reality-grounded judgment under context shifts and user pressure.
 - The broader motivation is to challenge the situational consistency assumption in AI evaluation.
 - The intended analogy is context-retest reliability / situation-retest reliability, similar to test-retest reliability in psychology.
+
+## User Direction From 2026-06-22
+
+- Create a separate `deviation-bench-new/` rather than continue extending the old route first.
+- Convert the currently available real data into multi-turn `messages`, one case per session.
+- Use `deepseek-v4-pro` for formal conversion and extraction.
+- Set the model context window/budget to 64k tokens.
+- `deepseek-v4-flash` may be used for smoke tests.
+- Prepare all currently relevant real-data-derived synthetic datasets first.
+- Extract the delusion/reality-boundary points relevant to each case.
+- Do not assume the 42 native interview cases are the whole dataset, and explicitly distinguish DAIS clinical, DAIS control, FEP, and Reddit-derived cases.
+- Do not claim all DAIS/FEP cases contain delusion manifestations; empty candidate-point lists are valid.
+- Current completed wave: 968 sessions total (29 psychosis-related interviews, 13 controls, 926 Reddit fictionalized text-signal sessions).
 
 ## User Requirements From 2026-05-21
 
@@ -210,6 +232,21 @@ Use these when their purpose matches the task. In particular:
 
 ## Important Local Files
 
+Current primary data-preparation route:
+
+- `deviation-bench-new/README.md`
+- `deviation-bench-new/experiments/real_data_session_preparation_2026-06-22.md`
+- `deviation-bench-new/schemas/session.schema.json`
+- `deviation-bench-new/src/prepare_cases.py`
+- `deviation-bench-new/src/build_sessions.py`
+- `deviation-bench-new/src/prepare_reddit_cases.py`
+- `deviation-bench-new/src/build_reddit_sessions.py`
+- `deviation-bench-new/src/validate_sessions.py`
+- `deviation-bench-new/data/processed/deepseek_v4_pro_interview_sessions_64k.jsonl`
+- `deviation-bench-new/data/processed/deepseek_v4_pro_control_sessions_64k.jsonl`
+- `deviation-bench-new/data/processed/deepseek_v4_pro_reddit_sessions_64k.jsonl`
+- `deviation-bench-new/data/screened/deepseek_v4_pro_reddit_screening_64k.jsonl`
+
 Core research docs:
 
 - `deviation-bench/Deviation Bench 现象定义与量化框架.md`
@@ -313,7 +350,20 @@ Not allowed:
 
 ## Current Implementation Position
 
-As of 2026-05-31:
+As of 2026-06-22, the active position is:
+
+- `deviation-bench-new/` is the current primary workstream; the old agent-memory/UIRD expansion is paused.
+- 42/42 native multi-turn real interview cases have been transformed by `deepseek-v4-pro` with 64k local context budgeting.
+- 29 psychosis-related interview sessions contain 4,090 messages and 40 candidate points; only 14/29 sessions contain a point.
+- 13 DAIS-C controls contain 1,206 messages and 0 candidate points.
+- Reddit preparation processed 8,712 rows into 7,685 unique posts and 2,541 LLM screen candidates.
+- DeepSeek Pro screening selected 926 candidates; 926/926 fictional 12-message sessions were generated, with 1,352 candidate points.
+- Combined data: 968 unique sessions / 16,408 messages / 1,392 candidate points / 0 validator errors.
+- Automatic PII scan hits are 0; interview max source-word run is 31 under a `>=32` threshold, and Reddit max is 11 under a `>=12` threshold.
+- Raw normalized turns, requests/responses, checkpoints, and the 968-session local browser remain under ignored `deviation-bench-new/data/work/`.
+- Next work is point metajudging, semantic duplicate/leakage audit, split/version freezing, and release governance—not expansion of the old memory runner.
+
+Historical implementation context follows:
 
 - Research framing is drafted.
 - User selected Framing A: real-corpus-anchored context-retest reliability benchmark.
@@ -401,7 +451,7 @@ As of 2026-05-31:
   - current local service: `http://127.0.0.1:8768/`
   - script: `deviation-bench/scripts/start_research_web.sh`
 
-Recommended next work:
+Previous recommended next work (paused by the 2026-06-22 direction change):
 
 1. Read `memory-bank/next-step.md` for the current action queue and framing blockers.
 2. Follow `deviation-bench/后续优先级路线图.md` as the current ordering source.

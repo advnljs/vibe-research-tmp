@@ -1,0 +1,28 @@
+{
+  "run_id": "deepseek_v4_pro_all_interview_cases_64k",
+  "model": "deepseek-v4-pro",
+  "context_window_tokens": 65536,
+  "max_output_tokens": 8192,
+  "thinking_mode": "disabled",
+  "selection": {
+    "manifest": "deviation-bench-new/data/manifests/source_cases.jsonl",
+    "psychosis_related_groups": [
+      "clinical_schizophrenia",
+      "first_episode_psychosis"
+    ],
+    "psychosis_related_case_count": 29,
+    "calibration_group": "control",
+    "calibration_case_count": 13,
+    "total_interview_case_count": 42,
+    "rule": "all parsed real interview cases from DAIS-C and the First-Episode Psychosis Friendship corpus"
+  },
+  "transform_model": "deepseek-v4-pro",
+  "smoke_model": "deepseek-v4-flash",
+  "delusion_ground_truth_available": false,
+  "allow_empty_delusion_points": true,
+  "important_boundary": "The 29 psychosis-related interviews are not delusion-specific; the 13 controls are calibration data, not delusion cases.",
+  "expected_outputs": {
+    "psychosis_related": "deviation-bench-new/data/processed/deepseek_v4_pro_interview_sessions_64k.jsonl",
+    "control_calibration": "deviation-bench-new/data/processed/deepseek_v4_pro_control_sessions_64k.jsonl"
+  }
+}

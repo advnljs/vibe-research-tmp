@@ -1,16 +1,31 @@
 # Overall Plan
 
-Last updated: 2026-06-14
+Last updated: 2026-06-22
 
 This file records the overall plan and the current implementation position. Update it whenever the plan, current phase, or next action changes.
+
+## Current North Star — 2026-06-22
+
+先建立一套可追溯、可自动校验的真实数据派生 session 数据层，再决定新的 benchmark task。当前主目录是 `deviation-bench-new/`：
+
+- 一个 source case 对应一个 OpenAI-style multi-turn `messages` session。
+- 用 `deepseek-v4-pro` 做正式转换与候选现实边界信号提取，输入预算固定 64k。
+- `deepseek-v4-flash` 只用于 smoke。
+- 真实多轮访谈保持 source-turn 对齐；真实社区单帖只作为文本信号，经筛选后虚构扩写。
+- `delusion_points` 允许为空，不从 diagnosis group/subreddit 归属反推标签。
+- 旧 `deviation-bench/` 的 agent-memory/UIRD 实验线暂停，保留为历史材料和未来可选下游，不再是当前 immediate queue。
+
+## Current Phase
+
+Phase: 第一波真实数据派生 session 已完成（968 sessions）；下一阶段是 data release hardening：LLM second-pass/metajudge、语义重复/泄漏检查、split/version manifest、治理检查，然后再定义下游 benchmark 任务。
 
 ## Auxiliary Workspace Status
 
 - `tmp-webgame-ui/` 已于 2026-06-14 完成基于 `refer/` 素材的 Phaser 3 分层 UI 重建、纸张阴影、翻页动画与浏览器截图验证；运行时不加载原始原型图。
 - `tmp-webgame-ui/web/` 已完成纯 Web 前端等价实现；整体文字与按钮已放大，左页叙事文字可选择，可读性修订后与 Phaser 初始帧达到 `0.941140` 截图相似度。
-- 该子项目是独立辅助实现，不改变 Deviation Bench 的 North Star、当前 phase 或 recommended next work。
+- 该子项目是独立辅助实现；其完成状态不影响 2026-06-22 切换后的 `deviation-bench-new/` 主线。
 
-## North Star
+## Previous North Star (Paused)
 
 Build Deviation Bench as a low-compute, API-only benchmark for measuring whether agent memory systems preserve reality-grounded judgment under changing conversational context and multi-turn user induction.
 
@@ -18,7 +33,7 @@ The core question:
 
 > 在完整对话仍能放入上下文的 token 区间内，直接 full transcript 是否比 agent memory 系统更能保持现实锚定？如果 memory 系统通过 LLM 摘要、fact extraction、RAG 或 graph memory 把 unsupported claim 固化为后续上下文，它会放大多少 deviation？
 
-## Research Positioning
+## Previous Research Positioning (Paused)
 
 Primary framing:
 
@@ -45,7 +60,7 @@ Not primary framing:
 - Must define and quantify the phenomenon before expanding the benchmark.
 - Must keep induction safe: test reality-grounding failure without creating harmful real-world escalation.
 
-## Current Phase
+## Previous Agent-Memory Phase
 
 Phase: Agent Memory primary framing selected + protocol/tooling survey/scenario v0.4 complete + local memory-condition runner skeleton implemented for full transcript / recent window / rolling summary with trace and MIDA summary -> next add vector chunks / LLM fact memory / evidence-aware memory before real memory-condition pilot and external mem0 / Graphiti smoke.
 

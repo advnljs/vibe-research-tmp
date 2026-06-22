@@ -1,10 +1,12 @@
 # Module: Agent Memory Evaluation
 
-Last updated: 2026-06-05
+Last updated: 2026-06-22
+
+Status: paused by the 2026-06-22 user direction. `deviation-bench-new/` is the current primary workstream; do not continue the conditions listed below unless the user resumes this route.
 
 ## Responsibility
 
-This module covers the current main Deviation Bench framing: evaluating whether agent memory systems preserve evidence anchors or amplify unsupported claims compared with full transcript context.
+This module preserves the previous main Deviation Bench framing: evaluating whether agent memory systems preserve evidence anchors or amplify unsupported claims compared with full transcript context.
 
 ## Entry Files
 

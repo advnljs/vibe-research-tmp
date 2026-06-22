@@ -1,0 +1,26 @@
+{
+  "batch_id": "deepseek_v4_pro_batch_001",
+  "model": "deepseek-v4-pro",
+  "context_window_tokens": 65536,
+  "thinking_mode": "disabled",
+  "case_ids": [
+    "dais_c_cl_005",
+    "dais_c_cl_009",
+    "dais_c_cl_013",
+    "fep_friendship_013",
+    "dais_c_co_004"
+  ],
+  "composition": {
+    "dais_c_clinical": 3,
+    "first_episode_psychosis_friendship": 1,
+    "dais_c_control": 1
+  },
+  "selection_rationale": [
+    "Keep the first paid/API batch small enough for end-to-end privacy and schema QC.",
+    "Include four psychosis-related real interviews and one DAIS-C control interview to exercise the valid empty-point path.",
+    "Within eligible sources, use a non-diagnostic lexical probe only to increase signal diversity and keep transcript sizes manageable."
+  ],
+  "selection_is_ground_truth": false,
+  "delusion_ground_truth_available": false,
+  "expected_output": "deviation-bench-new/data/processed/deepseek_v4_pro_batch_001.jsonl"
+}

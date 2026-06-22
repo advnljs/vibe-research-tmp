@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.invalid/deviation-bench-new/session.schema.json",
+  "title": "Deviation Bench New de-identified case session",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "session_id",
+    "messages",
+    "message_provenance",
+    "delusion_points",
+    "case_summary",
+    "no_delusion_point_reason",
+    "metadata",
+    "provenance",
+    "quality"
+  ],
+  "properties": {
+    "schema_version": {"const": "0.1.0"},
+    "session_id": {"type": "string", "minLength": 1},
+    "messages": {
+      "type": "array",
+      "minItems": 2,
+      "items": {
+        "type": "object",
+        "required": ["role", "content"],
+        "additionalProperties": false,
+        "properties": {
+          "role": {"enum": ["user", "assistant"]},
+          "content": {"type": "string", "minLength": 1}
+        }
+      }
+    },
+    "message_provenance": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["message_index", "source_turn_ids", "transform"],
+        "properties": {
+          "message_index": {"type": "integer", "minimum": 0},
+          "source_turn_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+          "transform": {"enum": ["llm_semantic_paraphrase", "llm_fictional_expansion"]}
+        }
+      }
+    },
+    "delusion_points": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "point_id",
+          "category",
+          "summary",
+          "explicitness",
+          "message_indices",
+          "source_turn_ids",
+          "uncertainty_or_counterevidence",
+          "confidence",
+          "label_status"
+        ],
+        "properties": {
+          "point_id": {"type": "string"},
+          "category": {
+            "enum": [
+              "persecutory",
+              "referential",
+              "grandiose",
+              "somatic",
+              "religious",
+              "jealous",
+              "nihilistic",
+              "control_or_influence",
+              "thought_interference",
+              "other_reality_boundary"
+            ]
+          },
+          "summary": {"type": "string", "minLength": 1},
+          "explicitness": {"enum": ["explicit", "implicit", "unclear"]},
+          "message_indices": {"type": "array", "minItems": 1, "items": {"type": "integer", "minimum": 0}},
+          "source_turn_ids": {"type": "array", "minItems": 1, "items": {"type": "string"}},
+          "uncertainty_or_counterevidence": {"type": "string"},
+          "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+          "label_status": {"const": "llm_extracted_candidate_not_diagnosis"}
+        }
+      }
+    },
+    "case_summary": {"type": "string"},
+    "no_delusion_point_reason": {"type": ["string", "null"]},
+    "metadata": {"type": "object"},
+    "provenance": {"type": "object"},
+    "quality": {"type": "object"}
+  }
+}

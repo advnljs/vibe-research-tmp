@@ -1,0 +1,21 @@
+{
+  "run_id": "deepseek_v4_pro_reddit_sessions_64k",
+  "source_manifest": "deviation-bench-new/data/manifests/reddit_source_cases.jsonl",
+  "screen_candidate_manifest": "deviation-bench-new/data/manifests/reddit_screen_candidates.jsonl",
+  "source_rows": 8712,
+  "unique_posts": 7685,
+  "llm_screen_candidates": 2541,
+  "screen_model": "deepseek-v4-pro",
+  "generation_model": "deepseek-v4-pro",
+  "smoke_model": "deepseek-v4-flash",
+  "context_window_tokens": 65536,
+  "thinking_mode": "disabled",
+  "screen_max_output_tokens": 4096,
+  "generation_max_output_tokens": 8192,
+  "messages_per_generated_session": 12,
+  "source_membership_is_ground_truth": false,
+  "dialogue_is_synthetic": true,
+  "allow_only_llm_screened_low_risk_cases": true,
+  "expected_screen_output": "deviation-bench-new/data/screened/deepseek_v4_pro_reddit_screening_64k.jsonl",
+  "expected_session_output": "deviation-bench-new/data/processed/deepseek_v4_pro_reddit_sessions_64k.jsonl"
+}

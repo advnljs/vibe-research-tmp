@@ -1,8 +1,42 @@
 # Overall Progress
 
-Last updated: 2026-06-14
+Last updated: 2026-06-22
 
 This file records completed work and the current state of the Deviation Bench project. Update it after any meaningful research, data, implementation, or planning change.
+
+## Completed 2026-06-22
+
+### Deviation Bench New: real-data-derived session wave
+
+用户暂停旧的 agent-memory / induced-drift 主路线，要求先把已有真实数据统一转换为“一例一个多轮 messages session”，并提取每例候选妄想/现实边界点。已新建隔离目录 `deviation-bench-new/` 并完成第一波全量数据：
+
+- 42 个原生真实多轮访谈：DAIS-C clinical 15、DAIS-C control 13、FEP friendship 14。
+- 其中 29 个 psychosis-related 访谈单独输出，13 个 control 作为 calibration split。
+- Reddit `r/schizophrenia`：8,712 rows -> 7,685 unique posts -> 2,541 LLM screen candidates -> 926 DeepSeek Pro eligible text signals -> 926 虚构去标识化 session。
+- 正式模型统一为 `deepseek-v4-pro`，上下文预算统一为 65,536 tokens，thinking mode disabled；`deepseek-v4-flash` 仅用于 smoke。
+- 最终 968 sessions / 16,408 messages / 1,392 candidate points；三类输出 contract/PII/来源重合校验错误均为 0。
+- 29 个 psychosis-related 访谈里只有 14 个提取到候选点，明确证明 DAIS/FEP 不是 delusion-only corpus。
+- Reddit 社区归属不视为诊断；其输出是从真实文本信号生成的 fictional sessions，不是真实对话。
+
+关键产物：
+
+- `deviation-bench-new/README.md`
+- `deviation-bench-new/src/`、`prompts/`、`schemas/session.schema.json`
+- `deviation-bench-new/data/processed/deepseek_v4_pro_interview_sessions_64k.jsonl`
+- `deviation-bench-new/data/processed/deepseek_v4_pro_control_sessions_64k.jsonl`
+- `deviation-bench-new/data/screened/deepseek_v4_pro_reddit_screening_64k.jsonl`
+- `deviation-bench-new/data/processed/deepseek_v4_pro_reddit_sessions_64k.jsonl`
+- `deviation-bench-new/experiments/real_data_session_preparation_2026-06-22.md`
+- `memory-bank/module-deviation-bench-new.md`
+
+验证：
+
+- interview：29 sessions / 4,090 messages / 40 points / 0 errors。
+- control：13 sessions / 1,206 messages / 0 points / 0 errors。
+- Reddit：926 sessions / 11,112 messages / 1,352 points / 0 errors。
+- 组合校验：968 unique sessions / 16,408 messages / 1,392 points / 0 errors。
+- `python3 -m unittest discover -s deviation-bench-new/tests -v`：11 tests passed。
+- local browser：968 sessions，输出到 ignored `deviation-bench-new/data/work/web/index.html`。
 
 ## Completed 2026-06-14
 
@@ -46,7 +80,7 @@ This file records completed work and the current state of the Deviation Bench pr
   - 浏览器脚本验证左页段落 `userSelect=text`、成功选中 182 个字符，导航、选项与双向翻页仍通过。
   - 可读性修订后的 Phaser / Web 初始帧相似度：`0.941140`。
 
-## Current Project State
+## Previous Project State Before 2026-06-22 Direction Change
 
 Deviation Bench has been narrowed from a broad context-induced deviation idea into a more feasible, API-only benchmark direction:
 

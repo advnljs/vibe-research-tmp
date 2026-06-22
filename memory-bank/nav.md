@@ -1,6 +1,6 @@
 # Memory Bank Navigation
 
-Last updated: 2026-06-14
+Last updated: 2026-06-22
 
 Canonical project navigation is `研究导航.md`. This file is a compact memory-bank-local index.
 
@@ -12,11 +12,19 @@ Canonical project navigation is `研究导航.md`. This file is a compact memory
 - `todo.md`: compact task table.
 - `architecture.md`: compact system architecture.
 - `specs.md`: persistent user requirements and constraints.
-- `module-agent-memory-eval.md`: current main module notes.
+- `module-agent-memory-eval.md`: paused historical agent-memory module notes.
+- `module-deviation-bench-new.md`: current primary real-data session pipeline and data contract.
 - `module-webgame-ui.md`: Phaser UI replica module notes.
 
 ## Current High-Value Project Files
 
+- `deviation-bench-new/README.md`: current primary route, counts, commands and interpretation boundary.
+- `deviation-bench-new/experiments/real_data_session_preparation_2026-06-22.md`: 968-session preparation and validation report.
+- `deviation-bench-new/src/`: parsers, DeepSeek builders, QC validator and local browser.
+- `deviation-bench-new/data/processed/`: three finished session JSONL files and summaries.
+- `deviation-bench-new/data/screened/deepseek_v4_pro_reddit_screening_64k.jsonl`: tracked no-raw-text Reddit screen results.
+- `deviation-bench-new/data/manifests/`: no-raw-text source and run manifests.
+- The files below belong to the paused historical agent-memory route:
 - `deviation-bench/agent_memory_eval_protocol.md`: formal agent-memory evaluation protocol.
 - `deviation-bench/agent_memory_system_survey.md`: current M1 tooling survey and external-system selection.
 - `deviation-bench/prompts/memory_scenario_drafts.yaml`: memory-facing 30-turn drafts, current version `0.4`.
@@ -40,6 +48,11 @@ Canonical project navigation is `研究导航.md`. This file is a compact memory
 ## Common Commands
 
 ```bash
+python3 deviation-bench-new/src/prepare_cases.py
+python3 deviation-bench-new/src/prepare_reddit_cases.py
+python3 deviation-bench-new/src/validate_sessions.py deviation-bench-new/data/processed/*_64k.jsonl
+python3 -m unittest discover -s deviation-bench-new/tests -v
+python3 deviation-bench-new/src/build_dataset_browser.py --input 'deviation-bench-new/data/processed/*_64k.jsonl'
 python3 deviation-bench/src/deviation_bench_pilot.py --validate-only
 python3 deviation-bench/src/build_scenario_browser.py --validate-only
 python3 deviation-bench/src/summarize_memory_runs.py --input 'deviation-bench/results/working/memory_condition_*_mock.jsonl'

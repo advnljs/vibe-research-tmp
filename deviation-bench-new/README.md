@@ -241,6 +241,13 @@ http://127.0.0.1:8770/data/work/runs_dashboard/index.html
 ### 10. Review dashboard：对话与统计图表
 
 ```bash
+python3 deviation-bench-new/src/generate_review_narratives.py \
+  --provider openai \
+  --model deepseek-v4-pro \
+  --base-url https://api.deepseek.com \
+  --context-window-tokens 65536 \
+  --thinking-mode disabled
+
 python3 deviation-bench-new/src/build_review_dashboard.py
 python3 -m http.server 8770 --bind 127.0.0.1 --directory deviation-bench-new
 ```
@@ -253,6 +260,7 @@ http://127.0.0.1:8770/data/work/review_dashboard/index.html
 
 页面本身生成到 ignored `data/work/review_dashboard/`。它通过浏览器 `fetch` 动态读取三份 processed session JSONL、reviewed split/audit、point metajudge、semantic fingerprint 和 duplicate/leakage pair review 结果；页面上的统计数字、图表、热力图和表格都从当前数据实时聚合，不手写固定统计值。它提供：
 
+- LLM narrative：`src/generate_review_narratives.py` 只读取聚合统计，生成 tracked `data/reviews/deepseek_v4_pro_review_narratives_64k.json`；dashboard 动态读取它展示中文自然语言解释和图表阅读说明；
 - actual results 页签：展示实际 release-hardening 流程结果卡片、状态图标、summary JSON 图表、experiment note 预览和 artifact 链接；
 - delusion 页签：展示候选 reality-boundary/delusion 信号总览、metajudge accept/revise/reject、category/source/decision 分布、confidence bucket、support level、summary-overreach、no-point sessions、source × category 和 decision × category 热力图、信号密度最高 session、metajudge concern 和 uncertainty/counterevidence 示例；
 - overview 统计卡片和横向条形图；

@@ -26,6 +26,7 @@ def dashboard_fetch_paths() -> dict[str, object]:
         "fingerprints": "/data/reviews/deepseek_v4_pro_session_semantic_fingerprints_64k.jsonl",
         "duplicatePairs": "/data/reviews/deepseek_v4_pro_semantic_duplicate_pairs_64k.jsonl",
         "duplicateSummary": "/data/reviews/deepseek_v4_pro_semantic_duplicate_audit_64k_summary.json",
+        "narratives": "/data/reviews/deepseek_v4_pro_review_narratives_64k.json",
         "experimentNotes": {
             "dataPreparation": "/experiments/real_data_session_preparation_2026-06-22.md",
             "preAudit": "/experiments/session_release_hardening_pre_audit_2026-06-29.md",
@@ -88,6 +89,10 @@ main{padding:16px;overflow:auto;max-height:calc(100vh - 156px)}
 .artifact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px}
 .artifact{display:block;border:1px solid var(--line);border-radius:6px;background:white;padding:8px;text-decoration:none;color:var(--ink)}
 .artifact small{display:block;color:var(--muted);margin-top:2px}
+.narrative{border-left:4px solid var(--accent);background:#fbfdfd}.narrative p{margin:7px 0}
+.narrative ul{margin:8px 0 0 18px;padding:0}.narrative li{margin:4px 0}
+.chart-note-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:8px}
+.chart-note{border:1px solid var(--line);background:white;border-radius:6px;padding:9px}.chart-note b{display:block;margin-bottom:4px}
 .chart{min-height:220px}.bars{display:grid;gap:7px}
 .bar-row{display:grid;grid-template-columns:minmax(120px,190px) minmax(0,1fr) 54px;gap:8px;align-items:center}
 .bar-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#323832}
@@ -149,12 +154,13 @@ pre{white-space:pre-wrap;word-break:break-word;background:#f8fafb;border:1px sol
 </div>
 <script>
 const paths = __PATHS__;
-const state = {sessions:[], splits:new Map(), reviews:new Map(), negatives:new Map(), fingerprints:new Map(), pairs:[], pairsBySession:new Map(), audit:null, pointSummary:null, duplicateSummary:null, notes:{}, active:null, view:'overview'};
+const state = {sessions:[], splits:new Map(), reviews:new Map(), negatives:new Map(), fingerprints:new Map(), pairs:[], pairsBySession:new Map(), audit:null, pointSummary:null, duplicateSummary:null, narrative:null, notes:{}, active:null, view:'overview'};
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt = n => Number.isFinite(n) ? n.toLocaleString('en-US') : String(n ?? '');
 async function fetchText(path){const response=await fetch(path); if(!response.ok) throw new Error(`${path} ${response.status}`); return response.text()}
 async function fetchJSON(path){return JSON.parse(await fetchText(path))}
+async function fetchOptionalJSON(path){try{return await fetchJSON(path)}catch(error){console.warn('optional narrative unavailable', error); return null}}
 async function fetchJSONL(path){const text=await fetchText(path); return text.trim().split(/\\n+/).filter(Boolean).map(line=>JSON.parse(line))}
 function countBy(rows, fn){const out={}; for(const row of rows){const key=String(fn(row) ?? 'unknown'); out[key]=(out[key]||0)+1} return out}
 function groupBy(rows, fn){const out=new Map(); for(const row of rows){const key=String(fn(row) ?? 'unknown'); if(!out.has(key)) out.set(key, []); out.get(key).push(row)} return out}
@@ -196,6 +202,26 @@ function artifactLink(label, path, note){
 function markdownPreview(text, max=1400){
   const trimmed=String(text||'').trim();
   return esc(trimmed.length>max ? `${trimmed.slice(0,max)}...` : trimmed);
+}
+function narrativeSection(section, fallbackTitle, fallbackParagraphs=[]){
+  const data=section||{};
+  const title=data.title||fallbackTitle;
+  const paragraphs=(data.paragraphs&&data.paragraphs.length?data.paragraphs:fallbackParagraphs);
+  const bullets=data.bullets||[];
+  const cautions=data.cautions||[];
+  return `<section class="panel narrative"><h3>${esc(title)}</h3>${paragraphs.map(text=>`<p>${esc(text)}</p>`).join('')}${bullets.length?`<ul>${bullets.map(text=>`<li>${esc(text)}</li>`).join('')}</ul>`:''}${cautions.length?`<ul>${cautions.map(text=>`<li>${esc(text)}</li>`).join('')}</ul>`:''}</section>`;
+}
+function chartNarratives(targets){
+  const aliases={
+    'Candidate Categories':['Candidate Categories','delusion_signal_distribution.category'],
+    'Metajudge Decision × Candidate Category':['Metajudge Decision × Candidate Category','metajudge.decision_counts'],
+    'Source Family × Candidate Category':['Source Family × Candidate Category','delusion_signal_distribution.source_family'],
+    'Actual Point Metajudge Decisions':['Actual Point Metajudge Decisions','metajudge.decision_counts'],
+    'Reviewed Release Split':['Reviewed Release Split','release.reviewed_counts.release_split']
+  };
+  const rows=(state.narrative?.narrative?.charts||[]).filter(item=>targets.some(target=>(aliases[target]||[target]).includes(item.target)));
+  if(!rows.length) return '';
+  return `<section class="panel"><h3>Chart Reading Notes</h3><div class="chart-note-grid">${rows.map(item=>`<div class="chart-note"><b>${esc(item.target)}</b><span>${esc(item.explanation)}</span></div>`).join('')}</div></section>`;
 }
 function shortText(text, max=160){
   const value=String(text||'').replace(/\s+/g,' ').trim();
@@ -296,6 +322,11 @@ function renderResults(){
   const pairReviews=sumValues(pairDecisions)||state.pairs.length;
   const validationErrors=preTotals.validation_errors||0;
   const governanceOpen=(audit.release_notes||[]).some(note=>String(note).toLowerCase().includes('governance'));
+  const narrative=narrativeSection(
+    state.narrative?.narrative?.overall,
+    '实际结果说明',
+    [`当前页面从 ${fmt(preTotals.sessions||state.sessions.length)} 个 session、${fmt(preTotals.messages||0)} 条 message 和 ${fmt(preTotals.delusion_points||0)} 个候选点动态聚合统计。Reviewed split 和 metajudge 结果已经加载，但公开发布前仍需要治理审查。`]
+  );
   const cards=[
     resultCard('Data sessions', fmt(preTotals.sessions||state.sessions.length), `${fmt(preTotals.messages||0)} messages · ${fmt(preTotals.delusion_points||0)} candidate points`, validationErrors===0?'ok':'bad'),
     resultCard('Point metajudge', fmt(point.input_units||state.pointReviews.length), `${fmt(point.candidate_units||0)} candidates · accept ${pct(point.candidate_acceptance_rate)}`, 'ok'),
@@ -319,10 +350,11 @@ function renderResults(){
     artifactLink('Point metajudge JSONL', paths.pointReviews, '1,420 review-unit records'),
     artifactLink('Duplicate audit summary', paths.duplicateSummary, 'semantic duplicate/leakage result summary'),
     artifactLink('Duplicate pair JSONL', paths.duplicatePairs, '240 pair-review records'),
-    artifactLink('Semantic fingerprints JSONL', paths.fingerprints, '968 session fingerprints')
+    artifactLink('Semantic fingerprints JSONL', paths.fingerprints, '968 session fingerprints'),
+    artifactLink('LLM narrative JSON', paths.narratives, 'Chinese dashboard explanations generated from aggregate stats')
   ].join('');
   const actualNote=state.notes.actualFlow||'';
-  $('resultsView').innerHTML=`<section class="status-strip">${statuses}</section><section class="result-grid">${cards}</section><div class="overview-grid">${barChart('Actual Point Metajudge Decisions',pointCounts.decision||{},'var(--ok)')}${barChart('Point Review Source Families',pointCounts.source_family||{},'var(--accent-2)')}${barChart('Reviewed Release Split',reviewedCounts.release_split||{},'var(--accent)')}${barChart('Release Actions Applied',reviewedCounts.release_action||{},'var(--warn)')}${barChart('Semantic Pair Decisions',pairDecisions,'var(--bad)')}${barChart('Leakage Risk',semanticCounts.pair_leakage_risk||{},'var(--accent-2)')}${barChart('Source Specificity Risk',semanticCounts.source_specificity_risk||{},'var(--warn)')}${barChart('Preparation Point Categories',preCounts.points_by_category||{},'var(--accent)')}</div><section class="panel"><h3>Result Artifacts</h3><div class="artifact-grid">${artifacts}</div></section><section class="panel"><h3>Actual Flow Note Preview</h3><pre>${markdownPreview(actualNote)}</pre></section>`;
+  $('resultsView').innerHTML=`${narrative}<section class="status-strip">${statuses}</section><section class="result-grid">${cards}</section><div class="overview-grid">${barChart('Actual Point Metajudge Decisions',pointCounts.decision||{},'var(--ok)')}${barChart('Point Review Source Families',pointCounts.source_family||{},'var(--accent-2)')}${barChart('Reviewed Release Split',reviewedCounts.release_split||{},'var(--accent)')}${barChart('Release Actions Applied',reviewedCounts.release_action||{},'var(--warn)')}${barChart('Semantic Pair Decisions',pairDecisions,'var(--bad)')}${barChart('Leakage Risk',semanticCounts.pair_leakage_risk||{},'var(--accent-2)')}${barChart('Source Specificity Risk',semanticCounts.source_specificity_risk||{},'var(--warn)')}${barChart('Preparation Point Categories',preCounts.points_by_category||{},'var(--accent)')}</div>${chartNarratives(['Actual Point Metajudge Decisions','Reviewed Release Split'])}<section class="panel"><h3>Result Artifacts</h3><div class="artifact-grid">${artifacts}</div></section><section class="panel"><h3>Actual Flow Note Preview</h3><pre>${markdownPreview(actualNote)}</pre></section>`;
 }
 function renderDelusion(){
   const rows=allPointRows();
@@ -335,6 +367,11 @@ function renderDelusion(){
   const sessionsWithPoints=new Set(rows.map(row=>row.session.session_id));
   const acceptedSessions=new Set(acceptedRows.map(row=>row.session.session_id));
   const noPointSessions=state.sessions.filter(session=>(session.delusion_points||[]).length===0);
+  const narrative=narrativeSection(
+    state.narrative?.narrative?.delusion,
+    'Delusion / reality-boundary 指标说明',
+    [`这里的 ${fmt(rows.length)} 个候选信号来自一阶 LLM 抽取，随后由 metajudge 区分 accept、revise 和 reject。当前有 ${fmt(acceptedRows.length)} 个候选被接受或修订，${fmt(rejectedRows.length)} 个候选被拒绝，${fmt(noPointSessions.length)} 个 session 保持空候选列表。`]
+  );
   const cards=[
     resultCard('Candidate signals', fmt(rows.length), `${fmt(sessionsWithPoints.size)} sessions with at least one candidate`, 'info'),
     resultCard('Accepted / revised', fmt(acceptedRows.length), `${fmt(acceptedSessions.size)} sessions retain a metajudge-supported signal`, 'ok'),
@@ -373,7 +410,7 @@ function renderDelusion(){
     return `<tr><td>${openSessionButton(row.session.session_id)}</td><td>${badge(row.point.category,'purple')}</td><td>${badge(pointDecision(row),reviewKind(pointDecision(row)))}</td><td>${esc(issues.join(', ')||'review concern')}</td><td>${esc(shortText(row.review?.rationale,220))}</td></tr>`;
   }).join('');
   const uncertaintyRows=acceptedRows.filter(row=>row.point.uncertainty_or_counterevidence).sort((a,b)=>Number(b.point.confidence)-Number(a.point.confidence)).slice(0,12).map(row=>`<tr><td>${openSessionButton(row.session.session_id)}</td><td>${badge(row.point.category,'purple')}</td><td>${esc(row.point.explicitness)} / ${esc(row.point.confidence)}</td><td>${esc(shortText(row.point.summary,190))}</td><td>${esc(shortText(row.point.uncertainty_or_counterevidence,220))}</td></tr>`).join('');
-  $('delusionView').innerHTML=`<section class="status-strip">${statusItem('Candidate, not diagnosis','All delusion/reality-boundary fields are LLM-extracted candidate signals, not clinical ground truth.','warn')}${statusItem('Metajudge calibrated','Counts distinguish first-pass candidates from accept/revise/reject decisions.','ok')}${statusItem('Empty lists are meaningful','Controls and some interviews remain no-point sessions rather than forced labels.','info')}</section><section class="result-grid">${cards}</section><div class="overview-grid">${charts}</div>${heatmaps}<section class="panel"><h3>Category × Metajudge Situation</h3><table><thead><tr><th>Category</th><th>Total</th><th>Accepted</th><th>Revised</th><th>Rejected</th><th>Explicit</th><th>Avg conf</th></tr></thead><tbody>${categoryRows}</tbody></table></section><section class="panel"><h3>Highest Signal-Density Sessions</h3><table><thead><tr><th>Session</th><th>Source</th><th>Points</th><th>Accepted/Revised</th><th>Rejected</th><th>Categories</th></tr></thead><tbody>${densityRows}</tbody></table></section><section class="panel"><h3>Metajudge Concern Situations</h3><table><thead><tr><th>Session</th><th>Category</th><th>Decision</th><th>Issue</th><th>Rationale</th></tr></thead><tbody>${concernRows}</tbody></table></section><section class="panel"><h3>Uncertainty / Counterevidence Examples</h3><table><thead><tr><th>Session</th><th>Category</th><th>Explicitness / conf</th><th>Candidate summary</th><th>Uncertainty or counterevidence</th></tr></thead><tbody>${uncertaintyRows}</tbody></table></section>`;
+  $('delusionView').innerHTML=`${narrative}<section class="status-strip">${statusItem('Candidate, not diagnosis','All delusion/reality-boundary fields are LLM-extracted candidate signals, not clinical ground truth.','warn')}${statusItem('Metajudge calibrated','Counts distinguish first-pass candidates from accept/revise/reject decisions.','ok')}${statusItem('Empty lists are meaningful','Controls and some interviews remain no-point sessions rather than forced labels.','info')}</section><section class="result-grid">${cards}</section><div class="overview-grid">${charts}</div>${chartNarratives(['Candidate Categories','Metajudge Decision × Candidate Category','Source Family × Candidate Category'])}${heatmaps}<section class="panel"><h3>Category × Metajudge Situation</h3><table><thead><tr><th>Category</th><th>Total</th><th>Accepted</th><th>Revised</th><th>Rejected</th><th>Explicit</th><th>Avg conf</th></tr></thead><tbody>${categoryRows}</tbody></table></section><section class="panel"><h3>Highest Signal-Density Sessions</h3><table><thead><tr><th>Session</th><th>Source</th><th>Points</th><th>Accepted/Revised</th><th>Rejected</th><th>Categories</th></tr></thead><tbody>${densityRows}</tbody></table></section><section class="panel"><h3>Metajudge Concern Situations</h3><table><thead><tr><th>Session</th><th>Category</th><th>Decision</th><th>Issue</th><th>Rationale</th></tr></thead><tbody>${concernRows}</tbody></table></section><section class="panel"><h3>Uncertainty / Counterevidence Examples</h3><table><thead><tr><th>Session</th><th>Category</th><th>Explicitness / conf</th><th>Candidate summary</th><th>Uncertainty or counterevidence</th></tr></thead><tbody>${uncertaintyRows}</tbody></table></section>`;
   $('delusionView').querySelectorAll('[data-jump]').forEach(btn=>btn.onclick=()=>{setView('sessions'); showSession(btn.dataset.jump)});
 }
 function pointReviewFor(point, sessionId){return (state.reviews.get(sessionId)||[]).find(r=>r.point_id===point.point_id)}
@@ -457,6 +494,7 @@ async function boot(){
   state.audit=await fetchJSON(paths.reviewedAudit);
   state.pointSummary=await fetchJSON(paths.pointSummary);
   state.duplicateSummary=await fetchJSON(paths.duplicateSummary);
+  state.narrative=await fetchOptionalJSON(paths.narratives);
   state.notes=Object.fromEntries(await Promise.all(Object.entries(paths.experimentNotes).map(async ([key,path])=>[key,await fetchText(path)])));
   state.pointReviews=await fetchJSONL(paths.pointReviews);
   state.fingerprintRows=await fetchJSONL(paths.fingerprints);

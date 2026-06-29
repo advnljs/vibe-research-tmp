@@ -20,6 +20,7 @@ from build_sessions import estimate_tokens, mock_chunk_result, mock_consolidatio
 from build_runs_dashboard import classify_path  # noqa: E402
 from build_review_dashboard import build_html as build_review_dashboard_html, dashboard_fetch_paths  # noqa: E402
 from finalize_release_hardening import reviewed_split_rows  # noqa: E402
+from generate_review_narratives import mock_narrative, validate_narrative  # noqa: E402
 from prepare_cases import parse_dais_tagged_text, parse_fep_table_text  # noqa: E402
 from run_point_metajudge import make_batches as make_point_batches, validate_batch_result  # noqa: E402
 from run_semantic_duplicate_audit import build_pair_candidates  # noqa: E402
@@ -265,6 +266,7 @@ class ReleaseHardeningRunTests(unittest.TestCase):
         self.assertIn("pointSummary", paths)
         self.assertIn("duplicatePairs", paths)
         self.assertIn("duplicateSummary", paths)
+        self.assertIn("narratives", paths)
         self.assertIn("actualFlow", paths["experimentNotes"])
 
     def test_review_dashboard_contains_delusion_view(self) -> None:
@@ -272,6 +274,21 @@ class ReleaseHardeningRunTests(unittest.TestCase):
         self.assertIn('data-view="delusion"', html)
         self.assertIn('id="delusionView"', html)
         self.assertIn("Source Family × Candidate Category", html)
+        self.assertIn("chartNarratives", html)
+
+    def test_review_narrative_mock_satisfies_contract(self) -> None:
+        stats = {
+            "totals": {"sessions": 1, "messages": 2, "candidate_points": 1, "no_point_sessions": 0},
+            "metajudge": {
+                "accepted_or_revised_candidate_points": 1,
+                "rejected_candidate_points": 0,
+                "summary_overreach_flags": 0,
+                "diagnosis_or_membership_inference_flags": 0,
+            },
+            "delusion_signal_distribution": {"category": {"persecutory": 1}},
+            "interpretation_boundaries": ["candidate signals only"],
+        }
+        self.assertEqual(validate_narrative(mock_narrative(stats)), [])
 
     def test_reviewed_split_rows_mark_duplicate_and_same_split(self) -> None:
         split_rows = [

@@ -28,6 +28,11 @@ This file records completed work and the current state of the Deviation Bench pr
   - 展示 candidate signals、accepted/revised、rejected、no-point sessions、implicit signals、high confidence、weak/none support、diagnosis/member flags。
   - 展示 category/source/decision 分布、confidence buckets、support level、summary-overreach、source × category 和 metajudge decision × category 热力图。
   - 展示信号密度最高 sessions、metajudge concern situations、uncertainty/counterevidence examples，并可跳转到对应对话。
+- 根据用户最新要求，新增 LLM 动态自然语言说明：
+  - 新增 `deviation-bench-new/prompts/review_narrative.md` 和 `deviation-bench-new/src/generate_review_narratives.py`。
+  - 使用 `deepseek-v4-pro` 从聚合统计生成 tracked `data/reviews/deepseek_v4_pro_review_narratives_64k.json`。
+  - dashboard 动态读取 narrative JSON，在 Results / Delusion 页展示中文自然语言说明和 chart reading notes。
+  - narrative 输入只含聚合统计，不含 raw transcript、raw community post 或 raw API response。
 - README 已补充运行入口和访问 URL。
 
 验证：
@@ -38,6 +43,8 @@ This file records completed work and the current state of the Deviation Bench pr
 - 本地 HTTP fetch 验证 `review_dashboard/index.html` 和核心 JSONL/JSON 数据路径可访问。
 - Chrome DOM 验证 `Results` 页实际渲染 8 个结果卡、3 个状态项、8 个图表和 8 个 artifact 链接。
 - Chrome DOM 验证 `Delusion` 页实际渲染 8 个指标卡、8 个条形图、2 个热力图、6 张表。
+- `python3 deviation-bench-new/src/generate_review_narratives.py --provider openai ...`：生成 DeepSeek Pro narrative JSON。
+- Chrome DOM 验证 Results / Delusion 各有 1 个 narrative panel，Delusion 页有 3 条 chart reading notes。
 
 ### Deviation Bench New: actual release-hardening flow and dynamic runs page
 

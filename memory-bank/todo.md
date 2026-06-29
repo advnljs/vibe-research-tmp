@@ -7,7 +7,7 @@ Last updated: 2026-06-29
 | Independent point metajudge | P0 | completed | none | Use reviewed audit for downstream; optional future second-model variance check. |
 | Semantic duplicate/leakage audit | P0 | completed | none | Reviewed manifest marks 4 excluded duplicate candidates and 63 same-split moves. |
 | Dataset version/split manifest | P0 | reviewed freeze complete | final public release still needs governance review | Use `deepseek_v4_pro_release_splits_reviewed_64k.jsonl` for downstream task construction. |
-| Review dashboard for results/delusion/conversations/charts | P0 | completed | none | Use ignored `data/work/review_dashboard/index.html` for dynamically aggregated actual results, delusion metrics, charts and local inspection. |
+| Review dashboard for results/delusion/narratives/conversations/charts | P0 | completed | none | Use ignored `data/work/review_dashboard/index.html` for dynamically aggregated actual results, LLM narratives, delusion metrics, charts and local inspection. |
 | Release governance review | P1 | pending | license/privacy interpretation | Check CC BY-SA boundary, Reddit redistribution/privacy, names/entities and rare event chains. |
 | Downstream benchmark redesign | P1 | pending | prepared data should be hardened first | Define task, units, controls and metrics from the new session data layer. |
 | Old agent-memory route | P3 | paused | superseded by user direction | Do not resume unless user explicitly redirects. |
@@ -21,3 +21,4 @@ Last updated: 2026-06-29
 - 2026-06-29: generated release audit, split manifest and 1,392 point-review units; local lexical duplicate/leakage pre-audit found 0 pairs at threshold 0.82.
 - 2026-06-29: completed actual DeepSeek Pro point metajudge and semantic duplicate/leakage flow; generated reviewed audit/splits and dynamic runs dashboard.
 - 2026-06-29: added a richer review dashboard that dynamically shows actual experiment results, delusion/reality-boundary metrics, charts, heatmaps, conversations, metajudge rationales and duplicate/leakage pairs.
+- 2026-06-29: added DeepSeek Pro narrative generation from aggregate stats and wired it into the review dashboard.

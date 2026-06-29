@@ -36,6 +36,8 @@ Canonical project navigation is `研究导航.md`. This file is a compact memory
 - `deviation-bench-new/experiments/session_release_hardening_actual_flow_2026-06-29.md`: actual release-hardening flow note.
 - `deviation-bench-new/data/work/runs_dashboard/index.html`: ignored dynamic local page that fetches run/result files.
 - `deviation-bench-new/src/build_review_dashboard.py`: generator for the richer local review dashboard.
+- `deviation-bench-new/src/generate_review_narratives.py`: generator for Chinese LLM narrative explanations from aggregate review stats.
+- `deviation-bench-new/data/reviews/deepseek_v4_pro_review_narratives_64k.json`: tracked DeepSeek Pro narrative JSON consumed by the review dashboard.
 - `deviation-bench-new/data/work/review_dashboard/index.html`: ignored dynamic local page with actual experiment results, delusion/reality-boundary metrics, status icons, charts, heatmaps, filters, conversations, metajudge rationales and duplicate/leakage review.
 - The files below belong to the paused historical agent-memory route:
 - `deviation-bench/agent_memory_eval_protocol.md`: formal agent-memory evaluation protocol.
@@ -69,6 +71,7 @@ python3 deviation-bench-new/src/run_point_metajudge.py --provider openai --inclu
 python3 deviation-bench-new/src/run_semantic_duplicate_audit.py --provider openai --resume --overwrite
 python3 deviation-bench-new/src/finalize_release_hardening.py
 python3 deviation-bench-new/src/build_runs_dashboard.py
+python3 deviation-bench-new/src/generate_review_narratives.py --provider openai --model deepseek-v4-pro --base-url https://api.deepseek.com --context-window-tokens 65536 --thinking-mode disabled
 python3 deviation-bench-new/src/build_review_dashboard.py
 python3 -m unittest discover -s deviation-bench-new/tests -v
 python3 deviation-bench-new/src/build_dataset_browser.py --input 'deviation-bench-new/data/processed/*_64k.jsonl'

@@ -1,0 +1,234 @@
+{
+  "generated_at": "2026-06-29T08:48:22+00:00",
+  "input_hash": "b4160430a01e4657e7dd888d611bf61a0764d2caa408aa5a22b535c00fa45be4",
+  "model": "deepseek-v4-pro",
+  "narrative": {
+    "charts": [
+      {
+        "explanation": "展示 1,392 个候选偏差点在 10 个类别中的分布。迫害型以 509 个居首，其他现实边界型 249 个、关系型 204 个紧随其后。该图反映首次提取的原始类别分布，未经元评审校准。",
+        "target": "Candidate Categories"
+      },
+      {
+        "explanation": "交叉显示各候选类别在元评审中的接受、修订和拒绝情况。迫害型被拒绝 15 个、其他现实边界型被拒绝 13 个，其余类别拒绝数均不超过 3 个。该图帮助评估各类别的信号稳定性。",
+        "target": "Metajudge Decision × Candidate Category"
+      },
+      {
+        "explanation": "按来源家族（Reddit 虚构文本、DAIS-C 临床访谈、FEP 访谈）展示候选类别分布。Reddit 来源贡献了绝大多数候选点（1,352 个），临床来源合计仅 40 个。该图揭示数据来源的构成偏差。",
+        "target": "Source Family × Candidate Category"
+      },
+      {
+        "explanation": "汇总元评审对 1,392 个候选点和 28 个无候选点会话的最终决定：接受 1,313 个、修订 40 个、拒绝 39 个、确认无候选点 28 个。该图提供评审结果的全局视图。",
+        "target": "Actual Point Metajudge Decisions"
+      },
+      {
+        "explanation": "展示经重复审计和语义配对审核后的数据分片分配：heldout_candidate 700 个、dev_review 146 个、validation 105 个、control_calibration 13 个，另有 4 个被排除。该图说明各分片的最终规模。",
+        "target": "Reviewed Release Split"
+      }
+    ],
+    "delusion": {
+      "bullets": [
+        "迫害型偏差点最多（接受/修订后 494 个），其次为其他现实边界型（236 个）和关系型（202 个）。",
+        "1,352 个候选点来自 Reddit 虚构文本信号，DAIS-C 和 FEP 访谈合计仅 40 个。",
+        "显性表达 1,356 个，隐性表达仅 36 个，直接证据支持占 1,349 个。",
+        "元评审标记 23 个总结性过度推断和 4 个诊断/归属推断，负面对照标记率为零。"
+      ],
+      "cautions": [
+        "偏差点（delusion_points）是 LLM 提取的候选现实边界信号，并非临床诊断金标准。",
+        "DAIS/FEP 来源组别和 Reddit 社区归属不得被视为偏差标签或临床真实标签。",
+        "元评审的接受/修订/拒绝决定仍为 LLM 输出，仅用于校准首次提取结果，不可替代人工临床判断。",
+        "空候选列表是有效且有意义的数据状态，不应被隐藏或视为错误。"
+      ],
+      "paragraphs": [
+        "在 1,353 个接受或修订后的偏差点中，迫害型（persecutory）占比最高，达 494 个（约 36.5%），其次为其他现实边界型（other_reality_boundary）236 个、关系型（referential）202 个、控制或影响型（control_or_influence）156 个。被拒绝的 39 个候选点中，迫害型和其他现实边界型各占 15 和 13 个。",
+        "从来源家族看，绝大多数候选点来自 Reddit 虚构文本信号（1,352 个），DAIS-C 临床访谈和 FEP 访谈分别贡献 23 和 17 个。显性表达（explicit）占绝对多数（1,356 个），隐性表达（implicit）仅 36 个。",
+        "元评审过程中标记了 23 个总结性过度推断（summary_overreach_flags）和 4 个诊断或社区归属推断（diagnosis_or_membership_inference_flags），负面对照标记率为 0.0%。"
+      ],
+      "title": "偏差信号分布与元评审校准"
+    },
+    "language": "zh-CN",
+    "limitations": [
+      "所有偏差点均为 LLM 提取的候选现实边界信号，未经临床专家验证，不可直接等同于临床诊断。",
+      "元评审决定本身也是 LLM 输出，仅用于校准首次提取的一致性，不构成独立的事实核查。",
+      "Reddit 来源占绝对主导（1,352/1,392），临床访谈样本量极小，分布偏差可能影响基准的泛化性。",
+      "重复审计中 4 个被排除的会话是候选会话级别的重复，而非单个偏差点的重复计数。"
+    ],
+    "overall": {
+      "bullets": [
+        "共 968 个会话，其中 940 个包含至少一个候选偏差点，28 个为空候选会话。",
+        "从 16,408 条消息中提取出 1,392 个候选偏差点，经元评审后保留 1,353 个。",
+        "候选接受率 94.32%，39 个候选点因证据不足被拒绝。",
+        "发布清单排除 4 个重复候选会话，最终纳入 964 个会话。"
+      ],
+      "paragraphs": [
+        "本数据集版本 deepseek_v4_pro_sessions_64k_candidate_v0.1.0 共包含 968 个会话、16,408 条消息，从中提取出 1,392 个候选偏差点。其中 940 个会话至少含有一个候选点，28 个会话未产生任何候选点。",
+        "经过元评审（metajudge）审核后，1,313 个候选点被接受，40 个被修订，39 个因证据不足被拒绝，最终形成 1,353 个接受或修订后的偏差点。整体候选接受率为 94.32%。",
+        "在发布环节，4 个因 LLM 判定为重复的会话被排除，最终纳入 964 个会话。另有 63 个会话因语义近似重复被移至同一数据分片，104 对语义配对决策被应用。"
+      ],
+      "title": "Deviation Bench New 数据集概览"
+    },
+    "schema_version": "0.1.0",
+    "session_reading_guide": [
+      "首先查看「Candidate Categories」了解原始候选信号的类别全貌。",
+      "接着查看「Metajudge Decision × Candidate Category」评估各类别的信号可靠性。",
+      "然后查看「Source Family × Candidate Category」理解数据来源构成。",
+      "再查看「Actual Point Metajudge Decisions」获取元评审的全局决定分布。",
+      "最后查看「Reviewed Release Split」确认各数据分片的最终分配。"
+    ]
+  },
+  "provider": "openai",
+  "run_id": "deepseek_v4_pro_review_narratives_64k",
+  "stats": {
+    "dataset_version": "deepseek_v4_pro_sessions_64k_candidate_v0.1.0",
+    "delusion_signal_distribution": {
+      "accepted_or_revised_category": {
+        "control_or_influence": 156,
+        "grandiose": 73,
+        "jealous": 7,
+        "nihilistic": 24,
+        "other_reality_boundary": 236,
+        "persecutory": 494,
+        "referential": 202,
+        "religious": 47,
+        "somatic": 28,
+        "thought_interference": 86
+      },
+      "category": {
+        "control_or_influence": 158,
+        "grandiose": 75,
+        "jealous": 7,
+        "nihilistic": 26,
+        "other_reality_boundary": 249,
+        "persecutory": 509,
+        "referential": 204,
+        "religious": 47,
+        "somatic": 31,
+        "thought_interference": 86
+      },
+      "confidence_bucket": {
+        "0.50-0.74": 124,
+        "0.75-0.89": 500,
+        "0.90-1.00": 768
+      },
+      "explicitness": {
+        "explicit": 1356,
+        "implicit": 36
+      },
+      "rejected_category": {
+        "control_or_influence": 2,
+        "grandiose": 2,
+        "nihilistic": 2,
+        "other_reality_boundary": 13,
+        "persecutory": 15,
+        "referential": 2,
+        "somatic": 3
+      },
+      "source_family": {
+        "dais_c_clinical_interview": 23,
+        "fep_interview": 17,
+        "reddit_fictionalized_text_signal": 1352
+      },
+      "support_level": {
+        "direct": 1349,
+        "indirect": 1,
+        "weak_or_none": 42
+      }
+    },
+    "duplicate_audit": {
+      "fingerprint_count": 968,
+      "pair_decision": {
+        "duplicate": 4,
+        "near_duplicate": 100,
+        "not_duplicate": 136
+      },
+      "pair_leakage_risk": {
+        "high": 11,
+        "low": 131,
+        "medium": 93,
+        "none": 5
+      },
+      "source_specificity_risk": {
+        "high": 14,
+        "low": 759,
+        "medium": 195
+      }
+    },
+    "generated_from": {
+      "point_reviews": "deepseek_v4_pro_point_metajudge_64k.jsonl",
+      "processed_inputs": [
+        "deepseek_v4_pro_interview_sessions_64k.jsonl",
+        "deepseek_v4_pro_control_sessions_64k.jsonl",
+        "deepseek_v4_pro_reddit_sessions_64k.jsonl"
+      ],
+      "reviewed_audit": "deepseek_v4_pro_release_audit_reviewed_64k.json",
+      "reviewed_splits": "deepseek_v4_pro_release_splits_reviewed_64k.jsonl"
+    },
+    "input_hash": "b4160430a01e4657e7dd888d611bf61a0764d2caa408aa5a22b535c00fa45be4",
+    "interpretation_boundaries": [
+      "delusion_points are LLM-extracted candidate reality-boundary signals, not clinical diagnosis.",
+      "DAIS/FEP source group and Reddit community membership must not be treated as delusion labels.",
+      "Empty candidate lists are valid and should remain visible.",
+      "Metajudge decisions calibrate first-pass extraction but are still LLM-only review outputs."
+    ],
+    "metajudge": {
+      "accepted_or_revised_candidate_points": 1353,
+      "candidate_acceptance_rate": 0.943247,
+      "candidate_decision_counts": {
+        "accept_candidate": 1313,
+        "reject_insufficient_evidence": 39,
+        "revise_candidate": 40
+      },
+      "decision_counts": {
+        "accept_candidate": 1313,
+        "accept_no_candidate_point": 28,
+        "reject_insufficient_evidence": 39,
+        "revise_candidate": 40
+      },
+      "diagnosis_or_membership_inference_flags": 4,
+      "negative_control_flag_rate": 0.0,
+      "rejected_candidate_points": 39,
+      "summary_overreach_flags": 23
+    },
+    "release": {
+      "field_notes": {
+        "excluded_duplicate_candidates": "Number of duplicate candidate sessions excluded from the reviewed release manifest; this is not a count of delusion candidate points.",
+        "included_sessions": "Number of sessions included in the reviewed release manifest."
+      },
+      "reviewed_counts": {
+        "release_action": {
+          "exclude_due_to_llm_duplicate_pair": 4,
+          "keep_original_split": 844,
+          "move_to_same_split_due_to_llm_near_duplicate": 63,
+          "same_split_group_confirmed": 57
+        },
+        "release_split": {
+          "control_calibration": 13,
+          "dev_review": 146,
+          "excluded_duplicate": 4,
+          "heldout_candidate": 700,
+          "validation": 105
+        },
+        "release_status": {
+          "excluded_duplicate_candidate": 4,
+          "included": 964
+        }
+      },
+      "reviewed_totals": {
+        "excluded_duplicate_candidates": 4,
+        "included_sessions": 964,
+        "same_split_moved_sessions": 63,
+        "semantic_pair_decisions_applied": 104,
+        "sessions": 968
+      }
+    },
+    "totals": {
+      "candidate_points": 1392,
+      "candidate_review_units": 1392,
+      "messages": 16408,
+      "negative_control_units": 28,
+      "no_point_sessions": 28,
+      "review_units": 1420,
+      "sessions": 968,
+      "sessions_with_candidate_points": 940
+    }
+  }
+}

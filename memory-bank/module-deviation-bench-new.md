@@ -21,6 +21,7 @@ Last updated: 2026-06-29
 - `src/run_semantic_duplicate_audit.py`：运行 DeepSeek Pro semantic fingerprints 和 duplicate/leakage pair review。
 - `src/finalize_release_hardening.py`：将 metajudge / duplicate review 结果 materialize 为 reviewed split/audit。
 - `src/build_runs_dashboard.py`：生成动态读取 run results 的 ignored 本地页面。
+- `src/generate_review_narratives.py`：从聚合统计生成 LLM 中文自然语言说明 JSON。
 - `src/build_review_dashboard.py`：生成动态读取 sessions、reviewed split、summary JSON、experiment note、metajudge 和 duplicate review 的实际结果/delusion 指标/对话/图表检查页面。
 - `schemas/session.schema.json`：公开 session schema。
 - `prompts/`：访谈改写、point consolidation、重叠修复、Reddit 筛选/生成 prompts，以及 `point_metajudge.md` second-pass prompt。
@@ -52,6 +53,7 @@ Processed JSONL
   -> DeepSeek Pro semantic fingerprints + pair review
   -> reviewed split/audit
   -> dynamic runs dashboard
+  -> LLM narrative JSON from aggregate stats
   -> review dashboard with dynamically aggregated actual result cards, delusion metrics, heatmaps, charts and conversations
 ```
 
@@ -94,3 +96,4 @@ Processed JSONL
 - 正式发布前：运行跨文件 validator、LLM second-pass/metajudge、重复 case/语义重复分析和治理检查。
 - 更新 split/version：重新运行 `python3 deviation-bench-new/src/audit_release.py`，并检查 `data/manifests/*release*` 和实验摘要 diff。
 - 更新本地检查 UI：重新运行 `python3 deviation-bench-new/src/build_review_dashboard.py`，通过本地 HTTP 服务打开 ignored `data/work/review_dashboard/index.html`。
+- 更新自然语言说明：重新运行 `python3 deviation-bench-new/src/generate_review_narratives.py --provider openai ...`，再刷新 dashboard。

@@ -19,6 +19,10 @@ This file records completed work and the current state of the Deviation Bench pr
   - semantic fingerprints；
   - duplicate/leakage pair reviews。
 - 页面包含 overview 统计卡片、横向条形图、session 检索/过滤、完整对话浏览、candidate point 与 metajudge rationale、semantic fingerprint、duplicate/leakage pair 图表和跳转。
+- 根据用户追加要求，新增 `Results` 页签：
+  - 直接读取 reviewed audit、point metajudge summary、semantic duplicate summary 和 actual-flow experiment note。
+  - 展示实际流程结果卡片、状态图标、8 个结果图表、artifact 链接和实验记录预览。
+  - 当前可见实际结果包括：1,420 point-review units、94.3% candidate acceptance、240 duplicate pair reviews、964 included sessions、4 excluded duplicate candidates。
 - README 已补充运行入口和访问 URL。
 
 验证：
@@ -27,6 +31,7 @@ This file records completed work and the current state of the Deviation Bench pr
 - `python3 -m unittest discover -s deviation-bench-new/tests -v`。
 - `python3 deviation-bench-new/src/build_review_dashboard.py`。
 - 本地 HTTP fetch 验证 `review_dashboard/index.html` 和核心 JSONL/JSON 数据路径可访问。
+- Chrome DOM 验证 `Results` 页实际渲染 8 个结果卡、3 个状态项、8 个图表和 8 个 artifact 链接。
 
 ### Deviation Bench New: actual release-hardening flow and dynamic runs page
 

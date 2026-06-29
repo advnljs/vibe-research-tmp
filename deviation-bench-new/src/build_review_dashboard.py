@@ -22,8 +22,15 @@ def dashboard_fetch_paths() -> dict[str, object]:
         "reviewedSplits": "/data/manifests/deepseek_v4_pro_release_splits_reviewed_64k.jsonl",
         "reviewedAudit": "/data/manifests/deepseek_v4_pro_release_audit_reviewed_64k.json",
         "pointReviews": "/data/reviews/deepseek_v4_pro_point_metajudge_64k.jsonl",
+        "pointSummary": "/data/reviews/deepseek_v4_pro_point_metajudge_64k_summary.json",
         "fingerprints": "/data/reviews/deepseek_v4_pro_session_semantic_fingerprints_64k.jsonl",
         "duplicatePairs": "/data/reviews/deepseek_v4_pro_semantic_duplicate_pairs_64k.jsonl",
+        "duplicateSummary": "/data/reviews/deepseek_v4_pro_semantic_duplicate_audit_64k_summary.json",
+        "experimentNotes": {
+            "dataPreparation": "/experiments/real_data_session_preparation_2026-06-22.md",
+            "preAudit": "/experiments/session_release_hardening_pre_audit_2026-06-29.md",
+            "actualFlow": "/experiments/session_release_hardening_actual_flow_2026-06-29.md",
+        },
     }
 
 
@@ -69,6 +76,18 @@ main{padding:16px;overflow:auto;max-height:calc(100vh - 156px)}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:13px;margin-bottom:12px;box-shadow:var(--shadow)}
 .panel h2,.panel h3{margin:0 0 10px;letter-spacing:0}.panel h2{font-size:20px}.panel h3{font-size:15px}
 .overview-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.result-grid{display:grid;grid-template-columns:repeat(4,minmax(190px,1fr));gap:10px;margin-bottom:12px}
+.result-card{background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:12px;box-shadow:var(--shadow)}
+.result-card h3{margin:0 0 8px;font-size:14px}.result-card .value{font-size:24px;font-weight:700;line-height:1.1}
+.result-card .note{display:block;color:var(--muted);font-size:12px;margin-top:4px}
+.status-strip{display:grid;grid-template-columns:repeat(3,minmax(190px,1fr));gap:10px;margin-bottom:12px}
+.status-item{background:var(--panel);border:1px solid var(--line);border-radius:7px;padding:10px 12px;display:flex;gap:8px;align-items:flex-start}
+.status-icon{display:inline-block;width:13px;height:13px;border-radius:50%;margin-top:4px;margin-right:6px;flex:0 0 13px;background:var(--muted)}
+.status-icon.ok{background:var(--ok)}.status-icon.warn{background:var(--warn)}.status-icon.bad{background:var(--bad)}.status-icon.info{background:var(--accent)}
+.status-item b{display:block}.status-item span:last-child{color:var(--muted);font-size:12px}
+.artifact-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px}
+.artifact{display:block;border:1px solid var(--line);border-radius:6px;background:white;padding:8px;text-decoration:none;color:var(--ink)}
+.artifact small{display:block;color:var(--muted);margin-top:2px}
 .chart{min-height:220px}.bars{display:grid;gap:7px}
 .bar-row{display:grid;grid-template-columns:minmax(120px,190px) minmax(0,1fr) 54px;gap:8px;align-items:center}
 .bar-label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#323832}
@@ -86,9 +105,10 @@ main{padding:16px;overflow:auto;max-height:calc(100vh - 156px)}
 .fingerprint-list,.pair-table{font-size:13px}.fingerprint-list div{margin:5px 0}
 table{width:100%;border-collapse:collapse;background:white;border:1px solid var(--line);font-size:13px}
 th,td{text-align:left;vertical-align:top;border-bottom:1px solid var(--line);padding:7px 8px}th{background:#eceeea;color:#303730}
+pre{white-space:pre-wrap;word-break:break-word;background:#f8fafb;border:1px solid var(--line);border-radius:7px;padding:12px;max-height:360px;overflow:auto}
 .hidden{display:none!important}
 .empty{color:var(--muted);padding:14px;border:1px dashed var(--line);border-radius:7px;background:white}
-@media(max-width:1080px){.metric-grid{grid-template-columns:repeat(3,minmax(130px,1fr))}.main{grid-template-columns:1fr}aside,main{max-height:none}aside{border-right:0;border-bottom:1px solid var(--line)}.detail-grid,.overview-grid{grid-template-columns:1fr}}
+@media(max-width:1080px){.metric-grid{grid-template-columns:repeat(3,minmax(130px,1fr))}.main{grid-template-columns:1fr}aside,main{max-height:none}aside{border-right:0;border-bottom:1px solid var(--line)}.detail-grid,.overview-grid,.result-grid,.status-strip{grid-template-columns:1fr}}
 @media(max-width:640px){.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.filters{grid-template-columns:1fr}.tab{min-width:0;flex:1}.message.user,.message.assistant{margin-left:0;margin-right:0}}
 </style>
 </head>
@@ -98,6 +118,7 @@ th,td{text-align:left;vertical-align:top;border-bottom:1px solid var(--line);pad
     <div><h1>Deviation Bench New Review Dashboard</h1><div id="loadStatus" class="subtle">loading</div></div>
     <nav class="tabs">
       <button class="tab active" data-view="overview">Overview</button>
+      <button class="tab" data-view="results">Results</button>
       <button class="tab" data-view="sessions">Sessions</button>
       <button class="tab" data-view="duplicates">Duplicates</button>
     </nav>
@@ -118,13 +139,14 @@ th,td{text-align:left;vertical-align:top;border-bottom:1px solid var(--line);pad
   </aside>
   <main>
     <section id="overviewView"></section>
+    <section id="resultsView" class="hidden"></section>
     <section id="sessionsView" class="hidden"></section>
     <section id="duplicatesView" class="hidden"></section>
   </main>
 </div>
 <script>
 const paths = __PATHS__;
-const state = {sessions:[], splits:new Map(), reviews:new Map(), negatives:new Map(), fingerprints:new Map(), pairs:[], pairsBySession:new Map(), audit:null, active:null, view:'overview'};
+const state = {sessions:[], splits:new Map(), reviews:new Map(), negatives:new Map(), fingerprints:new Map(), pairs:[], pairsBySession:new Map(), audit:null, pointSummary:null, duplicateSummary:null, notes:{}, active:null, view:'overview'};
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const fmt = n => Number.isFinite(n) ? n.toLocaleString('en-US') : String(n ?? '');
@@ -141,6 +163,21 @@ function barChart(title, data, color='var(--accent)'){
   return `<section class="panel chart"><h3>${esc(title)}</h3><div class="bars">${rows||'<div class="empty">No data</div>'}</div></section>`;
 }
 function metric(label, value, note=''){return `<div class="metric"><span>${esc(label)}</span><b>${esc(value)}</b>${note?`<span>${esc(note)}</span>`:''}</div>`}
+function pct(value){return Number.isFinite(value) ? `${(value*100).toFixed(1)}%` : 'n/a'}
+function sumValues(data){return Object.values(data||{}).reduce((n,v)=>n+(Number(v)||0),0)}
+function resultCard(title, value, note='', status='info'){
+  return `<article class="result-card"><h3><span class="status-icon ${status}"></span>${esc(title)}</h3><div class="value">${esc(value)}</div>${note?`<span class="note">${esc(note)}</span>`:''}</article>`;
+}
+function statusItem(title, note, status='info'){
+  return `<div class="status-item"><span class="status-icon ${status}"></span><div><b>${esc(title)}</b><span>${esc(note)}</span></div></div>`;
+}
+function artifactLink(label, path, note){
+  return `<a class="artifact" href="${esc(path)}" target="_blank" rel="noreferrer"><b>${esc(label)}</b><small>${esc(note)} · ${esc(path)}</small></a>`;
+}
+function markdownPreview(text, max=1400){
+  const trimmed=String(text||'').trim();
+  return esc(trimmed.length>max ? `${trimmed.slice(0,max)}...` : trimmed);
+}
 function badge(text, kind=''){return `<span class="badge ${kind}">${esc(text)}</span>`}
 function releaseBadge(row){if(!row)return ''; if(row.release_status==='excluded_duplicate_candidate')return badge('excluded','bad'); if(row.release_action?.startsWith('move'))return badge('moved','warn'); return badge(row.release_split,'ok')}
 function reviewKind(decision){if(decision==='accept_candidate'||decision==='accept_no_candidate_point')return 'ok'; if(decision==='revise_candidate'||decision==='flag_possible_missed_candidate'||decision==='unclear')return 'warn'; if(decision==='reject_insufficient_evidence')return 'bad'; return ''}
@@ -220,6 +257,49 @@ function renderOverview(){
   const rare=countBy(state.fingerprintRows,r=>r.rare_event_chain_risk);
   $('overviewView').innerHTML=`<div class="overview-grid">${barChart('Reviewed Release Split',split,'var(--accent)')}${barChart('Source Family',source,'var(--accent-2)')}${barChart('Point Categories',categories,'var(--warn)')}${barChart('Metajudge Decisions',decisions,'var(--ok)')}${barChart('Duplicate Pair Decisions',pairDecisions,'var(--bad)')}${barChart('Leakage Risk',pairRisk,'var(--accent-2)')}${barChart('Rare Event Chain Risk',rare,'var(--warn)')}</div>`;
 }
+function renderResults(){
+  const audit=state.audit||{};
+  const pre=audit.pre_audit||{};
+  const preTotals=pre.totals||{};
+  const preCounts=pre.counts||{};
+  const point=audit.point_metajudge||state.pointSummary||{};
+  const pointCounts=point.counts||{};
+  const semantic=audit.semantic_duplicate_audit||state.duplicateSummary||{};
+  const semanticCounts=semantic.counts||{};
+  const reviewed=audit.reviewed_totals||{};
+  const reviewedCounts=audit.reviewed_counts||{};
+  const pairDecisions=semanticCounts.pair_decision||countBy(state.pairs,p=>p.decision);
+  const pairReviews=sumValues(pairDecisions)||state.pairs.length;
+  const validationErrors=preTotals.validation_errors||0;
+  const governanceOpen=(audit.release_notes||[]).some(note=>String(note).toLowerCase().includes('governance'));
+  const cards=[
+    resultCard('Data sessions', fmt(preTotals.sessions||state.sessions.length), `${fmt(preTotals.messages||0)} messages · ${fmt(preTotals.delusion_points||0)} candidate points`, validationErrors===0?'ok':'bad'),
+    resultCard('Point metajudge', fmt(point.input_units||state.pointReviews.length), `${fmt(point.candidate_units||0)} candidates · accept ${pct(point.candidate_acceptance_rate)}`, 'ok'),
+    resultCard('Negative controls', fmt(point.negative_control_units||0), `flag rate ${pct(point.negative_control_flag_rate)}`, (point.negative_control_flag_rate||0)===0?'ok':'warn'),
+    resultCard('Duplicate review', fmt(pairReviews), `${fmt(pairDecisions.duplicate||0)} duplicate · ${fmt(pairDecisions.near_duplicate||0)} near`, (pairDecisions.duplicate||0)>0?'warn':'ok'),
+    resultCard('Release included', fmt(reviewed.included_sessions||0), `${fmt(reviewed.excluded_duplicate_candidates||0)} excluded duplicate candidates`, 'ok'),
+    resultCard('Same-split moves', fmt(reviewed.same_split_moved_sessions||0), `${fmt(reviewed.semantic_pair_decisions_applied||0)} pair decisions applied`, 'warn'),
+    resultCard('PII risk flags', fmt(point.identifying_detail_risk_count||0), 'from point metajudge summary', (point.identifying_detail_risk_count||0)===0?'ok':'bad'),
+    resultCard('Governance status', governanceOpen?'pending':'not flagged', 'license/privacy/governance review before public release', governanceOpen?'warn':'info')
+  ].join('');
+  const statuses=[
+    statusItem('Actual flow completed', `${point.model||'deepseek-v4-pro'} point metajudge and semantic duplicate review outputs are loaded.`, 'ok'),
+    statusItem('Contract validation passed', `${fmt(validationErrors)} validation errors in reviewed audit pre-check.`, validationErrors===0?'ok':'bad'),
+    statusItem('Release still gated', 'Reviewed splits are ready for downstream task design, but public release still needs governance review.', 'warn')
+  ].join('');
+  const artifacts=[
+    artifactLink('Actual flow experiment note', paths.experimentNotes.actualFlow, 'tracked markdown'),
+    artifactLink('Reviewed audit JSON', paths.reviewedAudit, 'final aggregate result'),
+    artifactLink('Reviewed split manifest', paths.reviewedSplits, 'session-level release split decisions'),
+    artifactLink('Point metajudge summary', paths.pointSummary, 'actual DeepSeek Pro review summary'),
+    artifactLink('Point metajudge JSONL', paths.pointReviews, '1,420 review-unit records'),
+    artifactLink('Duplicate audit summary', paths.duplicateSummary, 'semantic duplicate/leakage result summary'),
+    artifactLink('Duplicate pair JSONL', paths.duplicatePairs, '240 pair-review records'),
+    artifactLink('Semantic fingerprints JSONL', paths.fingerprints, '968 session fingerprints')
+  ].join('');
+  const actualNote=state.notes.actualFlow||'';
+  $('resultsView').innerHTML=`<section class="status-strip">${statuses}</section><section class="result-grid">${cards}</section><div class="overview-grid">${barChart('Actual Point Metajudge Decisions',pointCounts.decision||{},'var(--ok)')}${barChart('Point Review Source Families',pointCounts.source_family||{},'var(--accent-2)')}${barChart('Reviewed Release Split',reviewedCounts.release_split||{},'var(--accent)')}${barChart('Release Actions Applied',reviewedCounts.release_action||{},'var(--warn)')}${barChart('Semantic Pair Decisions',pairDecisions,'var(--bad)')}${barChart('Leakage Risk',semanticCounts.pair_leakage_risk||{},'var(--accent-2)')}${barChart('Source Specificity Risk',semanticCounts.source_specificity_risk||{},'var(--warn)')}${barChart('Preparation Point Categories',preCounts.points_by_category||{},'var(--accent)')}</div><section class="panel"><h3>Result Artifacts</h3><div class="artifact-grid">${artifacts}</div></section><section class="panel"><h3>Actual Flow Note Preview</h3><pre>${markdownPreview(actualNote)}</pre></section>`;
+}
 function pointReviewFor(point, sessionId){return (state.reviews.get(sessionId)||[]).find(r=>r.point_id===point.point_id)}
 function renderPoints(session){
   const points=session.delusion_points||[];
@@ -255,18 +335,21 @@ function renderDuplicates(){
 }
 function setView(view){
   state.view=view; document.querySelectorAll('.tab[data-view]').forEach(btn=>btn.classList.toggle('active',btn.dataset.view===view));
-  $('overviewView').classList.toggle('hidden',view!=='overview'); $('sessionsView').classList.toggle('hidden',view!=='sessions'); $('duplicatesView').classList.toggle('hidden',view!=='duplicates');
-  if(view==='overview') renderOverview(); if(view==='duplicates') renderDuplicates(); if(view==='sessions' && !state.active && state.sessions.length) showSession(state.sessions[0].session_id);
+  $('overviewView').classList.toggle('hidden',view!=='overview'); $('resultsView').classList.toggle('hidden',view!=='results'); $('sessionsView').classList.toggle('hidden',view!=='sessions'); $('duplicatesView').classList.toggle('hidden',view!=='duplicates');
+  if(view==='overview') renderOverview(); if(view==='results') renderResults(); if(view==='duplicates') renderDuplicates(); if(view==='sessions' && !state.active && state.sessions.length) showSession(state.sessions[0].session_id);
 }
 async function boot(){
   const processed=await Promise.all(paths.processed.map(fetchJSONL));
   state.sessions=processed.flat(); state.sessionsById=new Map(state.sessions.map(s=>[s.session_id,s]));
   state.splits=new Map((await fetchJSONL(paths.reviewedSplits)).map(r=>[r.session_id,r]));
   state.audit=await fetchJSON(paths.reviewedAudit);
+  state.pointSummary=await fetchJSON(paths.pointSummary);
+  state.duplicateSummary=await fetchJSON(paths.duplicateSummary);
+  state.notes=Object.fromEntries(await Promise.all(Object.entries(paths.experimentNotes).map(async ([key,path])=>[key,await fetchText(path)])));
   state.pointReviews=await fetchJSONL(paths.pointReviews);
   state.fingerprintRows=await fetchJSONL(paths.fingerprints);
   state.pairs=await fetchJSONL(paths.duplicatePairs);
-  hydrateIndexes(); renderMetrics(); renderFilters(); renderSessionList(); renderOverview(); renderDuplicates();
+  hydrateIndexes(); renderMetrics(); renderFilters(); renderSessionList(); renderOverview(); renderResults(); renderDuplicates();
   if(state.sessions.length) showSession(state.sessions[0].session_id);
   $('loadStatus').textContent=`${fmt(state.sessions.length)} sessions · reviewed release data loaded`;
 }

@@ -27,7 +27,7 @@ Phase: 第一波真实数据派生 session 已完成（968 sessions）；data re
 - 实际 point metajudge 已完成：1,392 candidate point units + 28 negative controls。
 - 实际 semantic duplicate/leakage review 已完成：968 fingerprints + 240 pair reviews。
 - Reviewed split manifest 已生成：`control_calibration=13`、`dev_review=146`、`validation=105`、`heldout_candidate=700`、`excluded_duplicate=4`。
-- Review dashboard 已生成：ignored `deviation-bench-new/data/work/review_dashboard/index.html`，可动态读取 processed sessions、reviewed splits、metajudge 和 duplicate review 结果，展示统计图表与完整对话。
+- Review dashboard 已生成：ignored `deviation-bench-new/data/work/review_dashboard/index.html`，可动态读取 processed sessions、reviewed splits、metajudge、duplicate review、summary JSON 和 experiment note，展示实际实验结果、统计图表与完整对话。
 - 尚未完成：license/privacy/governance release review 和下游 benchmark task 定义。
 
 ## Auxiliary Workspace Status

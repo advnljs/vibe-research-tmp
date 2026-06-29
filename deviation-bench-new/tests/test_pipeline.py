@@ -262,7 +262,10 @@ class ReleaseHardeningRunTests(unittest.TestCase):
         self.assertEqual(len(paths["processed"]), 3)
         self.assertIn("reviewedSplits", paths)
         self.assertIn("pointReviews", paths)
+        self.assertIn("pointSummary", paths)
         self.assertIn("duplicatePairs", paths)
+        self.assertIn("duplicateSummary", paths)
+        self.assertIn("actualFlow", paths["experimentNotes"])
 
     def test_reviewed_split_rows_mark_duplicate_and_same_split(self) -> None:
         split_rows = [

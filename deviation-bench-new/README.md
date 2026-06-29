@@ -253,6 +253,7 @@ http://127.0.0.1:8770/data/work/review_dashboard/index.html
 
 页面本身生成到 ignored `data/work/review_dashboard/`。它通过浏览器 `fetch` 动态读取三份 processed session JSONL、reviewed split/audit、point metajudge、semantic fingerprint 和 duplicate/leakage pair review 结果，提供：
 
+- actual results 页签：展示实际 release-hardening 流程结果卡片、状态图标、summary JSON 图表、experiment note 预览和 artifact 链接；
 - overview 统计卡片和横向条形图；
 - session 过滤、检索和对话浏览；
 - candidate point 与 metajudge rationale 对照；

@@ -29,7 +29,7 @@ Last updated: 2026-06-29
 4. Release hardening pre-audit：processed JSONL -> deterministic source-family split manifest -> point-review queue -> contract/PII/exact duplicate/lexical near-duplicate audit。
 5. Actual release hardening：point-review queue + no-point sessions -> DeepSeek Pro metajudge；processed sessions -> DeepSeek Pro semantic fingerprints -> pair duplicate/leakage review -> reviewed split/audit。
 6. Runs dashboard：tracked manifests/reviews/notes -> ignored HTML + `runs_index.json` -> browser `fetch` reads results dynamically.
-7. Review dashboard：processed sessions + reviewed split/audit + metajudge/fingerprint/pair reviews -> ignored HTML -> browser `fetch` displays charts, filters, full conversations and per-session audit context.
+7. Review dashboard：processed sessions + reviewed split/audit + summary JSON + experiment notes + metajudge/fingerprint/pair reviews -> ignored HTML -> browser `fetch` displays actual result cards, status icons, charts, filters, full conversations and per-session audit context.
 
 ## Key Technical Decisions
 
@@ -58,4 +58,4 @@ Last updated: 2026-06-29
 - 2026-06-22: current route changed to `deviation-bench-new/`; completed real interview transformation and screened community-to-fictional session pipeline. Old agent-memory route paused.
 - 2026-06-29: added release hardening pre-audit, candidate split/version manifest and point-review units; LLM metajudge and semantic duplicate check remain pending.
 - 2026-06-29: completed actual DeepSeek Pro metajudge and semantic duplicate/leakage audit, reviewed split/audit materialization and dynamic runs dashboard.
-- 2026-06-29: added richer review dashboard for conversations, statistics charts, metajudge context and duplicate/leakage inspection.
+- 2026-06-29: added richer review dashboard for actual experiment results, status icons, conversations, statistics charts, metajudge context and duplicate/leakage inspection.

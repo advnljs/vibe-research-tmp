@@ -39,7 +39,7 @@ This file records persistent user requirements and project constraints in compac
 - Keep normalized source turns, API request/response and checkpoints under ignored `deviation-bench-new/data/work/`.
 - Treat regex PII=0 as an automatic check, not a guarantee of anonymity.
 - Keep local browser/manual reading as development/governance inspection, not paper-facing annotation.
-- Local result UI should support dynamic browsing of conversations and statistics charts for `deviation-bench-new` review outputs; current entry is ignored `data/work/review_dashboard/index.html`.
+- Local result UI should support dynamic browsing of actual experiment results, related charts/status icons, conversations and review outputs for `deviation-bench-new`; current entry is ignored `data/work/review_dashboard/index.html`.
 
 ## Previous Agent-Memory Acceptance Criteria (Paused)
 

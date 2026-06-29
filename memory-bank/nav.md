@@ -36,7 +36,7 @@ Canonical project navigation is `研究导航.md`. This file is a compact memory
 - `deviation-bench-new/experiments/session_release_hardening_actual_flow_2026-06-29.md`: actual release-hardening flow note.
 - `deviation-bench-new/data/work/runs_dashboard/index.html`: ignored dynamic local page that fetches run/result files.
 - `deviation-bench-new/src/build_review_dashboard.py`: generator for the richer local review dashboard.
-- `deviation-bench-new/data/work/review_dashboard/index.html`: ignored dynamic local page with charts, filters, conversations, metajudge rationales and duplicate/leakage review.
+- `deviation-bench-new/data/work/review_dashboard/index.html`: ignored dynamic local page with actual experiment results, status icons, charts, filters, conversations, metajudge rationales and duplicate/leakage review.
 - The files below belong to the paused historical agent-memory route:
 - `deviation-bench/agent_memory_eval_protocol.md`: formal agent-memory evaluation protocol.
 - `deviation-bench/agent_memory_system_survey.md`: current M1 tooling survey and external-system selection.

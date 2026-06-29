@@ -14,10 +14,10 @@ Last updated: 2026-06-29
 - Interview transform：`build_sessions.py` + chunk/consolidation/repair prompts。
 - Community route：`build_reddit_sessions.py` + screen/generation prompts。
 - Contract/QC：`session_contract.py`、`session.schema.json`、`validate_sessions.py`。
-- Release hardening：`audit_release.py`、`run_point_metajudge.py`、`run_semantic_duplicate_audit.py`、`finalize_release_hardening.py`、`build_runs_dashboard.py`、release/review manifests。
+- Release hardening：`audit_release.py`、`run_point_metajudge.py`、`run_semantic_duplicate_audit.py`、`finalize_release_hardening.py`、`build_runs_dashboard.py`、`build_review_dashboard.py`、release/review manifests。
 - Processed outputs：`data/processed/`、`data/screened/`。
 - Private working state：ignored `data/work/`。
-- Local inspection：`build_dataset_browser.py` -> ignored HTML。
+- Local inspection：`build_dataset_browser.py`、`build_review_dashboard.py` -> ignored HTML。
 - Historical benchmark system：`deviation-bench/`。
 - Project state：`memory-bank/`、`研究导航.md`、`AGENTS.md`。
 
@@ -29,6 +29,7 @@ Last updated: 2026-06-29
 4. Release hardening pre-audit：processed JSONL -> deterministic source-family split manifest -> point-review queue -> contract/PII/exact duplicate/lexical near-duplicate audit。
 5. Actual release hardening：point-review queue + no-point sessions -> DeepSeek Pro metajudge；processed sessions -> DeepSeek Pro semantic fingerprints -> pair duplicate/leakage review -> reviewed split/audit。
 6. Runs dashboard：tracked manifests/reviews/notes -> ignored HTML + `runs_index.json` -> browser `fetch` reads results dynamically.
+7. Review dashboard：processed sessions + reviewed split/audit + metajudge/fingerprint/pair reviews -> ignored HTML -> browser `fetch` displays charts, filters, full conversations and per-session audit context.
 
 ## Key Technical Decisions
 
@@ -57,3 +58,4 @@ Last updated: 2026-06-29
 - 2026-06-22: current route changed to `deviation-bench-new/`; completed real interview transformation and screened community-to-fictional session pipeline. Old agent-memory route paused.
 - 2026-06-29: added release hardening pre-audit, candidate split/version manifest and point-review units; LLM metajudge and semantic duplicate check remain pending.
 - 2026-06-29: completed actual DeepSeek Pro metajudge and semantic duplicate/leakage audit, reviewed split/audit materialization and dynamic runs dashboard.
+- 2026-06-29: added richer review dashboard for conversations, statistics charts, metajudge context and duplicate/leakage inspection.

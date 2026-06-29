@@ -18,6 +18,7 @@ from build_reddit_sessions import (  # noqa: E402
 from audit_release import assign_splits, jaccard, source_family, word_ngrams  # noqa: E402
 from build_sessions import estimate_tokens, mock_chunk_result, mock_consolidation, split_turns  # noqa: E402
 from build_runs_dashboard import classify_path  # noqa: E402
+from build_review_dashboard import dashboard_fetch_paths  # noqa: E402
 from finalize_release_hardening import reviewed_split_rows  # noqa: E402
 from prepare_cases import parse_dais_tagged_text, parse_fep_table_text  # noqa: E402
 from run_point_metajudge import make_batches as make_point_batches, validate_batch_result  # noqa: E402
@@ -255,6 +256,13 @@ class ReleaseHardeningRunTests(unittest.TestCase):
     def test_runs_dashboard_classifies_review_files(self) -> None:
         self.assertEqual(classify_path(Path("deviation-bench-new/data/reviews/result.json")), "review_result")
         self.assertEqual(classify_path(Path("deviation-bench-new/data/manifests/release.json")), "release_manifest")
+
+    def test_review_dashboard_fetch_paths_cover_required_data(self) -> None:
+        paths = dashboard_fetch_paths()
+        self.assertEqual(len(paths["processed"]), 3)
+        self.assertIn("reviewedSplits", paths)
+        self.assertIn("pointReviews", paths)
+        self.assertIn("duplicatePairs", paths)
 
     def test_reviewed_split_rows_mark_duplicate_and_same_split(self) -> None:
         split_rows = [

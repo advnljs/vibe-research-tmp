@@ -238,6 +238,27 @@ http://127.0.0.1:8770/data/work/runs_dashboard/index.html
 
 页面本身生成到 ignored `data/work/runs_dashboard/`，并通过浏览器 `fetch` 动态读取 `data/manifests/`、`data/reviews/`、`experiments/` 和 processed summaries 中的 run/result 文件。它不读取 ignored API checkpoint 或 raw response。
 
+### 10. Review dashboard：对话与统计图表
+
+```bash
+python3 deviation-bench-new/src/build_review_dashboard.py
+python3 -m http.server 8770 --bind 127.0.0.1 --directory deviation-bench-new
+```
+
+打开：
+
+```text
+http://127.0.0.1:8770/data/work/review_dashboard/index.html
+```
+
+页面本身生成到 ignored `data/work/review_dashboard/`。它通过浏览器 `fetch` 动态读取三份 processed session JSONL、reviewed split/audit、point metajudge、semantic fingerprint 和 duplicate/leakage pair review 结果，提供：
+
+- overview 统计卡片和横向条形图；
+- session 过滤、检索和对话浏览；
+- candidate point 与 metajudge rationale 对照；
+- semantic fingerprint；
+- duplicate/leakage pair 图表与跳转。
+
 ## 关键边界
 
 - 不把“精神病性障碍访谈”等同于“每例都有妄想”。

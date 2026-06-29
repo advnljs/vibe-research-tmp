@@ -6,6 +6,28 @@ This file records completed work and the current state of the Deviation Bench pr
 
 ## Completed 2026-06-29
 
+### Deviation Bench New: review dashboard for conversations and charts
+
+按用户要求补充更好的本地检查界面，用于同时浏览对话和统计图表：
+
+- 新增 `deviation-bench-new/src/build_review_dashboard.py`。
+- 生成 ignored `deviation-bench-new/data/work/review_dashboard/index.html`。
+- 页面通过浏览器 `fetch` 动态读取：
+  - 三份 processed session JSONL；
+  - reviewed split/audit；
+  - point metajudge results；
+  - semantic fingerprints；
+  - duplicate/leakage pair reviews。
+- 页面包含 overview 统计卡片、横向条形图、session 检索/过滤、完整对话浏览、candidate point 与 metajudge rationale、semantic fingerprint、duplicate/leakage pair 图表和跳转。
+- README 已补充运行入口和访问 URL。
+
+验证：
+
+- `python3 -m py_compile deviation-bench-new/src/build_review_dashboard.py`。
+- `python3 -m unittest discover -s deviation-bench-new/tests -v`。
+- `python3 deviation-bench-new/src/build_review_dashboard.py`。
+- 本地 HTTP fetch 验证 `review_dashboard/index.html` 和核心 JSONL/JSON 数据路径可访问。
+
 ### Deviation Bench New: actual release-hardening flow and dynamic runs page
 
 按用户要求继续到“实际流程”完成，不停留在预审计：

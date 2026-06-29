@@ -17,7 +17,7 @@ This file records the overall plan and the current implementation position. Upda
 
 ## Current Phase
 
-Phase: 第一波真实数据派生 session 已完成（968 sessions）；data release hardening 已完成本地预审计、actual DeepSeek Pro point metajudge、semantic duplicate/leakage review、reviewed split/audit materialization 和动态 runs dashboard。下一阶段是发布治理检查，然后再定义下游 benchmark 任务。
+Phase: 第一波真实数据派生 session 已完成（968 sessions）；data release hardening 已完成本地预审计、actual DeepSeek Pro point metajudge、semantic duplicate/leakage review、reviewed split/audit materialization、动态 runs dashboard 和对话/图表 review dashboard。下一阶段是发布治理检查，然后再定义下游 benchmark 任务。
 
 当前 2026-06-29 candidate release hardening 状态：
 
@@ -27,6 +27,7 @@ Phase: 第一波真实数据派生 session 已完成（968 sessions）；data re
 - 实际 point metajudge 已完成：1,392 candidate point units + 28 negative controls。
 - 实际 semantic duplicate/leakage review 已完成：968 fingerprints + 240 pair reviews。
 - Reviewed split manifest 已生成：`control_calibration=13`、`dev_review=146`、`validation=105`、`heldout_candidate=700`、`excluded_duplicate=4`。
+- Review dashboard 已生成：ignored `deviation-bench-new/data/work/review_dashboard/index.html`，可动态读取 processed sessions、reviewed splits、metajudge 和 duplicate review 结果，展示统计图表与完整对话。
 - 尚未完成：license/privacy/governance release review 和下游 benchmark task 定义。
 
 ## Auxiliary Workspace Status

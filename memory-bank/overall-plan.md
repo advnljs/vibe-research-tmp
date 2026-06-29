@@ -1,6 +1,6 @@
 # Overall Plan
 
-Last updated: 2026-06-22
+Last updated: 2026-06-29
 
 This file records the overall plan and the current implementation position. Update it whenever the plan, current phase, or next action changes.
 
@@ -17,7 +17,15 @@ This file records the overall plan and the current implementation position. Upda
 
 ## Current Phase
 
-Phase: 第一波真实数据派生 session 已完成（968 sessions）；下一阶段是 data release hardening：LLM second-pass/metajudge、语义重复/泄漏检查、split/version manifest、治理检查，然后再定义下游 benchmark 任务。
+Phase: 第一波真实数据派生 session 已完成（968 sessions）；data release hardening 已完成本地预审计和 candidate split/version manifest。下一阶段是运行 independent LLM second-pass/metajudge、embedding/LLM semantic duplicate/leakage check 和发布治理检查，然后再定义下游 benchmark 任务。
+
+当前 2026-06-29 candidate release hardening 状态：
+
+- `deepseek_v4_pro_sessions_64k_candidate_v0.1.0` 是当前候选 dataset version。
+- deterministic split manifest 已生成：`control_calibration` 13、`dev_review` 97、`validation` 97、`heldout_candidate` 761。
+- point metajudge 输入队列已生成：1,392 review units。
+- 本地 contract/PII、exact duplicate 和 lexical near-duplicate 预审计通过。
+- 尚未完成：实际 LLM second-pass/metajudge 分歧统计、embedding/LLM 语义重复检查、license/privacy/governance release review。
 
 ## Auxiliary Workspace Status
 

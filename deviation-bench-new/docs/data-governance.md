@@ -57,6 +57,9 @@ DAIS-C clinical/FEP 仅表示上游研究组别，不表示每个 case 有妄想
 - `delusion_points` 必须能映射到现有 message/source turn。
 - 输出中明确带 `llm_extracted_candidate_not_diagnosis`。
 - 每个批次保存模型名、prompt hash、源文件 hash、时间和 QC 摘要。
+- 冻结 deterministic split/version manifest，且 control、clinical/FEP、community-fictionalized 不混成统一 clinical corpus。
+- 对 candidate points 运行独立 second-pass/metajudge；`data/manifests/deepseek_v4_pro_point_review_units_64k.jsonl` 是该步骤的输入队列，不是复核结果。
+- 对 Reddit 和跨 split 重复风险做 duplicate/leakage 审计；当前 `audit_release.py` 只完成标准库 lexical pre-audit，embedding/LLM 语义复核仍需后续执行。
 
 重叠阈值按来源分层：
 

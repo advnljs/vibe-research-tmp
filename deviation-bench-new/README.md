@@ -172,6 +172,21 @@ python3 deviation-bench-new/src/build_dataset_browser.py \
 
 浏览页只生成到 Git 忽略的 `data/work/`，用于开发质检，不构成人工标注。
 
+### 7. 发布硬化本地预审计
+
+```bash
+python3 deviation-bench-new/src/audit_release.py
+```
+
+输出：
+
+- `data/manifests/deepseek_v4_pro_release_audit_64k.json`
+- `data/manifests/deepseek_v4_pro_release_splits_64k.jsonl`
+- `data/manifests/deepseek_v4_pro_point_review_units_64k.jsonl`
+- `experiments/session_release_hardening_pre_audit_2026-06-29.md`
+
+该步骤冻结候选 `dataset_version` 和 deterministic split manifest，生成 1,392 个 candidate point 的 second-pass/metajudge review units，并做本地 contract/PII、精确重复和 lexical near-duplicate 预审计。它不调用新模型；LLM second-pass/metajudge 和 embedding/LLM 语义重复检查仍是后续发布硬化步骤。
+
 ## 关键边界
 
 - 不把“精神病性障碍访谈”等同于“每例都有妄想”。

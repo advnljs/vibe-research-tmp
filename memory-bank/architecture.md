@@ -1,6 +1,6 @@
 # Architecture
 
-Last updated: 2026-06-22
+Last updated: 2026-06-29
 
 ## System Boundary
 
@@ -14,6 +14,7 @@ Last updated: 2026-06-22
 - Interview transform：`build_sessions.py` + chunk/consolidation/repair prompts。
 - Community route：`build_reddit_sessions.py` + screen/generation prompts。
 - Contract/QC：`session_contract.py`、`session.schema.json`、`validate_sessions.py`。
+- Release hardening pre-audit：`audit_release.py`、`point_metajudge.md`、release split/audit/point-review manifests。
 - Processed outputs：`data/processed/`、`data/screened/`。
 - Private working state：ignored `data/work/`。
 - Local inspection：`build_dataset_browser.py` -> ignored HTML。
@@ -25,6 +26,7 @@ Last updated: 2026-06-22
 1. DAIS-C/FEP：真实多轮 transcript -> deterministic parser -> normalized source turns -> DeepSeek Pro semantic paraphrase -> point consolidation -> structural/PII/overlap QC -> interview/control JSONL。
 2. Reddit：真实 single post -> hash dedupe/local exclusion/probe -> DeepSeek Pro semantic screening -> fictional 12-message expansion -> strict PII/overlap QC -> community-fictionalized JSONL。
 3. 所有 processed records 保存 source/model/prompt hashes、64k budget、thinking mode、license、parser 和 QC provenance；不保存 source/API raw text。
+4. Release hardening pre-audit：processed JSONL -> deterministic source-family split manifest -> point-review queue -> contract/PII/exact duplicate/lexical near-duplicate audit。
 
 ## Key Technical Decisions
 
@@ -35,6 +37,7 @@ Last updated: 2026-06-22
 - Reddit 只作为文本信号，经虚构扩写；连续来源词重叠 `>=12` 失败。
 - `delusion_points` 允许为空，只是 LLM candidate，不是 diagnosis/gold label。
 - control、psychosis-related interviews、community-fictionalized sessions 必须分 split 处理。
+- 当前 candidate release version 为 `deepseek_v4_pro_sessions_64k_candidate_v0.1.0`；split manifest 是 source-family stratified，control calibration-only。
 
 ## Important Constraints
 
@@ -50,3 +53,4 @@ Last updated: 2026-06-22
 - 2026-05-31 to 2026-06-05: agent-memory framing, memory scenarios and local memory-condition runner.
 - 2026-06-14: auxiliary Phaser/pure-Web UI task completed.
 - 2026-06-22: current route changed to `deviation-bench-new/`; completed real interview transformation and screened community-to-fictional session pipeline. Old agent-memory route paused.
+- 2026-06-29: added release hardening pre-audit, candidate split/version manifest and point-review units; LLM metajudge and semantic duplicate check remain pending.

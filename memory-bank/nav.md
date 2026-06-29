@@ -1,6 +1,6 @@
 # Memory Bank Navigation
 
-Last updated: 2026-06-22
+Last updated: 2026-06-29
 
 Canonical project navigation is `研究导航.md`. This file is a compact memory-bank-local index.
 
@@ -21,9 +21,15 @@ Canonical project navigation is `研究导航.md`. This file is a compact memory
 - `deviation-bench-new/README.md`: current primary route, counts, commands and interpretation boundary.
 - `deviation-bench-new/experiments/real_data_session_preparation_2026-06-22.md`: 968-session preparation and validation report.
 - `deviation-bench-new/src/`: parsers, DeepSeek builders, QC validator and local browser.
+- `deviation-bench-new/src/audit_release.py`: release hardening pre-audit, candidate split/version manifest and point-review unit builder.
 - `deviation-bench-new/data/processed/`: three finished session JSONL files and summaries.
 - `deviation-bench-new/data/screened/deepseek_v4_pro_reddit_screening_64k.jsonl`: tracked no-raw-text Reddit screen results.
 - `deviation-bench-new/data/manifests/`: no-raw-text source and run manifests.
+- `deviation-bench-new/data/manifests/deepseek_v4_pro_release_splits_64k.jsonl`: 968-row candidate split/version manifest.
+- `deviation-bench-new/data/manifests/deepseek_v4_pro_release_audit_64k.json`: deterministic pre-audit summary.
+- `deviation-bench-new/data/manifests/deepseek_v4_pro_point_review_units_64k.jsonl`: 1,392-row second-pass/metajudge review queue.
+- `deviation-bench-new/prompts/point_metajudge.md`: independent candidate-point review prompt.
+- `deviation-bench-new/experiments/session_release_hardening_pre_audit_2026-06-29.md`: pre-audit experiment note.
 - The files below belong to the paused historical agent-memory route:
 - `deviation-bench/agent_memory_eval_protocol.md`: formal agent-memory evaluation protocol.
 - `deviation-bench/agent_memory_system_survey.md`: current M1 tooling survey and external-system selection.
@@ -51,6 +57,7 @@ Canonical project navigation is `研究导航.md`. This file is a compact memory
 python3 deviation-bench-new/src/prepare_cases.py
 python3 deviation-bench-new/src/prepare_reddit_cases.py
 python3 deviation-bench-new/src/validate_sessions.py deviation-bench-new/data/processed/*_64k.jsonl
+python3 deviation-bench-new/src/audit_release.py
 python3 -m unittest discover -s deviation-bench-new/tests -v
 python3 deviation-bench-new/src/build_dataset_browser.py --input 'deviation-bench-new/data/processed/*_64k.jsonl'
 python3 deviation-bench/src/deviation_bench_pilot.py --validate-only

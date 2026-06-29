@@ -6,6 +6,9 @@
 - `reddit_source_cases.jsonl`：7,685 个去重后社区帖子的谱系/排除状态，无原文。
 - `reddit_screen_candidates.jsonl`：2,541 个通过本地宽松 probe 的 LLM 筛选候选，不是妄想标签。
 - `deepseek_v4_pro_reddit_sessions_64k.json`：Reddit 筛选/生成的冻结模型、64k 预算、thinking-mode 和预期输出。
+- `deepseek_v4_pro_release_splits_64k.jsonl`：968 条 session 的 deterministic split/version manifest；按 source family 分层，control 只进 calibration。
+- `deepseek_v4_pro_release_audit_64k.json`：发布硬化本地预审计摘要，包含 split counts、contract/PII errors、精确重复和 lexical near-duplicate 统计。
+- `deepseek_v4_pro_point_review_units_64k.jsonl`：1,392 个 candidate point 的 second-pass/metajudge review queue，只包含 processed messages 的局部上下文，不含 raw source text。
 
 `prepared_path` 指向 Git 忽略的 `data/work/prepared_cases/`。重建命令：
 

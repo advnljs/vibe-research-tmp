@@ -15,6 +15,7 @@ from build_reddit_sessions import (  # noqa: E402
     public_rejection_reasons,
     validate_generated,
 )
+from audit_release import assign_splits, jaccard, source_family, word_ngrams  # noqa: E402
 from build_sessions import estimate_tokens, mock_chunk_result, mock_consolidation, split_turns  # noqa: E402
 from prepare_cases import parse_dais_tagged_text, parse_fep_table_text  # noqa: E402
 from session_contract import (  # noqa: E402
@@ -153,6 +154,37 @@ class SessionContractTests(unittest.TestCase):
             "quality": {"status": "passed"},
         }
         self.assertEqual(validate_session_record(record), [])
+
+
+class AuditReleaseTests(unittest.TestCase):
+    def test_source_family_distinguishes_current_routes(self) -> None:
+        self.assertEqual(
+            source_family({"metadata": {"source_group": "clinical_schizophrenia"}}),
+            "dais_c_clinical_interview",
+        )
+        self.assertEqual(
+            source_family({"metadata": {"source_group": "community_reality_boundary_text_signal"}}),
+            "reddit_fictionalized_text_signal",
+        )
+        self.assertEqual(source_family({"metadata": {"source_group": "control"}}), "dais_c_control_calibration")
+
+    def test_assign_splits_keeps_controls_calibration_only(self) -> None:
+        records = [
+            {"session_id": f"reddit_syn_{index}", "metadata": {"source_group": "community_reality_boundary_text_signal"}}
+            for index in range(10)
+        ]
+        records.append({"session_id": "dais_c_co_001", "metadata": {"source_group": "control"}})
+        splits = assign_splits(records, dev_ratio=0.10, validation_ratio=0.10)
+        self.assertEqual(splits["dais_c_co_001"], "control_calibration")
+        non_control_splits = {split for session_id, split in splits.items() if session_id != "dais_c_co_001"}
+        self.assertTrue({"dev_review", "validation", "heldout_candidate"} <= non_control_splits)
+
+    def test_word_ngram_jaccard_detects_near_copy(self) -> None:
+        left = word_ngrams("one two three four five six seven eight nine", 3)
+        right = word_ngrams("one two three four five six seven eight ten", 3)
+        unrelated = word_ngrams("alpha beta gamma delta epsilon zeta eta theta", 3)
+        self.assertGreater(jaccard(left, right), 0.5)
+        self.assertLess(jaccard(left, unrelated), 0.1)
 
 
 if __name__ == "__main__":

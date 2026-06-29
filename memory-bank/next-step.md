@@ -1,6 +1,6 @@
 # Next Step
 
-Last updated: 2026-06-22
+Last updated: 2026-06-29
 
 ## Current Decision State
 
@@ -14,11 +14,19 @@ Last updated: 2026-06-22
 - Reddit fictionalized reality-boundary text signals：926 sessions。
 - 合计：968 sessions / 16,408 messages / 1,392 candidate points。
 
+2026-06-29 已新增 release hardening pre-audit：
+
+- Candidate dataset version：`deepseek_v4_pro_sessions_64k_candidate_v0.1.0`。
+- Split manifest：`deviation-bench-new/data/manifests/deepseek_v4_pro_release_splits_64k.jsonl`。
+- Audit summary：`deviation-bench-new/data/manifests/deepseek_v4_pro_release_audit_64k.json`。
+- Point metajudge queue：`deviation-bench-new/data/manifests/deepseek_v4_pro_point_review_units_64k.jsonl`。
+- 本地结果：contract/PII errors 0、exact duplicates 0、lexical near-duplicates 0、cross-split lexical near-duplicates 0。
+
 ## Immediate Queue
 
-1. P0：对 `delusion_points` 做独立 second-pass / metajudge 复核，输出 model disagreement、point precision controls 和 schema validity；不能把第一遍 DeepSeek 提取直接当 gold label。
-2. P0：做 dataset-level semantic duplicate / near-duplicate / train-test leakage analysis，尤其是 926 个 Reddit fictional sessions。
-3. P0：冻结 `dataset_version`、split manifest 和生成配置；区分 clinical/FEP、control、community-fictionalized，不混成统一 clinical corpus。
+1. P0：运行 `delusion_points` independent second-pass / metajudge。输入队列和 prompt 已准备好；下一步需要按批调用模型，输出 model disagreement、point precision controls 和 schema validity。不能把第一遍 DeepSeek 提取直接当 gold label。
+2. P0：补 dataset-level semantic duplicate / leakage analysis。本轮只完成 deterministic lexical pre-audit；下一步应做 embedding/LLM 语义重复检查，尤其是 926 个 Reddit fictional sessions 和跨 split 风险。
+3. P0：将 metajudge 和 semantic duplicate 结果回填到 release audit；如发现冲突或泄漏，调整 split manifest 或标记 exclusions。
 4. P1：做发布前治理检查：许可/ShareAlike、社区隐私、残余命名实体和稀有事件链；自动 regex PII=0 不是绝对匿名保证。
 5. P1：基于当前 sessions 重新定义下游 benchmark task；在此之前不恢复旧 memory runner 扩展。
 

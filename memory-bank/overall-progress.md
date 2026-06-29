@@ -1,8 +1,34 @@
 # Overall Progress
 
-Last updated: 2026-06-22
+Last updated: 2026-06-29
 
 This file records completed work and the current state of the Deviation Bench project. Update it after any meaningful research, data, implementation, or planning change.
+
+## Completed 2026-06-29
+
+### Deviation Bench New: release hardening pre-audit and split manifest
+
+继续 `deviation-bench-new/` 的 data release hardening，完成第一轮不调用新模型的本地可复现预审计：
+
+- 新增 `deviation-bench-new/src/audit_release.py`，用 Python 标准库读取三份 processed JSONL，生成候选 `dataset_version`、deterministic split manifest、candidate point review units 和本地审计摘要。
+- 新增 `deviation-bench-new/prompts/point_metajudge.md`，用于后续 independent second-pass/metajudge 复核 candidate points。
+- 生成 `deviation-bench-new/data/manifests/deepseek_v4_pro_release_splits_64k.jsonl`：968 sessions，按 source family 分层；DAIS-C control 全部进入 `control_calibration`。
+- 生成 `deviation-bench-new/data/manifests/deepseek_v4_pro_release_audit_64k.json`：contract/PII errors 0，exact duplicate message-content groups 0，lexical near-duplicate pairs 0，cross-split lexical near-duplicate pairs 0。
+- 生成 `deviation-bench-new/data/manifests/deepseek_v4_pro_point_review_units_64k.jsonl`：1,392 review units，只含 processed messages 的局部上下文，不含 raw source text。
+- 新增实验记录 `deviation-bench-new/experiments/session_release_hardening_pre_audit_2026-06-29.md`。
+- README、治理说明、manifest README、导航和模块记忆已同步更新。
+
+验证：
+
+- `python3 deviation-bench-new/src/audit_release.py`：968 sessions / 16,408 messages / 1,392 points / 0 validation errors / 0 lexical near-duplicate pairs。
+- `python3 deviation-bench-new/src/validate_sessions.py ...`：968 sessions / 16,408 messages / 1,392 delusion_points / errors=0。
+- `python3 -m unittest discover -s deviation-bench-new/tests -v`：14 tests passed。
+
+当前状态：
+
+- P0 split/version manifest 已有 candidate freeze。
+- P0 point metajudge 仍未运行；本轮只准备 second-pass 输入队列和 prompt。
+- P0 duplicate/leakage 只完成 lexical pre-audit；embedding/LLM semantic duplicate check 仍待执行。
 
 ## Completed 2026-06-22
 

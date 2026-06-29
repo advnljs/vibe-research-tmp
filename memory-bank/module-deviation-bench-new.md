@@ -1,6 +1,6 @@
 # Module: deviation-bench-new
 
-Last updated: 2026-06-22
+Last updated: 2026-06-29
 
 ## 职责
 
@@ -16,8 +16,9 @@ Last updated: 2026-06-22
 - `src/session_contract.py`：session contract、PII、来源重合和通用校验。
 - `src/validate_sessions.py`：单文件/跨文件验证。
 - `src/build_dataset_browser.py`：生成忽略的本地浏览页。
+- `src/audit_release.py`：生成 candidate dataset version、split manifest、point-review units 和本地 duplicate/leakage pre-audit。
 - `schemas/session.schema.json`：公开 session schema。
-- `prompts/`：访谈改写、point consolidation、重叠修复、Reddit 筛选/生成 prompts。
+- `prompts/`：访谈改写、point consolidation、重叠修复、Reddit 筛选/生成 prompts，以及 `point_metajudge.md` second-pass prompt。
 
 ## 数据流
 
@@ -36,6 +37,12 @@ Reddit r/schizophrenia CSV
   -> fictional de-identified 12-message expansion
   -> contract / PII / strict overlap QC
   -> Reddit JSONL
+
+Processed JSONL
+  -> release audit
+  -> deterministic split/version manifest
+  -> point-review units for second-pass metajudge
+  -> lexical duplicate/leakage pre-audit
 ```
 
 ## 对外数据接口
@@ -50,7 +57,7 @@ Reddit r/schizophrenia CSV
 - `provenance`
 - `quality`
 
-`delusion_points` 允许为空，且永远解释为 `llm_extracted_candidate_not_diagnosis`。
+`delusion_points` 允许为空，且永远解释为 `llm_extracted_candidate_not_diagnosis`。当前 candidate dataset version 为 `deepseek_v4_pro_sessions_64k_candidate_v0.1.0`，split manifest 位于 `data/manifests/deepseek_v4_pro_release_splits_64k.jsonl`。
 
 ## 内外部依赖
 
@@ -67,6 +74,7 @@ Reddit r/schizophrenia CSV
 - Reddit 只保留抽象信号并虚构扩写；连续来源词重叠 `>=12` 失败。
 - DAIS/FEP 不是 delusion-only；Reddit 社区归属不是临床 ground truth。
 - 自动 QC 不是发布伦理/隐私审查，也不是人工 benchmark annotation。
+- 2026-06-29 的 `audit_release.py` 只做 lexical duplicate/leakage pre-audit；semantic duplicate check 和 LLM point metajudge 尚未运行。
 
 ## 常见修改点
 
@@ -74,3 +82,4 @@ Reddit r/schizophrenia CSV
 - 修改 schema：同步更新 `session.schema.json`、`session_contract.py`、prompts 和 tests。
 - 修改模型/prompt：使用新 `run_id`，保留 prompt hash，不覆盖旧批次来源谱系。
 - 正式发布前：运行跨文件 validator、LLM second-pass/metajudge、重复 case/语义重复分析和治理检查。
+- 更新 split/version：重新运行 `python3 deviation-bench-new/src/audit_release.py`，并检查 `data/manifests/*release*` 和实验摘要 diff。

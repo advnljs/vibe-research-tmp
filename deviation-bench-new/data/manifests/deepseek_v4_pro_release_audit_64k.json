@@ -1,0 +1,76 @@
+{
+  "audit_scope": {
+    "inputs": [
+      "deepseek_v4_pro_control_sessions_64k.jsonl",
+      "deepseek_v4_pro_interview_sessions_64k.jsonl",
+      "deepseek_v4_pro_reddit_sessions_64k.jsonl"
+    ],
+    "llm_point_metajudge_run": false,
+    "near_duplicate_method": "within-source-family word 5-gram Jaccard",
+    "near_duplicate_threshold": 0.82,
+    "semantic_embedding_or_llm_duplicate_check_run": false
+  },
+  "counts": {
+    "by_input_file": {
+      "deepseek_v4_pro_control_sessions_64k.jsonl": 13,
+      "deepseek_v4_pro_interview_sessions_64k.jsonl": 29,
+      "deepseek_v4_pro_reddit_sessions_64k.jsonl": 926
+    },
+    "by_source_family": {
+      "dais_c_clinical_interview": 15,
+      "dais_c_control_calibration": 13,
+      "fep_interview": 14,
+      "reddit_fictionalized_text_signal": 926
+    },
+    "by_source_group": {
+      "clinical_schizophrenia": 15,
+      "community_reality_boundary_text_signal": 926,
+      "control": 13,
+      "first_episode_psychosis": 14
+    },
+    "by_split": {
+      "control_calibration": 13,
+      "dev_review": 97,
+      "heldout_candidate": 761,
+      "validation": 97
+    },
+    "points_by_category": {
+      "control_or_influence": 158,
+      "grandiose": 75,
+      "jealous": 7,
+      "nihilistic": 26,
+      "other_reality_boundary": 249,
+      "persecutory": 509,
+      "referential": 204,
+      "religious": 47,
+      "somatic": 31,
+      "thought_interference": 86
+    },
+    "points_by_explicitness": {
+      "explicit": 1356,
+      "implicit": 36
+    }
+  },
+  "dataset_version": "deepseek_v4_pro_sessions_64k_candidate_v0.1.0",
+  "exact_duplicate_message_content_groups": [],
+  "generated_at": "2026-06-29T02:51:17+00:00",
+  "near_duplicate_pairs": {
+    "cross_split_pairs_at_or_above_threshold": 0,
+    "reported_pair_limit": 100,
+    "reported_top_pairs": [],
+    "total_pairs_at_or_above_threshold": 0
+  },
+  "release_notes": [
+    "Split manifest is deterministic and stratified by source family; controls are calibration-only.",
+    "This pre-audit does not replace independent LLM second-pass/metajudge review.",
+    "Near-duplicate analysis is lexical and within source family; semantic/embedding duplicate checks remain a follow-up."
+  ],
+  "totals": {
+    "delusion_points": 1392,
+    "messages": 16408,
+    "sessions": 968,
+    "sessions_with_points": 940,
+    "validation_errors": 0
+  },
+  "validation_errors": []
+}

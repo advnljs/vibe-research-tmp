@@ -31,10 +31,10 @@ This file records persistent user requirements and project constraints in compac
 
 ## Current Acceptance Criteria For Data Hardening
 
-- Run an independent LLM second-pass/metajudge over candidate points and negative controls; report disagreement and uncertainty rather than calling the first-pass output gold.
+- Run an independent LLM second-pass/metajudge over candidate points and negative controls; report disagreement and uncertainty rather than calling the first-pass output gold. This was completed once with DeepSeek Pro on 2026-06-29; optional future work may add a second model for variance.
 - Use `deviation-bench-new/data/manifests/deepseek_v4_pro_point_review_units_64k.jsonl` and `deviation-bench-new/prompts/point_metajudge.md` as the current prepared input for candidate-point second-pass review.
-- Audit near-duplicates and cross-split leakage before freezing splits.
-- Current split/version manifest is a candidate freeze only; final release still depends on metajudge, semantic duplicate/leakage and governance review results.
+- Audit near-duplicates and cross-split leakage before freezing splits. Actual DeepSeek Pro semantic duplicate/leakage review completed on 2026-06-29 and produced a reviewed split manifest.
+- Current reviewed split/version manifest still depends on governance review before public release.
 - Preserve per-session source/model/prompt/license/QC provenance and dataset hashes.
 - Keep normalized source turns, API request/response and checkpoints under ignored `deviation-bench-new/data/work/`.
 - Treat regex PII=0 as an automatic check, not a guarantee of anonymity.

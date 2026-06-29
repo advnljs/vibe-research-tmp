@@ -28,8 +28,13 @@ Canonical project navigation is `研究导航.md`. This file is a compact memory
 - `deviation-bench-new/data/manifests/deepseek_v4_pro_release_splits_64k.jsonl`: 968-row candidate split/version manifest.
 - `deviation-bench-new/data/manifests/deepseek_v4_pro_release_audit_64k.json`: deterministic pre-audit summary.
 - `deviation-bench-new/data/manifests/deepseek_v4_pro_point_review_units_64k.jsonl`: 1,392-row second-pass/metajudge review queue.
+- `deviation-bench-new/data/manifests/deepseek_v4_pro_release_splits_reviewed_64k.jsonl`: reviewed split manifest after actual LLM reviews.
+- `deviation-bench-new/data/manifests/deepseek_v4_pro_release_audit_reviewed_64k.json`: reviewed audit combining pre-audit, metajudge and semantic duplicate review.
+- `deviation-bench-new/data/reviews/`: tracked LLM review summaries/results without raw API responses.
 - `deviation-bench-new/prompts/point_metajudge.md`: independent candidate-point review prompt.
 - `deviation-bench-new/experiments/session_release_hardening_pre_audit_2026-06-29.md`: pre-audit experiment note.
+- `deviation-bench-new/experiments/session_release_hardening_actual_flow_2026-06-29.md`: actual release-hardening flow note.
+- `deviation-bench-new/data/work/runs_dashboard/index.html`: ignored dynamic local page that fetches run/result files.
 - The files below belong to the paused historical agent-memory route:
 - `deviation-bench/agent_memory_eval_protocol.md`: formal agent-memory evaluation protocol.
 - `deviation-bench/agent_memory_system_survey.md`: current M1 tooling survey and external-system selection.
@@ -58,6 +63,10 @@ python3 deviation-bench-new/src/prepare_cases.py
 python3 deviation-bench-new/src/prepare_reddit_cases.py
 python3 deviation-bench-new/src/validate_sessions.py deviation-bench-new/data/processed/*_64k.jsonl
 python3 deviation-bench-new/src/audit_release.py
+python3 deviation-bench-new/src/run_point_metajudge.py --provider openai --include-negative-controls --resume --overwrite
+python3 deviation-bench-new/src/run_semantic_duplicate_audit.py --provider openai --resume --overwrite
+python3 deviation-bench-new/src/finalize_release_hardening.py
+python3 deviation-bench-new/src/build_runs_dashboard.py
 python3 -m unittest discover -s deviation-bench-new/tests -v
 python3 deviation-bench-new/src/build_dataset_browser.py --input 'deviation-bench-new/data/processed/*_64k.jsonl'
 python3 deviation-bench/src/deviation_bench_pilot.py --validate-only

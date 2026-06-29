@@ -9,6 +9,8 @@
 - `deepseek_v4_pro_release_splits_64k.jsonl`：968 条 session 的 deterministic split/version manifest；按 source family 分层，control 只进 calibration。
 - `deepseek_v4_pro_release_audit_64k.json`：发布硬化本地预审计摘要，包含 split counts、contract/PII errors、精确重复和 lexical near-duplicate 统计。
 - `deepseek_v4_pro_point_review_units_64k.jsonl`：1,392 个 candidate point 的 second-pass/metajudge review queue，只包含 processed messages 的局部上下文，不含 raw source text。
+- `deepseek_v4_pro_release_splits_reviewed_64k.jsonl`：实际 LLM metajudge / semantic duplicate review 后的 reviewed split manifest；保留 `original_split`，新增 `release_split`、`release_status`、`release_action`。
+- `deepseek_v4_pro_release_audit_reviewed_64k.json`：汇总 pre-audit、point metajudge、semantic duplicate review 和 reviewed split 决策的实际流程审计。
 
 `prepared_path` 指向 Git 忽略的 `data/work/prepared_cases/`。重建命令：
 

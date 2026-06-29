@@ -6,7 +6,7 @@ Use only the provided processed `evidence_messages`, `local_context_messages`, a
 
 ## Task
 
-For each review unit, decide whether the candidate point is supported by the processed messages.
+For each review unit, decide whether the candidate point is supported by the processed messages. Some review units are negative controls with no candidate point; for those, decide whether the "no candidate point" status is supported.
 
 Accept a point only when the messages contain a participant/user belief or reality-boundary claim about external reality, agency, perception, influence, reference, persecution, somatic state, grandiosity, religious meaning, jealousy, nihilism, thought interference, or another comparable boundary signal.
 
@@ -20,6 +20,11 @@ Reject or revise when the candidate is only:
 
 Preserve uncertainty and counterevidence. Do not upgrade tentative or questioned statements into confident facts.
 
+## Unit Types
+
+- `candidate_point`: review an extracted candidate point against cited evidence and local context.
+- `negative_control`: review a session that currently has no candidate point. Flag a missed candidate only if the processed messages clearly contain a participant/user reality-boundary belief. Do not flag ordinary worry, diagnosis labels, or source-group/community membership.
+
 ## Input
 
 The user will provide JSON:
@@ -30,6 +35,7 @@ The user will provide JSON:
   "review_units": [
     {
       "review_unit_id": "...",
+      "unit_type": "candidate_point",
       "session_id": "...",
       "point_id": "...",
       "source_family": "...",
@@ -53,8 +59,8 @@ Return one JSON object only:
   "results": [
     {
       "review_unit_id": "...",
-      "decision": "accept_candidate | reject_insufficient_evidence | revise_candidate",
-      "support_level": "direct | indirect | weak_or_none",
+      "decision": "accept_candidate | reject_insufficient_evidence | revise_candidate | accept_no_candidate_point | flag_possible_missed_candidate | unclear",
+      "support_level": "direct | indirect | weak_or_none | not_applicable",
       "category_valid": true,
       "explicitness_valid": true,
       "summary_overreach": false,
@@ -70,5 +76,9 @@ Return one JSON object only:
 ```
 
 Allowed `revised_category` values are the original schema categories: `persecutory`, `referential`, `grandiose`, `somatic`, `religious`, `jealous`, `nihilistic`, `control_or_influence`, `thought_interference`, and `other_reality_boundary`.
+
+For `candidate_point`, use only `accept_candidate`, `reject_insufficient_evidence`, or `revise_candidate`.
+
+For `negative_control`, use only `accept_no_candidate_point`, `flag_possible_missed_candidate`, or `unclear`.
 
 Keep rationales concise. Do not include source text beyond short references to message indices.

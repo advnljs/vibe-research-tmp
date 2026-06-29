@@ -11,6 +11,7 @@ import json
 import math
 import os
 import re
+import socket
 import time
 import urllib.error
 import urllib.request
@@ -156,7 +157,7 @@ def openai_compatible_completion(
             retryable = exc.code == 429 or exc.code >= 500
             if not retryable or attempt >= max_retries:
                 raise last_error from exc
-        except (urllib.error.URLError, TimeoutError, KeyError, ValueError) as exc:
+        except (urllib.error.URLError, TimeoutError, socket.timeout, KeyError, ValueError) as exc:
             last_error = exc
             if attempt >= max_retries:
                 raise RuntimeError(f"API request failed: {exc}") from exc

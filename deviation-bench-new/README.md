@@ -187,6 +187,57 @@ python3 deviation-bench-new/src/audit_release.py
 
 该步骤冻结候选 `dataset_version` 和 deterministic split manifest，生成 1,392 个 candidate point 的 second-pass/metajudge review units，并做本地 contract/PII、精确重复和 lexical near-duplicate 预审计。它不调用新模型；LLM second-pass/metajudge 和 embedding/LLM 语义重复检查仍是后续发布硬化步骤。
 
+### 8. 实际 release-hardening LLM 复核
+
+```bash
+python3 deviation-bench-new/src/run_point_metajudge.py \
+  --provider openai \
+  --model deepseek-v4-pro \
+  --base-url https://api.deepseek.com \
+  --include-negative-controls \
+  --workers 3 \
+  --resume \
+  --overwrite
+
+python3 deviation-bench-new/src/run_semantic_duplicate_audit.py \
+  --provider openai \
+  --model deepseek-v4-pro \
+  --base-url https://api.deepseek.com \
+  --workers 3 \
+  --resume \
+  --overwrite
+
+python3 deviation-bench-new/src/finalize_release_hardening.py
+```
+
+2026-06-29 实际流程输出：
+
+- `data/reviews/deepseek_v4_pro_point_metajudge_64k.jsonl`
+- `data/reviews/deepseek_v4_pro_point_metajudge_64k_summary.json`
+- `data/reviews/deepseek_v4_pro_session_semantic_fingerprints_64k.jsonl`
+- `data/reviews/deepseek_v4_pro_semantic_duplicate_pairs_64k.jsonl`
+- `data/reviews/deepseek_v4_pro_semantic_duplicate_audit_64k_summary.json`
+- `data/manifests/deepseek_v4_pro_release_audit_reviewed_64k.json`
+- `data/manifests/deepseek_v4_pro_release_splits_reviewed_64k.jsonl`
+- `experiments/session_release_hardening_actual_flow_2026-06-29.md`
+
+结果摘要：1,420 point-review units 已复核，候选点接受率约 `0.9432`，28 个 negative controls 均保持 no-point；968 sessions 已生成 semantic fingerprints，240 个候选 pair 已 LLM review，4 个 duplicate candidates 被标记为 `excluded_duplicate`，63 个 sessions 因 near-duplicate cluster 调整到同一 split。Reviewed release split 为：`control_calibration=13`、`dev_review=146`、`validation=105`、`heldout_candidate=700`、`excluded_duplicate=4`。
+
+### 9. 动态 runs dashboard
+
+```bash
+python3 deviation-bench-new/src/build_runs_dashboard.py
+python3 -m http.server 8770 --bind 127.0.0.1 --directory deviation-bench-new
+```
+
+打开：
+
+```text
+http://127.0.0.1:8770/data/work/runs_dashboard/index.html
+```
+
+页面本身生成到 ignored `data/work/runs_dashboard/`，并通过浏览器 `fetch` 动态读取 `data/manifests/`、`data/reviews/`、`experiments/` 和 processed summaries 中的 run/result 文件。它不读取 ignored API checkpoint 或 raw response。
+
 ## 关键边界
 
 - 不把“精神病性障碍访谈”等同于“每例都有妄想”。

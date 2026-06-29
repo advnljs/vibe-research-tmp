@@ -17,7 +17,11 @@ from build_reddit_sessions import (  # noqa: E402
 )
 from audit_release import assign_splits, jaccard, source_family, word_ngrams  # noqa: E402
 from build_sessions import estimate_tokens, mock_chunk_result, mock_consolidation, split_turns  # noqa: E402
+from build_runs_dashboard import classify_path  # noqa: E402
+from finalize_release_hardening import reviewed_split_rows  # noqa: E402
 from prepare_cases import parse_dais_tagged_text, parse_fep_table_text  # noqa: E402
+from run_point_metajudge import make_batches as make_point_batches, validate_batch_result  # noqa: E402
+from run_semantic_duplicate_audit import build_pair_candidates  # noqa: E402
 from session_contract import (  # noqa: E402
     LABEL_STATUS,
     longest_common_word_run,
@@ -185,6 +189,102 @@ class AuditReleaseTests(unittest.TestCase):
         unrelated = word_ngrams("alpha beta gamma delta epsilon zeta eta theta", 3)
         self.assertGreater(jaccard(left, right), 0.5)
         self.assertLess(jaccard(left, unrelated), 0.1)
+
+
+class ReleaseHardeningRunTests(unittest.TestCase):
+    def test_point_metajudge_validator_accepts_candidate_result(self) -> None:
+        units = [{"review_unit_id": "s1::p1", "unit_type": "candidate_point"}]
+        parsed = {
+            "results": [
+                {
+                    "review_unit_id": "s1::p1",
+                    "decision": "accept_candidate",
+                    "support_level": "direct",
+                    "category_valid": True,
+                    "explicitness_valid": True,
+                    "summary_overreach": False,
+                    "uncertainty_preserved": True,
+                    "diagnosis_or_membership_inference": False,
+                    "identifying_detail_risk": False,
+                    "revised_category": None,
+                    "revised_summary": None,
+                    "rationale": "Supported by the cited processed message.",
+                }
+            ]
+        }
+        self.assertEqual(validate_batch_result(parsed, units), [])
+
+    def test_point_batcher_splits_large_negative_controls(self) -> None:
+        units = [
+            {"review_unit_id": "a", "local_context_messages": [{"content": "x" * 800}]},
+            {"review_unit_id": "b", "local_context_messages": [{"content": "y" * 800}]},
+        ]
+        self.assertEqual(len(make_point_batches(units, max_units=10, max_tokens=250)), 2)
+
+    def test_duplicate_pair_candidates_use_fingerprint_similarity(self) -> None:
+        fingerprints = [
+            {
+                "session_id": "a",
+                "source_family": "reddit",
+                "split": "dev_review",
+                "semantic_signature": "same pattern with a shared signal",
+                "core_reality_boundary_pattern": "shared signal",
+                "belief_objects": ["signal"],
+                "evidence_shape": "ambiguous events",
+                "uncertainty_profile": "mixed",
+                "distinctive_nonidentifying_elements": [],
+                "duplicate_screening_terms": ["signal", "shared"],
+            },
+            {
+                "session_id": "b",
+                "source_family": "reddit",
+                "split": "validation",
+                "semantic_signature": "same pattern with a shared signal",
+                "core_reality_boundary_pattern": "shared signal",
+                "belief_objects": ["signal"],
+                "evidence_shape": "ambiguous events",
+                "uncertainty_profile": "mixed",
+                "distinctive_nonidentifying_elements": [],
+                "duplicate_screening_terms": ["signal", "shared"],
+            },
+        ]
+        pairs = build_pair_candidates(fingerprints, max_pairs=10, min_score=0.2)
+        self.assertEqual(len(pairs), 1)
+        self.assertTrue(pairs[0]["cross_split"])
+
+    def test_runs_dashboard_classifies_review_files(self) -> None:
+        self.assertEqual(classify_path(Path("deviation-bench-new/data/reviews/result.json")), "review_result")
+        self.assertEqual(classify_path(Path("deviation-bench-new/data/manifests/release.json")), "release_manifest")
+
+    def test_reviewed_split_rows_mark_duplicate_and_same_split(self) -> None:
+        split_rows = [
+            {"session_id": "a", "split": "heldout_candidate"},
+            {"session_id": "b", "split": "validation"},
+            {"session_id": "c", "split": "heldout_candidate"},
+        ]
+        pair_reviews = [
+            {
+                "left_session_id": "a",
+                "right_session_id": "b",
+                "recommended_action": "same_split",
+                "pair_id": "a__b",
+                "decision": "near_duplicate",
+                "leakage_risk": "medium",
+            },
+            {
+                "left_session_id": "b",
+                "right_session_id": "c",
+                "recommended_action": "exclude_one",
+                "pair_id": "b__c",
+                "decision": "duplicate",
+                "leakage_risk": "high",
+            },
+        ]
+        reviewed, _decisions, excluded = reviewed_split_rows(split_rows, pair_reviews)
+        by_id = {row["session_id"]: row for row in reviewed}
+        self.assertEqual(excluded, {"c"})
+        self.assertEqual(by_id["a"]["release_split"], "validation")
+        self.assertEqual(by_id["c"]["release_status"], "excluded_duplicate_candidate")
 
 
 if __name__ == "__main__":

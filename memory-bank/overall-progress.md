@@ -6,6 +6,40 @@ This file records completed work and the current state of the Deviation Bench pr
 
 ## Completed 2026-06-29
 
+### Deviation Bench New: actual release-hardening flow and dynamic runs page
+
+按用户要求继续到“实际流程”完成，不停留在预审计：
+
+- 新增并运行 `deviation-bench-new/src/run_point_metajudge.py`：
+  - 使用 `deepseek-v4-pro` 对 1,392 个 candidate point review units 和 28 个 no-point negative controls 做 independent second-pass/metajudge。
+  - 输出 `data/reviews/deepseek_v4_pro_point_metajudge_64k.jsonl` 和 summary。
+  - 结果：1,313 accept、39 reject、40 revise；28/28 negative controls 保持 no-point；候选点接受率约 0.9432。
+- 新增并运行 `deviation-bench-new/src/run_semantic_duplicate_audit.py`：
+  - 使用 `deepseek-v4-pro` 生成 968 个 session semantic fingerprints。
+  - 对 240 个 fingerprint candidate pairs 做 LLM duplicate/leakage pair review。
+  - 结果：4 duplicate、100 near_duplicate、136 not_duplicate；medium/high leakage pairs 104。
+- 新增并运行 `deviation-bench-new/src/finalize_release_hardening.py`：
+  - 生成 reviewed split manifest 和 reviewed audit。
+  - 968 sessions 中 964 included，4 个 Reddit duplicate candidates 标记为 `excluded_duplicate`，63 个 sessions 因 near-duplicate cluster 调整到同一 release split。
+  - Reviewed release split：control_calibration 13、dev_review 146、validation 105、heldout_candidate 700、excluded_duplicate 4。
+- 新增 `deviation-bench-new/src/build_runs_dashboard.py`：
+  - 生成 ignored `data/work/runs_dashboard/index.html` 和 `runs_index.json`。
+  - 页面通过浏览器 `fetch` 动态读取 tracked manifests、reviews、experiment notes 和 processed summaries，不读取 ignored raw checkpoints。
+- 新增实验记录 `deviation-bench-new/experiments/session_release_hardening_actual_flow_2026-06-29.md`。
+
+验证：
+
+- DeepSeek Pro point metajudge run completed：1,420 units。
+- DeepSeek Pro semantic duplicate audit completed：968 fingerprints / 240 pair reviews。
+- `python3 deviation-bench-new/src/finalize_release_hardening.py`：included=964 / excluded=4 / moved=63。
+- `python3 deviation-bench-new/src/build_runs_dashboard.py`：runs=19。
+
+遗留问题：
+
+- 发布前 license/privacy/governance review 仍未完成。
+- `excluded_duplicate_candidate` 是 release manifest 标记，不删除 processed data。
+- Reviewed split manifest 应作为后续 benchmark task 构造入口，而不是原 candidate split manifest。
+
 ### Deviation Bench New: release hardening pre-audit and split manifest
 
 继续 `deviation-bench-new/` 的 data release hardening，完成第一轮不调用新模型的本地可复现预审计：

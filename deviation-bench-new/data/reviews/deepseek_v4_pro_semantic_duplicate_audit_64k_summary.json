@@ -1,0 +1,878 @@
+{
+  "counts": {
+    "pair_decision": {
+      "duplicate": 4,
+      "near_duplicate": 100,
+      "not_duplicate": 136
+    },
+    "pair_leakage_risk": {
+      "high": 11,
+      "low": 131,
+      "medium": 93,
+      "none": 5
+    },
+    "pair_recommended_action": {
+      "exclude_one": 4,
+      "keep": 136,
+      "same_split": 100
+    },
+    "rare_event_chain_risk": {
+      "False": 939,
+      "True": 29
+    },
+    "source_family": {
+      "dais_c_clinical_interview": 15,
+      "dais_c_control_calibration": 13,
+      "fep_interview": 14,
+      "reddit_fictionalized_text_signal": 926
+    },
+    "source_specificity_risk": {
+      "high": 14,
+      "low": 759,
+      "medium": 195
+    }
+  },
+  "fingerprint_count": 968,
+  "generated_at": "2026-06-29T03:41:24+00:00",
+  "medium_or_high_leakage_pairs": [
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_151f7b44229df230",
+      "pair_id": "reddit_syn_151f7b44229df230__reddit_syn_cd897c5624540c6a",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_cd897c5624540c6a"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_3b48541a398bcf0d",
+      "pair_id": "reddit_syn_3b48541a398bcf0d__reddit_syn_3c7fe1f6b31d8c5c",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_3c7fe1f6b31d8c5c"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_15cb4e06efeeb5fd",
+      "pair_id": "reddit_syn_15cb4e06efeeb5fd__reddit_syn_e59b8674282e8b86",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_e59b8674282e8b86"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_719e66f034f509e7",
+      "pair_id": "reddit_syn_719e66f034f509e7__reddit_syn_71c1849882f530a7",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_71c1849882f530a7"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_0d9d54a120bc3381",
+      "pair_id": "reddit_syn_0d9d54a120bc3381__reddit_syn_a08083c586569e67",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_a08083c586569e67"
+    },
+    {
+      "decision": "duplicate",
+      "leakage_risk": "high",
+      "left_session_id": "reddit_syn_7b7dcdd3813b1eca",
+      "pair_id": "reddit_syn_7b7dcdd3813b1eca__reddit_syn_ce05b90956193257",
+      "recommended_action": "exclude_one",
+      "right_session_id": "reddit_syn_ce05b90956193257"
+    },
+    {
+      "decision": "duplicate",
+      "leakage_risk": "high",
+      "left_session_id": "reddit_syn_4b3c91ffe637a769",
+      "pair_id": "reddit_syn_4b3c91ffe637a769__reddit_syn_c84913d8110bde9c",
+      "recommended_action": "exclude_one",
+      "right_session_id": "reddit_syn_c84913d8110bde9c"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_b432d9baef4e7139",
+      "pair_id": "reddit_syn_b432d9baef4e7139__reddit_syn_f9cc3b64095a0f2d",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_f9cc3b64095a0f2d"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_701794affbba8ae5",
+      "pair_id": "reddit_syn_701794affbba8ae5__reddit_syn_efebb363de86aff3",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_efebb363de86aff3"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_d6fe96b2b6b85ef7",
+      "pair_id": "reddit_syn_d6fe96b2b6b85ef7__reddit_syn_e10b52e17428e228",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_e10b52e17428e228"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_4ee122ad363816d7",
+      "pair_id": "reddit_syn_4ee122ad363816d7__reddit_syn_a2619652802ba31a",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_a2619652802ba31a"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "high",
+      "left_session_id": "reddit_syn_e58c0f9bc1ac6cae",
+      "pair_id": "reddit_syn_e58c0f9bc1ac6cae__reddit_syn_e5c129e63603c3c0",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_e5c129e63603c3c0"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_9a68087b512d1b5a",
+      "pair_id": "reddit_syn_9a68087b512d1b5a__reddit_syn_bc4ffb1d55da3a20",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_bc4ffb1d55da3a20"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_151f7b44229df230",
+      "pair_id": "reddit_syn_151f7b44229df230__reddit_syn_9d82dfd616b4e142",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_9d82dfd616b4e142"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_8e35cc1438aea7c0",
+      "pair_id": "reddit_syn_8e35cc1438aea7c0__reddit_syn_8f59aa6e61738815",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_8f59aa6e61738815"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_7963575ba1f9be7c",
+      "pair_id": "reddit_syn_7963575ba1f9be7c__reddit_syn_ae0bc82dcf81fcf0",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_ae0bc82dcf81fcf0"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_80146f74073f7629",
+      "pair_id": "reddit_syn_80146f74073f7629__reddit_syn_b31b31c7f2c218fb",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_b31b31c7f2c218fb"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_b9c08de8a3ed5464",
+      "pair_id": "reddit_syn_b9c08de8a3ed5464__reddit_syn_cf772de5dc688cca",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_cf772de5dc688cca"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_a0a8af4050deb680",
+      "pair_id": "reddit_syn_a0a8af4050deb680__reddit_syn_f13c0c2e7f03ee81",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_f13c0c2e7f03ee81"
+    },
+    {
+      "decision": "duplicate",
+      "leakage_risk": "high",
+      "left_session_id": "reddit_syn_6bcc359339504b65",
+      "pair_id": "reddit_syn_6bcc359339504b65__reddit_syn_9d82dfd616b4e142",
+      "recommended_action": "exclude_one",
+      "right_session_id": "reddit_syn_9d82dfd616b4e142"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_5b855700fdab5798",
+      "pair_id": "reddit_syn_5b855700fdab5798__reddit_syn_b9c08de8a3ed5464",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_b9c08de8a3ed5464"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_cbce9ace260544e3",
+      "pair_id": "reddit_syn_cbce9ace260544e3__reddit_syn_f92af3813d91862c",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_f92af3813d91862c"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_80146f74073f7629",
+      "pair_id": "reddit_syn_80146f74073f7629__reddit_syn_f10e2a40c9d5905e",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_f10e2a40c9d5905e"
+    },
+    {
+      "decision": "duplicate",
+      "leakage_risk": "high",
+      "left_session_id": "reddit_syn_151f7b44229df230",
+      "pair_id": "reddit_syn_151f7b44229df230__reddit_syn_1dbb0b6a2337a213",
+      "recommended_action": "exclude_one",
+      "right_session_id": "reddit_syn_1dbb0b6a2337a213"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_3997ab9345423bd1",
+      "pair_id": "reddit_syn_3997ab9345423bd1__reddit_syn_4a9defa6bb860257",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_4a9defa6bb860257"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_0516d2dd6c6d9bff",
+      "pair_id": "reddit_syn_0516d2dd6c6d9bff__reddit_syn_9d82dfd616b4e142",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_9d82dfd616b4e142"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_967d8d524b21ec4c",
+      "pair_id": "reddit_syn_967d8d524b21ec4c__reddit_syn_9d82dfd616b4e142",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_9d82dfd616b4e142"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_6bcc359339504b65",
+      "pair_id": "reddit_syn_6bcc359339504b65__reddit_syn_e56317b3140534c4",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_e56317b3140534c4"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_0516d2dd6c6d9bff",
+      "pair_id": "reddit_syn_0516d2dd6c6d9bff__reddit_syn_151f7b44229df230",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_151f7b44229df230"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_148344cdc2e97fa1",
+      "pair_id": "reddit_syn_148344cdc2e97fa1__reddit_syn_b1627d5e63e4c4e6",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_b1627d5e63e4c4e6"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_1fbecc6529162323",
+      "pair_id": "reddit_syn_1fbecc6529162323__reddit_syn_79aaf888badea5db",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_79aaf888badea5db"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_41d2d126629b5f12",
+      "pair_id": "reddit_syn_41d2d126629b5f12__reddit_syn_80146f74073f7629",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_80146f74073f7629"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_6fb1d0780c23e1a1",
+      "pair_id": "reddit_syn_6fb1d0780c23e1a1__reddit_syn_9a68087b512d1b5a",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_9a68087b512d1b5a"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_9b296a39ea9dcf8c",
+      "pair_id": "reddit_syn_9b296a39ea9dcf8c__reddit_syn_bc4ffb1d55da3a20",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_bc4ffb1d55da3a20"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_a4a625030950b4f9",
+      "pair_id": "reddit_syn_a4a625030950b4f9__reddit_syn_a71a84e43250f800",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_a71a84e43250f800"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_9a68087b512d1b5a",
+      "pair_id": "reddit_syn_9a68087b512d1b5a__reddit_syn_9b296a39ea9dcf8c",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_9b296a39ea9dcf8c"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_1804a18a085368cf",
+      "pair_id": "reddit_syn_1804a18a085368cf__reddit_syn_967d8d524b21ec4c",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_967d8d524b21ec4c"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_3cc0e3df37228ab8",
+      "pair_id": "reddit_syn_3cc0e3df37228ab8__reddit_syn_bf4b1da5ce659fec",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_bf4b1da5ce659fec"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_4c7b48a30efcef4a",
+      "pair_id": "reddit_syn_4c7b48a30efcef4a__reddit_syn_e577db9adca9a133",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_e577db9adca9a133"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_c5045ddc425d8ce9",
+      "pair_id": "reddit_syn_c5045ddc425d8ce9__reddit_syn_cd897c5624540c6a",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_cd897c5624540c6a"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_6ffd9276911d2482",
+      "pair_id": "reddit_syn_6ffd9276911d2482__reddit_syn_9a68087b512d1b5a",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_9a68087b512d1b5a"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_7a36275addbab079",
+      "pair_id": "reddit_syn_7a36275addbab079__reddit_syn_a71a84e43250f800",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_a71a84e43250f800"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_0516d2dd6c6d9bff",
+      "pair_id": "reddit_syn_0516d2dd6c6d9bff__reddit_syn_1dbb0b6a2337a213",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_1dbb0b6a2337a213"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_6082bd3f150c0030",
+      "pair_id": "reddit_syn_6082bd3f150c0030__reddit_syn_9d82dfd616b4e142",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_9d82dfd616b4e142"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_71c1849882f530a7",
+      "pair_id": "reddit_syn_71c1849882f530a7__reddit_syn_b082ff357c818bc9",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_b082ff357c818bc9"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "high",
+      "left_session_id": "reddit_syn_af2961fb144b88b0",
+      "pair_id": "reddit_syn_af2961fb144b88b0__reddit_syn_ce2fddd0b0d1351b",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_ce2fddd0b0d1351b"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_8ed954adb6151b0f",
+      "pair_id": "reddit_syn_8ed954adb6151b0f__reddit_syn_a71a84e43250f800",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_a71a84e43250f800"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_509cbcd4f039bf71",
+      "pair_id": "reddit_syn_509cbcd4f039bf71__reddit_syn_ae0bc82dcf81fcf0",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_ae0bc82dcf81fcf0"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_989052ae619aa34e",
+      "pair_id": "reddit_syn_989052ae619aa34e__reddit_syn_ab0fa0c778069b75",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_ab0fa0c778069b75"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_f10e2a40c9d5905e",
+      "pair_id": "reddit_syn_f10e2a40c9d5905e__reddit_syn_fb1d220b9e6f8b44",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_fb1d220b9e6f8b44"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_520538f2531a3572",
+      "pair_id": "reddit_syn_520538f2531a3572__reddit_syn_80146f74073f7629",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_80146f74073f7629"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "high",
+      "left_session_id": "reddit_syn_780d532bb7a85059",
+      "pair_id": "reddit_syn_780d532bb7a85059__reddit_syn_7c084a11345e5a02",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_7c084a11345e5a02"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_520538f2531a3572",
+      "pair_id": "reddit_syn_520538f2531a3572__reddit_syn_b31b31c7f2c218fb",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_b31b31c7f2c218fb"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_6bcc359339504b65",
+      "pair_id": "reddit_syn_6bcc359339504b65__reddit_syn_6ffd9276911d2482",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_6ffd9276911d2482"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_2d32f471f934f198",
+      "pair_id": "reddit_syn_2d32f471f934f198__reddit_syn_cbce9ace260544e3",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_cbce9ace260544e3"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_71c1849882f530a7",
+      "pair_id": "reddit_syn_71c1849882f530a7__reddit_syn_d8f144626d65238d",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_d8f144626d65238d"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_052efb077bdcaa71",
+      "pair_id": "reddit_syn_052efb077bdcaa71__reddit_syn_effcf8f55df84751",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_effcf8f55df84751"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_a71a84e43250f800",
+      "pair_id": "reddit_syn_a71a84e43250f800__reddit_syn_d7206666e1360c3b",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_d7206666e1360c3b"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_15cb4e06efeeb5fd",
+      "pair_id": "reddit_syn_15cb4e06efeeb5fd__reddit_syn_e241def2808dff81",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_e241def2808dff81"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_d672e6cf4232436a",
+      "pair_id": "reddit_syn_d672e6cf4232436a__reddit_syn_dd3cd1ed810de3e5",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_dd3cd1ed810de3e5"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "high",
+      "left_session_id": "reddit_syn_1dbb0b6a2337a213",
+      "pair_id": "reddit_syn_1dbb0b6a2337a213__reddit_syn_7f37a0622b3f88a2",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_7f37a0622b3f88a2"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_7be43563700de4e7",
+      "pair_id": "reddit_syn_7be43563700de4e7__reddit_syn_a5daf0540f1869ad",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_a5daf0540f1869ad"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_151f7b44229df230",
+      "pair_id": "reddit_syn_151f7b44229df230__reddit_syn_6fb1d0780c23e1a1",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_6fb1d0780c23e1a1"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "high",
+      "left_session_id": "reddit_syn_79aaf888badea5db",
+      "pair_id": "reddit_syn_79aaf888badea5db__reddit_syn_867edd19b3575b8c",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_867edd19b3575b8c"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_8429698a5f9a4e42",
+      "pair_id": "reddit_syn_8429698a5f9a4e42__reddit_syn_9d82dfd616b4e142",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_9d82dfd616b4e142"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_d563ea772d01da14",
+      "pair_id": "reddit_syn_d563ea772d01da14__reddit_syn_e930c1fc3113202b",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_e930c1fc3113202b"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_6ffd9276911d2482",
+      "pair_id": "reddit_syn_6ffd9276911d2482__reddit_syn_bc4ffb1d55da3a20",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_bc4ffb1d55da3a20"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_0516d2dd6c6d9bff",
+      "pair_id": "reddit_syn_0516d2dd6c6d9bff__reddit_syn_38ef6b74e67c8ae1",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_38ef6b74e67c8ae1"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_42250d8b123b5cc7",
+      "pair_id": "reddit_syn_42250d8b123b5cc7__reddit_syn_cd897c5624540c6a",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_cd897c5624540c6a"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_924ed8019617a3ff",
+      "pair_id": "reddit_syn_924ed8019617a3ff__reddit_syn_cd897c5624540c6a",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_cd897c5624540c6a"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_0aa78213abd09d64",
+      "pair_id": "reddit_syn_0aa78213abd09d64__reddit_syn_d285db04760b6ebf",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_d285db04760b6ebf"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_62b60be8784f61d5",
+      "pair_id": "reddit_syn_62b60be8784f61d5__reddit_syn_7963575ba1f9be7c",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_7963575ba1f9be7c"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "high",
+      "left_session_id": "reddit_syn_80146f74073f7629",
+      "pair_id": "reddit_syn_80146f74073f7629__reddit_syn_f13c0c2e7f03ee81",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_f13c0c2e7f03ee81"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_e84efca35cfb0712",
+      "pair_id": "reddit_syn_e84efca35cfb0712__reddit_syn_e9aadb72af9917ab",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_e9aadb72af9917ab"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_3c7fe1f6b31d8c5c",
+      "pair_id": "reddit_syn_3c7fe1f6b31d8c5c__reddit_syn_d6b8c663fde94394",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_d6b8c663fde94394"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "high",
+      "left_session_id": "reddit_syn_62b60be8784f61d5",
+      "pair_id": "reddit_syn_62b60be8784f61d5__reddit_syn_a71a84e43250f800",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_a71a84e43250f800"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_80146f74073f7629",
+      "pair_id": "reddit_syn_80146f74073f7629__reddit_syn_deeb127379c77b5c",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_deeb127379c77b5c"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_41d2d126629b5f12",
+      "pair_id": "reddit_syn_41d2d126629b5f12__reddit_syn_b31b31c7f2c218fb",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_b31b31c7f2c218fb"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_d285db04760b6ebf",
+      "pair_id": "reddit_syn_d285db04760b6ebf__reddit_syn_fe6cefa973b4b36d",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_fe6cefa973b4b36d"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_6fb1d0780c23e1a1",
+      "pair_id": "reddit_syn_6fb1d0780c23e1a1__reddit_syn_d60c215000a5e588",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_d60c215000a5e588"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_c4d7d54a963fe127",
+      "pair_id": "reddit_syn_c4d7d54a963fe127__reddit_syn_c5412a151b1d9085",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_c5412a151b1d9085"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_1dbb0b6a2337a213",
+      "pair_id": "reddit_syn_1dbb0b6a2337a213__reddit_syn_cd897c5624540c6a",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_cd897c5624540c6a"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_1dd48d91b0cf3dfa",
+      "pair_id": "reddit_syn_1dd48d91b0cf3dfa__reddit_syn_685a2d31cae79f88",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_685a2d31cae79f88"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_3b48541a398bcf0d",
+      "pair_id": "reddit_syn_3b48541a398bcf0d__reddit_syn_e577db9adca9a133",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_e577db9adca9a133"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_6fb1d0780c23e1a1",
+      "pair_id": "reddit_syn_6fb1d0780c23e1a1__reddit_syn_6ffd9276911d2482",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_6ffd9276911d2482"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_80146f74073f7629",
+      "pair_id": "reddit_syn_80146f74073f7629__reddit_syn_e644aff18b010c99",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_e644aff18b010c99"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_38ef6b74e67c8ae1",
+      "pair_id": "reddit_syn_38ef6b74e67c8ae1__reddit_syn_9d82dfd616b4e142",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_9d82dfd616b4e142"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_6033200077e72435",
+      "pair_id": "reddit_syn_6033200077e72435__reddit_syn_a5daf0540f1869ad",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_a5daf0540f1869ad"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_80146f74073f7629",
+      "pair_id": "reddit_syn_80146f74073f7629__reddit_syn_935481c58a55743d",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_935481c58a55743d"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_1dbb0b6a2337a213",
+      "pair_id": "reddit_syn_1dbb0b6a2337a213__reddit_syn_9d82dfd616b4e142",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_9d82dfd616b4e142"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_ee8808db82a213b5",
+      "pair_id": "reddit_syn_ee8808db82a213b5__reddit_syn_effcf8f55df84751",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_effcf8f55df84751"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_3c457e904691815e",
+      "pair_id": "reddit_syn_3c457e904691815e__reddit_syn_5942c5c7041740b4",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_5942c5c7041740b4"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_7b7dcdd3813b1eca",
+      "pair_id": "reddit_syn_7b7dcdd3813b1eca__reddit_syn_7be43563700de4e7",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_7be43563700de4e7"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_1d005763697389c8",
+      "pair_id": "reddit_syn_1d005763697389c8__reddit_syn_c5412a6c4368e497",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_c5412a6c4368e497"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_2d32f471f934f198",
+      "pair_id": "reddit_syn_2d32f471f934f198__reddit_syn_8f75194dc1042a45",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_8f75194dc1042a45"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_36d1569f08b0bb5a",
+      "pair_id": "reddit_syn_36d1569f08b0bb5a__reddit_syn_8ed954adb6151b0f",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_8ed954adb6151b0f"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_cf0081773dbcc7ef",
+      "pair_id": "reddit_syn_cf0081773dbcc7ef__reddit_syn_ee8808db82a213b5",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_ee8808db82a213b5"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_5975023f6371d4a7",
+      "pair_id": "reddit_syn_5975023f6371d4a7__reddit_syn_9fd73a1c64fa7e6b",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_9fd73a1c64fa7e6b"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_6ffd9276911d2482",
+      "pair_id": "reddit_syn_6ffd9276911d2482__reddit_syn_9b296a39ea9dcf8c",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_9b296a39ea9dcf8c"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_a71a84e43250f800",
+      "pair_id": "reddit_syn_a71a84e43250f800__reddit_syn_f23e423ec088995c",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_f23e423ec088995c"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_0516d2dd6c6d9bff",
+      "pair_id": "reddit_syn_0516d2dd6c6d9bff__reddit_syn_cd897c5624540c6a",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_cd897c5624540c6a"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_ed28d761d1a76eb7",
+      "pair_id": "reddit_syn_ed28d761d1a76eb7__reddit_syn_effcf8f55df84751",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_effcf8f55df84751"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_01e6dcc47bd061fa",
+      "pair_id": "reddit_syn_01e6dcc47bd061fa__reddit_syn_41d2d126629b5f12",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_41d2d126629b5f12"
+    },
+    {
+      "decision": "near_duplicate",
+      "leakage_risk": "medium",
+      "left_session_id": "reddit_syn_1d005763697389c8",
+      "pair_id": "reddit_syn_1d005763697389c8__reddit_syn_7963575ba1f9be7c",
+      "recommended_action": "same_split",
+      "right_session_id": "reddit_syn_7963575ba1f9be7c"
+    }
+  ],
+  "model": "deepseek-v4-pro",
+  "pair_candidate_count": 240,
+  "pair_candidate_max_pairs": 240,
+  "pair_candidate_min_score": 0.2,
+  "pair_review_count": 240,
+  "provider": "openai",
+  "run_id": "deepseek_v4_pro_semantic_duplicate_audit_64k"
+}

@@ -60,6 +60,8 @@ DAIS-C clinical/FEP 仅表示上游研究组别，不表示每个 case 有妄想
 - 冻结 deterministic split/version manifest，且 control、clinical/FEP、community-fictionalized 不混成统一 clinical corpus。
 - 对 candidate points 运行独立 second-pass/metajudge；`data/manifests/deepseek_v4_pro_point_review_units_64k.jsonl` 是该步骤的输入队列，不是复核结果。
 - 对 Reddit 和跨 split 重复风险做 duplicate/leakage 审计；当前 `audit_release.py` 只完成标准库 lexical pre-audit，embedding/LLM 语义复核仍需后续执行。
+- 2026-06-29 已完成 DeepSeek Pro point metajudge 和 semantic duplicate/leakage review；reviewed split manifest 中的 `excluded_duplicate_candidate` 不删除 processed record，只表示下游 benchmark release 不应纳入该 session。
+- 动态 runs dashboard 只读取 tracked manifest/review/summary 文件，不读取 ignored raw API responses、checkpoints 或 normalized source turns。
 
 重叠阈值按来源分层：
 

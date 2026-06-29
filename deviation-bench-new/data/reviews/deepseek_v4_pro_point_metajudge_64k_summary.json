@@ -1,0 +1,44 @@
+{
+  "candidate_acceptance_rate": 0.943247,
+  "candidate_revision_or_rejection_rate": 0.056753,
+  "candidate_units": 1392,
+  "counts": {
+    "decision": {
+      "accept_candidate": 1313,
+      "accept_no_candidate_point": 28,
+      "reject_insufficient_evidence": 39,
+      "revise_candidate": 40
+    },
+    "decision_by_unit_type": {
+      "candidate_point": {
+        "accept_candidate": 1313,
+        "reject_insufficient_evidence": 39,
+        "revise_candidate": 40
+      },
+      "negative_control": {
+        "accept_no_candidate_point": 28
+      }
+    },
+    "source_family": {
+      "dais_c_clinical_interview": 32,
+      "dais_c_control_calibration": 13,
+      "fep_interview": 23,
+      "reddit_fictionalized_text_signal": 1352
+    },
+    "split": {
+      "control_calibration": 13,
+      "dev_review": 134,
+      "heldout_candidate": 1136,
+      "validation": 137
+    }
+  },
+  "diagnosis_or_membership_inference_count": 4,
+  "generated_at": "2026-06-29T03:31:57+00:00",
+  "identifying_detail_risk_count": 0,
+  "input_units": 1420,
+  "model": "deepseek-v4-pro",
+  "negative_control_flag_rate": 0.0,
+  "negative_control_units": 28,
+  "provider": "openai",
+  "run_id": "deepseek_v4_pro_point_metajudge_64k"
+}

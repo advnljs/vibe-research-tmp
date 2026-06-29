@@ -17,6 +17,10 @@ Last updated: 2026-06-29
 - `src/validate_sessions.py`：单文件/跨文件验证。
 - `src/build_dataset_browser.py`：生成忽略的本地浏览页。
 - `src/audit_release.py`：生成 candidate dataset version、split manifest、point-review units 和本地 duplicate/leakage pre-audit。
+- `src/run_point_metajudge.py`：运行 DeepSeek Pro independent point metajudge 和 no-point negative controls。
+- `src/run_semantic_duplicate_audit.py`：运行 DeepSeek Pro semantic fingerprints 和 duplicate/leakage pair review。
+- `src/finalize_release_hardening.py`：将 metajudge / duplicate review 结果 materialize 为 reviewed split/audit。
+- `src/build_runs_dashboard.py`：生成动态读取 run results 的 ignored 本地页面。
 - `schemas/session.schema.json`：公开 session schema。
 - `prompts/`：访谈改写、point consolidation、重叠修复、Reddit 筛选/生成 prompts，以及 `point_metajudge.md` second-pass prompt。
 
@@ -43,6 +47,10 @@ Processed JSONL
   -> deterministic split/version manifest
   -> point-review units for second-pass metajudge
   -> lexical duplicate/leakage pre-audit
+  -> DeepSeek Pro point metajudge + negative controls
+  -> DeepSeek Pro semantic fingerprints + pair review
+  -> reviewed split/audit
+  -> dynamic runs dashboard
 ```
 
 ## 对外数据接口
@@ -57,7 +65,7 @@ Processed JSONL
 - `provenance`
 - `quality`
 
-`delusion_points` 允许为空，且永远解释为 `llm_extracted_candidate_not_diagnosis`。当前 candidate dataset version 为 `deepseek_v4_pro_sessions_64k_candidate_v0.1.0`，split manifest 位于 `data/manifests/deepseek_v4_pro_release_splits_64k.jsonl`。
+`delusion_points` 允许为空，且永远解释为 `llm_extracted_candidate_not_diagnosis`。当前 candidate dataset version 为 `deepseek_v4_pro_sessions_64k_candidate_v0.1.0`；下游应优先使用 reviewed split manifest `data/manifests/deepseek_v4_pro_release_splits_reviewed_64k.jsonl`。
 
 ## 内外部依赖
 
@@ -74,7 +82,7 @@ Processed JSONL
 - Reddit 只保留抽象信号并虚构扩写；连续来源词重叠 `>=12` 失败。
 - DAIS/FEP 不是 delusion-only；Reddit 社区归属不是临床 ground truth。
 - 自动 QC 不是发布伦理/隐私审查，也不是人工 benchmark annotation。
-- 2026-06-29 的 `audit_release.py` 只做 lexical duplicate/leakage pre-audit；semantic duplicate check 和 LLM point metajudge 尚未运行。
+- 2026-06-29 actual flow 已完成 LLM point metajudge 和 semantic duplicate/leakage review；`excluded_duplicate_candidate` 是 release 标记，不删除 processed data。
 
 ## 常见修改点
 

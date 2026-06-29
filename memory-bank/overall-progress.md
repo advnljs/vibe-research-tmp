@@ -23,6 +23,11 @@ This file records completed work and the current state of the Deviation Bench pr
   - 直接读取 reviewed audit、point metajudge summary、semantic duplicate summary 和 actual-flow experiment note。
   - 展示实际流程结果卡片、状态图标、8 个结果图表、artifact 链接和实验记录预览。
   - 当前可见实际结果包括：1,420 point-review units、94.3% candidate acceptance、240 duplicate pair reviews、964 included sessions、4 excluded duplicate candidates。
+- 根据用户继续要求，新增 `Delusion` 页签并增强动态可视化：
+  - 页面从 processed sessions 和 point metajudge JSONL 实时聚合 delusion/reality-boundary 候选指标，不手写固定统计值。
+  - 展示 candidate signals、accepted/revised、rejected、no-point sessions、implicit signals、high confidence、weak/none support、diagnosis/member flags。
+  - 展示 category/source/decision 分布、confidence buckets、support level、summary-overreach、source × category 和 metajudge decision × category 热力图。
+  - 展示信号密度最高 sessions、metajudge concern situations、uncertainty/counterevidence examples，并可跳转到对应对话。
 - README 已补充运行入口和访问 URL。
 
 验证：
@@ -32,6 +37,7 @@ This file records completed work and the current state of the Deviation Bench pr
 - `python3 deviation-bench-new/src/build_review_dashboard.py`。
 - 本地 HTTP fetch 验证 `review_dashboard/index.html` 和核心 JSONL/JSON 数据路径可访问。
 - Chrome DOM 验证 `Results` 页实际渲染 8 个结果卡、3 个状态项、8 个图表和 8 个 artifact 链接。
+- Chrome DOM 验证 `Delusion` 页实际渲染 8 个指标卡、8 个条形图、2 个热力图、6 张表。
 
 ### Deviation Bench New: actual release-hardening flow and dynamic runs page
 

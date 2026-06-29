@@ -18,7 +18,7 @@ from build_reddit_sessions import (  # noqa: E402
 from audit_release import assign_splits, jaccard, source_family, word_ngrams  # noqa: E402
 from build_sessions import estimate_tokens, mock_chunk_result, mock_consolidation, split_turns  # noqa: E402
 from build_runs_dashboard import classify_path  # noqa: E402
-from build_review_dashboard import dashboard_fetch_paths  # noqa: E402
+from build_review_dashboard import build_html as build_review_dashboard_html, dashboard_fetch_paths  # noqa: E402
 from finalize_release_hardening import reviewed_split_rows  # noqa: E402
 from prepare_cases import parse_dais_tagged_text, parse_fep_table_text  # noqa: E402
 from run_point_metajudge import make_batches as make_point_batches, validate_batch_result  # noqa: E402
@@ -266,6 +266,12 @@ class ReleaseHardeningRunTests(unittest.TestCase):
         self.assertIn("duplicatePairs", paths)
         self.assertIn("duplicateSummary", paths)
         self.assertIn("actualFlow", paths["experimentNotes"])
+
+    def test_review_dashboard_contains_delusion_view(self) -> None:
+        html = build_review_dashboard_html()
+        self.assertIn('data-view="delusion"', html)
+        self.assertIn('id="delusionView"', html)
+        self.assertIn("Source Family × Candidate Category", html)
 
     def test_reviewed_split_rows_mark_duplicate_and_same_split(self) -> None:
         split_rows = [

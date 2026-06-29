@@ -105,6 +105,7 @@ main{padding:16px;overflow:auto;max-height:calc(100vh - 156px)}
 .fingerprint-list,.pair-table{font-size:13px}.fingerprint-list div{margin:5px 0}
 table{width:100%;border-collapse:collapse;background:white;border:1px solid var(--line);font-size:13px}
 th,td{text-align:left;vertical-align:top;border-bottom:1px solid var(--line);padding:7px 8px}th{background:#eceeea;color:#303730}
+table.heatmap th,table.heatmap td{text-align:center;white-space:nowrap}table.heatmap th:first-child,table.heatmap td:first-child{text-align:left}
 pre{white-space:pre-wrap;word-break:break-word;background:#f8fafb;border:1px solid var(--line);border-radius:7px;padding:12px;max-height:360px;overflow:auto}
 .hidden{display:none!important}
 .empty{color:var(--muted);padding:14px;border:1px dashed var(--line);border-radius:7px;background:white}
@@ -119,6 +120,7 @@ pre{white-space:pre-wrap;word-break:break-word;background:#f8fafb;border:1px sol
     <nav class="tabs">
       <button class="tab active" data-view="overview">Overview</button>
       <button class="tab" data-view="results">Results</button>
+      <button class="tab" data-view="delusion">Delusion</button>
       <button class="tab" data-view="sessions">Sessions</button>
       <button class="tab" data-view="duplicates">Duplicates</button>
     </nav>
@@ -140,6 +142,7 @@ pre{white-space:pre-wrap;word-break:break-word;background:#f8fafb;border:1px sol
   <main>
     <section id="overviewView"></section>
     <section id="resultsView" class="hidden"></section>
+    <section id="delusionView" class="hidden"></section>
     <section id="sessionsView" class="hidden"></section>
     <section id="duplicatesView" class="hidden"></section>
   </main>
@@ -162,6 +165,22 @@ function barChart(title, data, color='var(--accent)'){
   const rows=entries.map(([label,value])=>`<div class="bar-row"><div class="bar-label" title="${esc(label)}">${esc(label)}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.max(2,value/max*100)}%;background:${color}"></div></div><div class="bar-value">${fmt(value)}</div></div>`).join('');
   return `<section class="panel chart"><h3>${esc(title)}</h3><div class="bars">${rows||'<div class="empty">No data</div>'}</div></section>`;
 }
+function heatmapChart(title, rows, rowFn, colFn){
+  const rowKeys=[...new Set(rows.map(row=>String(rowFn(row)||'unknown')))].sort();
+  const colKeys=[...new Set(rows.map(row=>String(colFn(row)||'unknown')))].sort();
+  const counts=new Map();
+  for(const row of rows){
+    const key=`${String(rowFn(row)||'unknown')}::${String(colFn(row)||'unknown')}`;
+    counts.set(key,(counts.get(key)||0)+1);
+  }
+  const max=Math.max(1,...counts.values());
+  const body=rowKeys.map(rowKey=>`<tr><td>${esc(rowKey)}</td>${colKeys.map(colKey=>{
+    const value=counts.get(`${rowKey}::${colKey}`)||0;
+    const alpha=value?Math.max(.12,value/max*.82):0;
+    return `<td style="background:${value?`rgba(47,111,114,${alpha})`:'transparent'}">${value?fmt(value):''}</td>`;
+  }).join('')}</tr>`).join('');
+  return `<section class="panel"><h3>${esc(title)}</h3><table class="heatmap"><thead><tr><th></th>${colKeys.map(key=>`<th>${esc(key)}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table></section>`;
+}
 function metric(label, value, note=''){return `<div class="metric"><span>${esc(label)}</span><b>${esc(value)}</b>${note?`<span>${esc(note)}</span>`:''}</div>`}
 function pct(value){return Number.isFinite(value) ? `${(value*100).toFixed(1)}%` : 'n/a'}
 function sumValues(data){return Object.values(data||{}).reduce((n,v)=>n+(Number(v)||0),0)}
@@ -178,6 +197,11 @@ function markdownPreview(text, max=1400){
   const trimmed=String(text||'').trim();
   return esc(trimmed.length>max ? `${trimmed.slice(0,max)}...` : trimmed);
 }
+function shortText(text, max=160){
+  const value=String(text||'').replace(/\s+/g,' ').trim();
+  return value.length>max ? `${value.slice(0,max)}...` : value;
+}
+function openSessionButton(id){return `<button class="tab" data-jump="${esc(id)}">${esc(id)}</button>`}
 function badge(text, kind=''){return `<span class="badge ${kind}">${esc(text)}</span>`}
 function releaseBadge(row){if(!row)return ''; if(row.release_status==='excluded_duplicate_candidate')return badge('excluded','bad'); if(row.release_action?.startsWith('move'))return badge('moved','warn'); return badge(row.release_split,'ok')}
 function reviewKind(decision){if(decision==='accept_candidate'||decision==='accept_no_candidate_point')return 'ok'; if(decision==='revise_candidate'||decision==='flag_possible_missed_candidate'||decision==='unclear')return 'warn'; if(decision==='reject_insufficient_evidence')return 'bad'; return ''}
@@ -300,7 +324,95 @@ function renderResults(){
   const actualNote=state.notes.actualFlow||'';
   $('resultsView').innerHTML=`<section class="status-strip">${statuses}</section><section class="result-grid">${cards}</section><div class="overview-grid">${barChart('Actual Point Metajudge Decisions',pointCounts.decision||{},'var(--ok)')}${barChart('Point Review Source Families',pointCounts.source_family||{},'var(--accent-2)')}${barChart('Reviewed Release Split',reviewedCounts.release_split||{},'var(--accent)')}${barChart('Release Actions Applied',reviewedCounts.release_action||{},'var(--warn)')}${barChart('Semantic Pair Decisions',pairDecisions,'var(--bad)')}${barChart('Leakage Risk',semanticCounts.pair_leakage_risk||{},'var(--accent-2)')}${barChart('Source Specificity Risk',semanticCounts.source_specificity_risk||{},'var(--warn)')}${barChart('Preparation Point Categories',preCounts.points_by_category||{},'var(--accent)')}</div><section class="panel"><h3>Result Artifacts</h3><div class="artifact-grid">${artifacts}</div></section><section class="panel"><h3>Actual Flow Note Preview</h3><pre>${markdownPreview(actualNote)}</pre></section>`;
 }
+function renderDelusion(){
+  const rows=allPointRows();
+  const acceptedRows=rows.filter(acceptedOrRevised);
+  const rejectedRows=rows.filter(row=>pointDecision(row)==='reject_insufficient_evidence');
+  const overreachRows=rows.filter(row=>row.review?.summary_overreach);
+  const diagnosisRows=rows.filter(row=>row.review?.diagnosis_or_membership_inference);
+  const implicitRows=rows.filter(row=>row.point.explicitness==='implicit');
+  const highConfidenceRows=rows.filter(row=>Number(row.point.confidence)>=0.9);
+  const sessionsWithPoints=new Set(rows.map(row=>row.session.session_id));
+  const acceptedSessions=new Set(acceptedRows.map(row=>row.session.session_id));
+  const noPointSessions=state.sessions.filter(session=>(session.delusion_points||[]).length===0);
+  const cards=[
+    resultCard('Candidate signals', fmt(rows.length), `${fmt(sessionsWithPoints.size)} sessions with at least one candidate`, 'info'),
+    resultCard('Accepted / revised', fmt(acceptedRows.length), `${fmt(acceptedSessions.size)} sessions retain a metajudge-supported signal`, 'ok'),
+    resultCard('Rejected candidates', fmt(rejectedRows.length), `${fmt(overreachRows.length)} summary-overreach flags`, rejectedRows.length?'warn':'ok'),
+    resultCard('No-point sessions', fmt(noPointSessions.length), `${fmt(countBy(noPointSessions,s=>s.release?.source_family||s.metadata?.source_group).dais_c_control_calibration||0)} controls plus no-signal interviews`, 'info'),
+    resultCard('Implicit signals', fmt(implicitRows.length), `${pct(implicitRows.length/Math.max(1,rows.length))} of candidate points`, implicitRows.length?'warn':'ok'),
+    resultCard('High confidence', fmt(highConfidenceRows.length), `candidate confidence >= 0.90 before metajudge`, 'info'),
+    resultCard('Weak/none support', fmt(rows.filter(row=>row.review?.support_level==='weak_or_none').length), 'metajudge support level', 'warn'),
+    resultCard('Diagnosis/member flags', fmt(diagnosisRows.length), 'candidate may infer from group/diagnosis rather than message evidence', diagnosisRows.length?'warn':'ok')
+  ].join('');
+  const charts=[
+    barChart('Candidate Categories', countPointRows(rows,row=>row.point.category),'var(--accent)'),
+    barChart('Accepted/Revised Categories', countPointRows(acceptedRows,row=>row.point.category),'var(--ok)'),
+    barChart('Rejected Categories', countPointRows(rejectedRows,row=>row.point.category),'var(--bad)'),
+    barChart('Explicitness', countPointRows(rows,row=>row.point.explicitness),'var(--accent-2)'),
+    barChart('Confidence Buckets', countPointRows(rows,row=>confidenceBucket(row.point.confidence)),'var(--warn)'),
+    barChart('Metajudge Support Level', countPointRows(rows,row=>row.review?.support_level||'unreviewed'),'var(--accent)'),
+    barChart('Summary Overreach', countPointRows(rows,row=>row.review?.summary_overreach?'overreach':'not_flagged'),'var(--bad)'),
+    barChart('No-Point Sessions By Source', countBy(noPointSessions,s=>s.release?.source_family||s.metadata?.source_group),'var(--accent-2)')
+  ].join('');
+  const heatmaps=[
+    heatmapChart('Source Family × Candidate Category', rows, row=>row.sourceFamily, row=>row.point.category),
+    heatmapChart('Metajudge Decision × Candidate Category', rows, row=>pointDecision(row), row=>row.point.category)
+  ].join('');
+  const categoryRows=categoryDecisionRows(rows).map(row=>`<tr><td>${badge(row.category,'purple')}</td><td>${fmt(row.total)}</td><td>${fmt(row.accepted)}</td><td>${fmt(row.revised)}</td><td>${fmt(row.rejected)}</td><td>${fmt(row.explicit)}</td><td>${row.avgConfidence.toFixed(2)}</td></tr>`).join('');
+  const densityRows=state.sessions.map(session=>{
+    const pointRows=rows.filter(row=>row.session.session_id===session.session_id);
+    const decisions=countBy(pointRows, pointDecision);
+    return {session, total:pointRows.length, accepted:(decisions.accept_candidate||0)+(decisions.revise_candidate||0), rejected:decisions.reject_insufficient_evidence||0, categories:[...new Set(pointRows.map(row=>row.point.category))].join(', ')};
+  }).filter(row=>row.total).sort((a,b)=>b.accepted-a.accepted || b.total-a.total).slice(0,14).map(row=>`<tr><td>${openSessionButton(row.session.session_id)}</td><td>${esc(row.session.release?.source_family||row.session.metadata?.source_group)}</td><td>${fmt(row.total)}</td><td>${fmt(row.accepted)}</td><td>${fmt(row.rejected)}</td><td>${esc(shortText(row.categories,90))}</td></tr>`).join('');
+  const concernRows=rows.filter(row=>row.review?.summary_overreach || row.review?.category_valid===false || row.review?.diagnosis_or_membership_inference || pointDecision(row)==='reject_insufficient_evidence' || row.review?.support_level==='weak_or_none').sort((a,b)=>{
+    const rank={reject_insufficient_evidence:0,revise_candidate:1,accept_candidate:2,unreviewed:3};
+    return (rank[pointDecision(a)]??9)-(rank[pointDecision(b)]??9);
+  }).slice(0,14).map(row=>{
+    const issues=[row.review?.summary_overreach?'overreach':'',row.review?.category_valid===false?'category invalid':'',row.review?.support_level==='weak_or_none'?'weak support':'',row.review?.diagnosis_or_membership_inference?'diagnosis/member inference':''].filter(Boolean);
+    return `<tr><td>${openSessionButton(row.session.session_id)}</td><td>${badge(row.point.category,'purple')}</td><td>${badge(pointDecision(row),reviewKind(pointDecision(row)))}</td><td>${esc(issues.join(', ')||'review concern')}</td><td>${esc(shortText(row.review?.rationale,220))}</td></tr>`;
+  }).join('');
+  const uncertaintyRows=acceptedRows.filter(row=>row.point.uncertainty_or_counterevidence).sort((a,b)=>Number(b.point.confidence)-Number(a.point.confidence)).slice(0,12).map(row=>`<tr><td>${openSessionButton(row.session.session_id)}</td><td>${badge(row.point.category,'purple')}</td><td>${esc(row.point.explicitness)} / ${esc(row.point.confidence)}</td><td>${esc(shortText(row.point.summary,190))}</td><td>${esc(shortText(row.point.uncertainty_or_counterevidence,220))}</td></tr>`).join('');
+  $('delusionView').innerHTML=`<section class="status-strip">${statusItem('Candidate, not diagnosis','All delusion/reality-boundary fields are LLM-extracted candidate signals, not clinical ground truth.','warn')}${statusItem('Metajudge calibrated','Counts distinguish first-pass candidates from accept/revise/reject decisions.','ok')}${statusItem('Empty lists are meaningful','Controls and some interviews remain no-point sessions rather than forced labels.','info')}</section><section class="result-grid">${cards}</section><div class="overview-grid">${charts}</div>${heatmaps}<section class="panel"><h3>Category × Metajudge Situation</h3><table><thead><tr><th>Category</th><th>Total</th><th>Accepted</th><th>Revised</th><th>Rejected</th><th>Explicit</th><th>Avg conf</th></tr></thead><tbody>${categoryRows}</tbody></table></section><section class="panel"><h3>Highest Signal-Density Sessions</h3><table><thead><tr><th>Session</th><th>Source</th><th>Points</th><th>Accepted/Revised</th><th>Rejected</th><th>Categories</th></tr></thead><tbody>${densityRows}</tbody></table></section><section class="panel"><h3>Metajudge Concern Situations</h3><table><thead><tr><th>Session</th><th>Category</th><th>Decision</th><th>Issue</th><th>Rationale</th></tr></thead><tbody>${concernRows}</tbody></table></section><section class="panel"><h3>Uncertainty / Counterevidence Examples</h3><table><thead><tr><th>Session</th><th>Category</th><th>Explicitness / conf</th><th>Candidate summary</th><th>Uncertainty or counterevidence</th></tr></thead><tbody>${uncertaintyRows}</tbody></table></section>`;
+  $('delusionView').querySelectorAll('[data-jump]').forEach(btn=>btn.onclick=()=>{setView('sessions'); showSession(btn.dataset.jump)});
+}
 function pointReviewFor(point, sessionId){return (state.reviews.get(sessionId)||[]).find(r=>r.point_id===point.point_id)}
+function allPointRows(){
+  return state.sessions.flatMap(session=>(session.delusion_points||[]).map(point=>({
+    session,
+    point,
+    review: pointReviewFor(point, session.session_id),
+    release: session.release||{},
+    sourceFamily: session.release?.source_family || session.metadata?.source_group || 'unknown'
+  })));
+}
+function pointDecision(row){return row.review?.decision || 'unreviewed'}
+function acceptedOrRevised(row){return ['accept_candidate','revise_candidate'].includes(pointDecision(row))}
+function confidenceBucket(value){
+  const n=Number(value);
+  if(!Number.isFinite(n)) return 'unknown';
+  if(n>=0.9) return '0.90-1.00';
+  if(n>=0.75) return '0.75-0.89';
+  if(n>=0.5) return '0.50-0.74';
+  return '<0.50';
+}
+function countPointRows(rows, fn){return countBy(rows, fn)}
+function categoryDecisionRows(rows){
+  const categories=[...new Set(rows.map(row=>row.point.category||'unknown'))].sort();
+  return categories.map(category=>{
+    const subset=rows.filter(row=>(row.point.category||'unknown')===category);
+    const decisions=countBy(subset, pointDecision);
+    return {
+      category,
+      total: subset.length,
+      accepted: decisions.accept_candidate||0,
+      revised: decisions.revise_candidate||0,
+      rejected: decisions.reject_insufficient_evidence||0,
+      explicit: subset.filter(row=>row.point.explicitness==='explicit').length,
+      avgConfidence: subset.reduce((n,row)=>n+(Number(row.point.confidence)||0),0)/Math.max(1,subset.length)
+    };
+  }).sort((a,b)=>b.total-a.total);
+}
 function renderPoints(session){
   const points=session.delusion_points||[];
   if(!points.length){const neg=state.negatives.get(session.session_id); return `<div class="empty">No candidate points ${neg?badge(neg.decision,reviewKind(neg.decision)):''}</div>`}
@@ -335,8 +447,8 @@ function renderDuplicates(){
 }
 function setView(view){
   state.view=view; document.querySelectorAll('.tab[data-view]').forEach(btn=>btn.classList.toggle('active',btn.dataset.view===view));
-  $('overviewView').classList.toggle('hidden',view!=='overview'); $('resultsView').classList.toggle('hidden',view!=='results'); $('sessionsView').classList.toggle('hidden',view!=='sessions'); $('duplicatesView').classList.toggle('hidden',view!=='duplicates');
-  if(view==='overview') renderOverview(); if(view==='results') renderResults(); if(view==='duplicates') renderDuplicates(); if(view==='sessions' && !state.active && state.sessions.length) showSession(state.sessions[0].session_id);
+  $('overviewView').classList.toggle('hidden',view!=='overview'); $('resultsView').classList.toggle('hidden',view!=='results'); $('delusionView').classList.toggle('hidden',view!=='delusion'); $('sessionsView').classList.toggle('hidden',view!=='sessions'); $('duplicatesView').classList.toggle('hidden',view!=='duplicates');
+  if(view==='overview') renderOverview(); if(view==='results') renderResults(); if(view==='delusion') renderDelusion(); if(view==='duplicates') renderDuplicates(); if(view==='sessions' && !state.active && state.sessions.length) showSession(state.sessions[0].session_id);
 }
 async function boot(){
   const processed=await Promise.all(paths.processed.map(fetchJSONL));
@@ -349,7 +461,7 @@ async function boot(){
   state.pointReviews=await fetchJSONL(paths.pointReviews);
   state.fingerprintRows=await fetchJSONL(paths.fingerprints);
   state.pairs=await fetchJSONL(paths.duplicatePairs);
-  hydrateIndexes(); renderMetrics(); renderFilters(); renderSessionList(); renderOverview(); renderResults(); renderDuplicates();
+  hydrateIndexes(); renderMetrics(); renderFilters(); renderSessionList(); renderOverview(); renderResults(); renderDelusion(); renderDuplicates();
   if(state.sessions.length) showSession(state.sessions[0].session_id);
   $('loadStatus').textContent=`${fmt(state.sessions.length)} sessions · reviewed release data loaded`;
 }

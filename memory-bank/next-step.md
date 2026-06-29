@@ -29,7 +29,7 @@ Last updated: 2026-06-29
 - Reviewed audit：`deviation-bench-new/data/manifests/deepseek_v4_pro_release_audit_reviewed_64k.json`。
 - Reviewed split manifest：`deviation-bench-new/data/manifests/deepseek_v4_pro_release_splits_reviewed_64k.jsonl`。
 - Dynamic runs dashboard：ignored `deviation-bench-new/data/work/runs_dashboard/index.html`。
-- Review dashboard：ignored `deviation-bench-new/data/work/review_dashboard/index.html`，展示实际实验结果、状态图标、统计图表、session 过滤、完整对话、metajudge rationale 和 duplicate/leakage pair。
+- Review dashboard：ignored `deviation-bench-new/data/work/review_dashboard/index.html`，展示实际实验结果、delusion/reality-boundary 指标、状态图标、统计图表、热力图、session 过滤、完整对话、metajudge rationale 和 duplicate/leakage pair；页面统计由数据动态聚合。
 - Reviewed release split：control_calibration 13、dev_review 146、validation 105、heldout_candidate 700、excluded_duplicate 4。
 
 ## Immediate Queue

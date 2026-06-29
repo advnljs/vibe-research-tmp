@@ -21,7 +21,7 @@ Last updated: 2026-06-29
 - `src/run_semantic_duplicate_audit.py`：运行 DeepSeek Pro semantic fingerprints 和 duplicate/leakage pair review。
 - `src/finalize_release_hardening.py`：将 metajudge / duplicate review 结果 materialize 为 reviewed split/audit。
 - `src/build_runs_dashboard.py`：生成动态读取 run results 的 ignored 本地页面。
-- `src/build_review_dashboard.py`：生成动态读取 sessions、reviewed split、summary JSON、experiment note、metajudge 和 duplicate review 的实际结果/对话/图表检查页面。
+- `src/build_review_dashboard.py`：生成动态读取 sessions、reviewed split、summary JSON、experiment note、metajudge 和 duplicate review 的实际结果/delusion 指标/对话/图表检查页面。
 - `schemas/session.schema.json`：公开 session schema。
 - `prompts/`：访谈改写、point consolidation、重叠修复、Reddit 筛选/生成 prompts，以及 `point_metajudge.md` second-pass prompt。
 
@@ -52,7 +52,7 @@ Processed JSONL
   -> DeepSeek Pro semantic fingerprints + pair review
   -> reviewed split/audit
   -> dynamic runs dashboard
-  -> review dashboard with actual result cards, charts and conversations
+  -> review dashboard with dynamically aggregated actual result cards, delusion metrics, heatmaps, charts and conversations
 ```
 
 ## 对外数据接口

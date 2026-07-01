@@ -1,6 +1,6 @@
 # Module: deviation-bench-new
 
-Last updated: 2026-06-29
+Last updated: 2026-07-01
 
 ## 职责
 
@@ -23,8 +23,10 @@ Last updated: 2026-06-29
 - `src/build_runs_dashboard.py`：生成动态读取 run results 的 ignored 本地页面。
 - `src/generate_review_narratives.py`：从聚合统计生成 LLM 中文自然语言说明 JSON。
 - `src/build_review_dashboard.py`：生成动态读取 sessions、reviewed split、summary JSON、experiment note、metajudge 和 duplicate review 的实际结果/delusion 指标/对话/图表检查页面。
+- `src/build_session_overview_report.py`：生成 tracked 静态整体情况报告，强调真实多轮访谈派生 session 与 Reddit 单帖文本信号虚构 session 的边界和有效性风险。
 - `schemas/session.schema.json`：公开 session schema。
 - `prompts/`：访谈改写、point consolidation、重叠修复、Reddit 筛选/生成 prompts，以及 `point_metajudge.md` second-pass prompt。
+- `reports/session_overview_report.html`：当前整体情况/Reddit 有效性 HTML 报告，不包含 raw transcript、raw Reddit post 或 raw API response。
 
 ## 数据流
 
@@ -55,6 +57,7 @@ Processed JSONL
   -> dynamic runs dashboard
   -> LLM narrative JSON from aggregate stats
   -> review dashboard with dynamically aggregated actual result cards, delusion metrics, heatmaps, charts and conversations
+  -> static session overview report for source accounting, session design assessment, and Reddit validity boundaries
 ```
 
 ## 对外数据接口
@@ -97,3 +100,4 @@ Processed JSONL
 - 更新 split/version：重新运行 `python3 deviation-bench-new/src/audit_release.py`，并检查 `data/manifests/*release*` 和实验摘要 diff。
 - 更新本地检查 UI：重新运行 `python3 deviation-bench-new/src/build_review_dashboard.py`，通过本地 HTTP 服务打开 ignored `data/work/review_dashboard/index.html`。
 - 更新自然语言说明：重新运行 `python3 deviation-bench-new/src/generate_review_narratives.py --provider openai ...`，再刷新 dashboard。
+- 更新整体情况报告：重新运行 `python3 deviation-bench-new/src/build_session_overview_report.py`，检查 `reports/session_overview_report.html` 中 42 vs 926 vs 968 的边界说明。

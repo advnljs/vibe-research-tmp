@@ -1,8 +1,38 @@
 # Overall Progress
 
-Last updated: 2026-06-29
+Last updated: 2026-07-01
 
 This file records completed work and the current state of the Deviation Bench project. Update it after any meaningful research, data, implementation, or planning change.
+
+## Completed 2026-07-01
+
+### Deviation Bench New: static session overview and Reddit-validity report
+
+按用户要求通读当前项目状态后，为 `deviation-bench-new/` 新增整体情况 HTML 报告，重点回应“根据真实数据做了多少对话 session、整体结果、session 设置是否合理，以及 Reddit 单帖被 LLM 整理成对话后是否有效”的问题：
+
+- 新增 `deviation-bench-new/src/build_session_overview_report.py`。
+- 生成 tracked `deviation-bench-new/reports/session_overview_report.html`。
+- 报告从 processed session JSONL、reviewed split/audit、point metajudge、semantic duplicate review 和 Reddit screening manifest 重新聚合统计，不嵌入 raw transcript、raw Reddit post 或 raw API response。
+- 报告明确区分：
+  - 42 个真实多轮访谈派生 session（15 DAIS-C clinical、14 FEP、13 DAIS-C control）。
+  - 926 个 Reddit 单帖文本信号虚构 12-message session。
+  - 968 个 real-data-derived session 总量不能被表述为 968 个真实对话。
+- 报告记录核心风险：
+  - Reddit 占 95.7% sessions、97.1% candidate points。
+  - Reddit session 全部是 `dialogue_is_synthetic=true`、固定 12 messages、严格 user/assistant 交替。
+  - Reddit 适合作为 community text-signal anchored fictional cases，不适合作为真实 conversation dynamics 证据。
+  - 下游 benchmark 需要 source-family 分层、cap/weighting 或单独报告，并补 Reddit strata validity gate。
+
+验证：
+
+- `python3 -m py_compile deviation-bench-new/src/build_session_overview_report.py`。
+- `python3 deviation-bench-new/src/build_session_overview_report.py`。
+- `python3` HTMLParser smoke check：报告可解析，包含 968、42、926、95.7%、97.1% 等关键值。
+
+当前状态：
+
+- 静态报告已可直接打开：`deviation-bench-new/reports/session_overview_report.html`。
+- 下一步仍是发布治理检查和下游 benchmark task 定义；新增明确前置点是 Reddit strata validity gate / source-family weighting 决策。
 
 ## Completed 2026-06-29
 

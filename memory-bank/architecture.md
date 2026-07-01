@@ -1,6 +1,6 @@
 # Architecture
 
-Last updated: 2026-06-29
+Last updated: 2026-07-01
 
 ## System Boundary
 
@@ -14,10 +14,10 @@ Last updated: 2026-06-29
 - Interview transform：`build_sessions.py` + chunk/consolidation/repair prompts。
 - Community route：`build_reddit_sessions.py` + screen/generation prompts。
 - Contract/QC：`session_contract.py`、`session.schema.json`、`validate_sessions.py`。
-- Release hardening：`audit_release.py`、`run_point_metajudge.py`、`run_semantic_duplicate_audit.py`、`finalize_release_hardening.py`、`build_runs_dashboard.py`、`build_review_dashboard.py`、release/review manifests。
+- Release hardening/reporting：`audit_release.py`、`run_point_metajudge.py`、`run_semantic_duplicate_audit.py`、`finalize_release_hardening.py`、`build_runs_dashboard.py`、`build_review_dashboard.py`、`build_session_overview_report.py`、release/review manifests。
 - Processed outputs：`data/processed/`、`data/screened/`。
 - Private working state：ignored `data/work/`。
-- Local inspection：`build_dataset_browser.py`、`build_review_dashboard.py` -> ignored HTML。
+- Local inspection：`build_dataset_browser.py`、`build_review_dashboard.py` -> ignored HTML；`build_session_overview_report.py` -> tracked static aggregate report。
 - Historical benchmark system：`deviation-bench/`。
 - Project state：`memory-bank/`、`研究导航.md`、`AGENTS.md`。
 
@@ -31,6 +31,7 @@ Last updated: 2026-06-29
 6. Runs dashboard：tracked manifests/reviews/notes -> ignored HTML + `runs_index.json` -> browser `fetch` reads results dynamically.
 7. Narrative generation：processed/review aggregate stats -> DeepSeek Pro -> tracked `data/reviews/deepseek_v4_pro_review_narratives_64k.json` with Chinese dashboard explanations and chart notes.
 8. Review dashboard：processed sessions + reviewed split/audit + summary JSON + experiment notes + narrative JSON + metajudge/fingerprint/pair reviews -> ignored HTML -> browser `fetch` dynamically computes result cards, delusion/reality-boundary metrics, heatmaps, charts, filters, full conversations and per-session audit context.
+9. Static overview report：processed sessions + reviewed split/audit + review outputs + Reddit manifests -> tracked `reports/session_overview_report.html`，只展示聚合统计和有效性判断，不嵌入 raw transcript / raw Reddit post / raw API response。
 
 ## Key Technical Decisions
 
@@ -60,3 +61,4 @@ Last updated: 2026-06-29
 - 2026-06-29: added release hardening pre-audit, candidate split/version manifest and point-review units; LLM metajudge and semantic duplicate check remain pending.
 - 2026-06-29: completed actual DeepSeek Pro metajudge and semantic duplicate/leakage audit, reviewed split/audit materialization and dynamic runs dashboard.
 - 2026-06-29: added richer review dashboard for actual experiment results, LLM-generated natural language explanations, delusion/reality-boundary metrics, status icons, conversations, statistics charts, heatmaps, metajudge context and duplicate/leakage inspection; dashboard values are computed from data files rather than hand-written constants.
+- 2026-07-01: added a tracked static session overview report and generator, explicitly separating 42 true multi-turn interview-derived sessions from 926 Reddit single-post text-signal fictional expansions.

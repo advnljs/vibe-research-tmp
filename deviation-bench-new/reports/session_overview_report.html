@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deviation Bench New 数据整体情况报告</title>
+<style>
+:root {
+  --bg:#f5f6f8; --panel:#ffffff; --ink:#1d2529; --muted:#647176; --line:#d9e0e4;
+  --accent:#2d6f73; --accent2:#725c86; --warn:#a86422; --bad:#9e3b3f; --ok:#34784b;
+  --soft:#eaf1f1; --yellow:#fff4df; --green:#e4f1e8; --red:#f5e1e2;
+}
+* { box-sizing:border-box; }
+body { margin:0; color:var(--ink); background:var(--bg); font:14px/1.55 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; }
+header { background:var(--panel); border-bottom:1px solid var(--line); padding:24px 28px; }
+h1 { margin:0 0 8px; font-size:26px; line-height:1.2; letter-spacing:0; }
+h2 { margin:0 0 12px; font-size:20px; line-height:1.25; }
+h3 { margin:0 0 10px; font-size:15px; }
+p { margin:8px 0; }
+a { color:var(--accent); }
+.subtle { color:var(--muted); }
+.wrap { max-width:1280px; margin:0 auto; padding:18px 24px 40px; }
+.grid { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; }
+.two { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+.card,.panel { background:var(--panel); border:1px solid var(--line); border-radius:8px; }
+.card { padding:14px; min-height:92px; }
+.card span { display:block; color:var(--muted); font-size:12px; }
+.card b { display:block; font-size:27px; line-height:1.15; margin-top:4px; }
+.card small { display:block; color:var(--muted); margin-top:6px; }
+.card.warn { background:var(--yellow); border-color:#ead0a0; }
+.card.ok { background:var(--green); border-color:#b9d9c4; }
+.panel { padding:16px; margin:14px 0; }
+.callout { border-left:5px solid var(--accent); background:#fbfdfd; }
+.callout.warn { border-left-color:var(--warn); background:var(--yellow); }
+.callout.bad { border-left-color:var(--bad); background:var(--red); }
+.chip { display:inline-block; border-radius:999px; background:var(--soft); padding:2px 8px; font-size:12px; white-space:nowrap; }
+.chip.ok { background:var(--green); color:#17472b; }
+.chip.warn { background:var(--yellow); color:#704015; }
+.chip.bad { background:var(--red); color:#6f2020; }
+table { width:100%; border-collapse:collapse; background:white; border:1px solid var(--line); font-size:13px; }
+th,td { text-align:left; vertical-align:top; border-bottom:1px solid var(--line); padding:8px 9px; }
+th { background:#edf2f3; color:#2e383c; }
+.bars { display:grid; gap:8px; }
+.bar-row { display:grid; grid-template-columns:minmax(160px,250px) minmax(0,1fr) 116px; gap:10px; align-items:center; }
+.bar-label { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.bar-track { height:17px; background:#e7ecef; border-radius:999px; overflow:hidden; }
+.bar-fill { height:100%; background:var(--accent); border-radius:999px; }
+.bar-value { text-align:right; color:var(--muted); font-variant-numeric:tabular-nums; }
+.bar-value small { color:var(--muted); }
+.empty { color:var(--muted); padding:12px; border:1px dashed var(--line); border-radius:7px; }
+ul { margin:8px 0 0 20px; padding:0; }
+li { margin:5px 0; }
+code { background:#edf2f3; border-radius:4px; padding:1px 4px; }
+footer { color:var(--muted); border-top:1px solid var(--line); margin-top:24px; padding-top:14px; }
+@media (max-width:1000px) { .grid,.two { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:640px) { .wrap { padding:12px; } .grid,.two { grid-template-columns:1fr; } .bar-row { grid-template-columns:1fr; } .bar-value { text-align:left; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Deviation Bench New 数据整体情况报告</h1>
+  <div class="subtle">Generated at 2026-07-01 14:44:33 CST · dataset version: <code>deepseek_v4_pro_sessions_64k_candidate_v0.1.0</code></div>
+</header>
+<main class="wrap">
+  <section class="grid">
+    <article class="card ok"><span>Total real-data-derived sessions</span><b>968</b><small>包含真实访谈派生与 Reddit 文本信号虚构扩写</small></article>
+    <article class="card ok"><span>Real multi-turn interview-derived</span><b>42</b><small>29 psychosis-related + 13 controls</small></article>
+    <article class="card warn"><span>Reddit fictionalized sessions</span><b>926</b><small>95.7% of all sessions</small></article>
+    <article class="card warn"><span>Candidate points</span><b>1,392</b><small>Reddit contributes 97.1%</small></article>
+    <article class="card "><span>Messages</span><b>16,408</b><small>OpenAI-style role/content messages</small></article>
+    <article class="card "><span>Sessions with candidate points</span><b>940</b><small>Includes all Reddit synthetic sessions</small></article>
+    <article class="card ok"><span>Reviewed included sessions</span><b>964</b><small>4 duplicate candidates excluded</small></article>
+    <article class="card ok"><span>Validation errors</span><b>0</b><small>Reviewed pre-audit contract/PII validation list</small></article>
+  </section>
+
+  <section class="panel callout warn">
+    <h2>核心结论</h2>
+    <p>当前数据层总共有 <b>968</b> 个 real-data-derived session，但其中只有 <b>42</b> 个来自真实多轮访谈的 turn-level 语义改写；<b>926</b> 个来自 Reddit 单帖文本信号，经 DeepSeek Pro 筛选后虚构扩写为 12-message 对话。</p>
+    <p>因此，当前数据可以说是“真实数据派生 session corpus”，但不能把全部 968 个 session 说成真实对话，也不能把 Reddit session 当成临床 ground truth 或真实 conversation dynamics。Reddit 更适合作为 <b>community text-signal anchored fictional cases</b> 单独分层使用。</p>
+  </section>
+
+  <section class="panel">
+    <h2>Source Accounting</h2>
+    <table class=""><thead><tr><th>Source family</th><th>Sessions</th><th>Messages</th><th>Candidate points</th><th>Sessions with points</th><th>Message count min/median/mean/max</th><th>Exact role alternation</th><th>Transform</th><th>QC</th></tr></thead><tbody><tr><td>DAIS-C clinical real interview</td><td>15</td><td>2,618</td><td>23</td><td>6</td><td>60 / 174 / 174.5 / 477</td><td>4 / 15</td><td>llm_semantic_paraphrase: 2618</td><td>15 passed; max overlap 31</td></tr>
+<tr><td>DAIS-C control calibration</td><td>13</td><td>1,206</td><td>0</td><td>0</td><td>36 / 88 / 92.8 / 216</td><td>3 / 13</td><td>llm_semantic_paraphrase: 1206</td><td>13 passed; max overlap 31</td></tr>
+<tr><td>FEP friendship real interview</td><td>14</td><td>1,472</td><td>17</td><td>8</td><td>20 / 103 / 105.1 / 169</td><td>10 / 14</td><td>llm_semantic_paraphrase: 1472</td><td>14 passed; max overlap 31</td></tr>
+<tr><td>Reddit fictionalized text signal</td><td>926</td><td>11,112</td><td>1,352</td><td>926</td><td>12 / 12 / 12.0 / 12</td><td>926 / 926</td><td>llm_fictional_expansion: 11112</td><td>926 passed; max overlap 11</td></tr></tbody></table>
+  </section>
+
+  <section class="two">
+    <section class="panel">
+      <h2>Session Volume By Source</h2>
+      <div class="bars"><div class="bar-row"><div class="bar-label" title="Reddit fictionalized text signal">Reddit fictionalized text signal</div><div class="bar-track"><div class="bar-fill" style="width:100.00%"></div></div><div class="bar-value">926 <small>95.7%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="DAIS-C clinical real interview">DAIS-C clinical real interview</div><div class="bar-track"><div class="bar-fill" style="width:2.00%"></div></div><div class="bar-value">15 <small>1.5%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="FEP friendship real interview">FEP friendship real interview</div><div class="bar-track"><div class="bar-fill" style="width:2.00%"></div></div><div class="bar-value">14 <small>1.4%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="DAIS-C control calibration">DAIS-C control calibration</div><div class="bar-track"><div class="bar-fill" style="width:2.00%"></div></div><div class="bar-value">13 <small>1.3%</small></div></div></div>
+    </section>
+    <section class="panel">
+      <h2>Candidate Points By Category</h2>
+      <div class="bars"><div class="bar-row"><div class="bar-label" title="persecutory">persecutory</div><div class="bar-track"><div class="bar-fill" style="width:100.00%"></div></div><div class="bar-value">509 <small>36.6%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="other_reality_boundary">other_reality_boundary</div><div class="bar-track"><div class="bar-fill" style="width:48.92%"></div></div><div class="bar-value">249 <small>17.9%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="referential">referential</div><div class="bar-track"><div class="bar-fill" style="width:40.08%"></div></div><div class="bar-value">204 <small>14.7%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="control_or_influence">control_or_influence</div><div class="bar-track"><div class="bar-fill" style="width:31.04%"></div></div><div class="bar-value">158 <small>11.4%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="thought_interference">thought_interference</div><div class="bar-track"><div class="bar-fill" style="width:16.90%"></div></div><div class="bar-value">86 <small>6.2%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="grandiose">grandiose</div><div class="bar-track"><div class="bar-fill" style="width:14.73%"></div></div><div class="bar-value">75 <small>5.4%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="religious">religious</div><div class="bar-track"><div class="bar-fill" style="width:9.23%"></div></div><div class="bar-value">47 <small>3.4%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="somatic">somatic</div><div class="bar-track"><div class="bar-fill" style="width:6.09%"></div></div><div class="bar-value">31 <small>2.2%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="nihilistic">nihilistic</div><div class="bar-track"><div class="bar-fill" style="width:5.11%"></div></div><div class="bar-value">26 <small>1.9%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="jealous">jealous</div><div class="bar-track"><div class="bar-fill" style="width:2.00%"></div></div><div class="bar-value">7 <small>0.5%</small></div></div></div>
+    </section>
+  </section>
+
+  <section class="panel">
+    <h2>Session 设置是否合理？</h2>
+    <table>
+      <thead><tr><th>判断</th><th>对象</th><th>证据</th><th>使用边界 / 建议</th></tr></thead>
+      <tbody>
+      <tr><td><span class="chip warn">需要分层</span></td><td>Reddit dominates total volume</td><td>Reddit contributes 926 / 968 sessions (95.7%) and 1,352 / 1,392 candidate points (97.1%).</td><td>Do not report a single undifferentiated clinical/dialogue benchmark size; keep source-family strata.</td></tr><tr><td><span class="chip warn">有效但有限</span></td><td>Reddit sessions are synthetic dialogues</td><td>All Reddit records have dialogue_is_synthetic=True; message-count histogram is {12: 926}; exact alternation 926 / 926.</td><td>Use as real-text-signal-anchored fictional cases, not as natural multi-turn conversation evidence.</td></tr><tr><td><span class="chip ok">较强</span></td><td>Real interviews preserve case/turn structure</td><td>42 real interview-derived sessions; source-turn coverage 1.0-1.0; message count range 20-477.</td><td>This is the high-validity core for real multi-turn dialogue structure, but not all cases contain reality-boundary points.</td></tr><tr><td><span class="chip warn">仍需治理</span></td><td>Automatic checks are not release approval</td><td>Contract validation errors recorded in reviewed pre-audit: 0; max source-word overlap real=31 (&lt;32), reddit=11 (&lt;12).</td><td>License, privacy, rare-event-chain and ShareAlike review remain required before public release.</td></tr><tr><td><span class="chip warn">方法风险</span></td><td>Same model family in generation and review</td><td>DeepSeek Pro generated sessions and also ran point metajudge/semantic duplicate review. Candidate acceptance 94.3%.</td><td>Add a second model or judge-variance pass before treating candidate points as stable benchmark labels.</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="two">
+    <section class="panel">
+      <h2>Reddit Funnel</h2>
+      <table class=""><thead><tr><th>Step</th><th>Count</th></tr></thead><tbody><tr><td>Source CSV rows</td><td>8,712</td></tr>
+<tr><td>Unique posts after exact-hash deduplication</td><td>7,685</td></tr>
+<tr><td>Duplicate rows removed</td><td>1,027</td></tr>
+<tr><td>Local LLM screen candidates</td><td>2,541</td></tr>
+<tr><td>DeepSeek Pro eligible text signals</td><td>926</td></tr>
+<tr><td>Generated fictional sessions</td><td>926</td></tr>
+<tr><td>Too short</td><td>129</td></tr>
+<tr><td>Too long</td><td>66</td></tr>
+<tr><td>High-risk lexical exclusion</td><td>359</td></tr>
+<tr><td>PII/link lexical exclusion</td><td>318</td></tr>
+<tr><td>No reality-boundary lexical probe hit</td><td>4,748</td></tr></tbody></table>
+    </section>
+    <section class="panel">
+      <h2>Reddit Eligible Belief Status</h2>
+      <div class="bars"><div class="bar-row"><div class="bar-label" title="active">active</div><div class="bar-track"><div class="bar-fill" style="width:100.00%"></div></div><div class="bar-value">496 <small>53.6%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="questioned">questioned</div><div class="bar-track"><div class="bar-fill" style="width:45.56%"></div></div><div class="bar-value">226 <small>24.4%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="retrospective">retrospective</div><div class="bar-track"><div class="bar-fill" style="width:39.52%"></div></div><div class="bar-value">196 <small>21.2%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="unclear">unclear</div><div class="bar-track"><div class="bar-fill" style="width:2.00%"></div></div><div class="bar-value">8 <small>0.9%</small></div></div></div>
+      <h3 style="margin-top:16px">Screening Rejection Reasons</h3>
+      <div class="bars"><div class="bar-row"><div class="bar-label" title="model_semantic_ineligible">model_semantic_ineligible</div><div class="bar-track"><div class="bar-fill" style="width:100.00%"></div></div><div class="bar-value">1,390 <small>85.7%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="automatic_exclusion:model_reported_sensitive_content">automatic_exclusion:model_reported_sensitive_content</div><div class="bar-track"><div class="bar-fill" style="width:15.04%"></div></div><div class="bar-value">209 <small>12.9%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="automatic_exclusion:model_reported_identifying_detail">automatic_exclusion:model_reported_identifying_detail</div><div class="bar-track"><div class="bar-fill" style="width:2.00%"></div></div><div class="bar-value">22 <small>1.4%</small></div></div></div>
+    </section>
+  </section>
+
+  <section class="panel">
+    <h2>Point Metajudge Results</h2>
+    <p class="subtle">Independent second pass still used DeepSeek Pro, so this is a consistency check, not gold human evidence.</p>
+    <table class=""><thead><tr><th>Source family</th><th>Review units</th><th>Accept candidate</th><th>Revise candidate</th><th>Reject insufficient evidence</th><th>Accept no candidate</th></tr></thead><tbody><tr><td>DAIS-C clinical real interview</td><td>32</td><td>21</td><td>1</td><td>1</td><td>9</td></tr>
+<tr><td>DAIS-C control calibration</td><td>13</td><td>0</td><td>0</td><td>0</td><td>13</td></tr>
+<tr><td>FEP friendship real interview</td><td>23</td><td>15</td><td>0</td><td>2</td><td>6</td></tr>
+<tr><td>Reddit fictionalized text signal</td><td>1,352</td><td>1,277</td><td>39</td><td>36</td><td>0</td></tr></tbody></table>
+    <div class="two">
+      <section>
+        <h3 style="margin-top:16px">Overall decisions</h3>
+        <div class="bars"><div class="bar-row"><div class="bar-label" title="accept_candidate">accept_candidate</div><div class="bar-track"><div class="bar-fill" style="width:100.00%"></div></div><div class="bar-value">1,313 <small>92.5%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="revise_candidate">revise_candidate</div><div class="bar-track"><div class="bar-fill" style="width:3.05%"></div></div><div class="bar-value">40 <small>2.8%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="reject_insufficient_evidence">reject_insufficient_evidence</div><div class="bar-track"><div class="bar-fill" style="width:2.97%"></div></div><div class="bar-value">39 <small>2.7%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="accept_no_candidate_point">accept_no_candidate_point</div><div class="bar-track"><div class="bar-fill" style="width:2.13%"></div></div><div class="bar-value">28 <small>2.0%</small></div></div></div>
+      </section>
+      <section>
+        <h3 style="margin-top:16px">Flags</h3>
+        <table class=""><thead><tr><th>Flag</th><th>Count</th></tr></thead><tbody><tr><td>diagnosis_or_membership_inference</td><td>4</td></tr>
+<tr><td>identifying_detail_risk</td><td>0</td></tr></tbody></table>
+      </section>
+    </div>
+  </section>
+
+  <section class="two">
+    <section class="panel">
+      <h2>Reviewed Split / Release Status</h2>
+      <table class=""><thead><tr><th>Release split/status/action</th><th>Count</th></tr></thead><tbody><tr><td>control_calibration</td><td>13</td></tr>
+<tr><td>dev_review</td><td>146</td></tr>
+<tr><td>excluded_duplicate</td><td>4</td></tr>
+<tr><td>heldout_candidate</td><td>700</td></tr>
+<tr><td>validation</td><td>105</td></tr>
+<tr><td>status: excluded_duplicate_candidate</td><td>4</td></tr>
+<tr><td>status: included</td><td>964</td></tr>
+<tr><td>action: exclude_due_to_llm_duplicate_pair</td><td>4</td></tr>
+<tr><td>action: keep_original_split</td><td>844</td></tr>
+<tr><td>action: move_to_same_split_due_to_llm_near_duplicate</td><td>63</td></tr>
+<tr><td>action: same_split_group_confirmed</td><td>57</td></tr></tbody></table>
+    </section>
+    <section class="panel">
+      <h2>Semantic Duplicate / Leakage Review</h2>
+      <table class=""><thead><tr><th>Metric</th><th>Count</th></tr></thead><tbody><tr><td>Pair candidates reviewed</td><td>240</td></tr>
+<tr><td>duplicate</td><td>4</td></tr>
+<tr><td>near_duplicate</td><td>100</td></tr>
+<tr><td>not_duplicate</td><td>136</td></tr>
+<tr><td>recommended exclude_one</td><td>4</td></tr>
+<tr><td>recommended same_split</td><td>100</td></tr>
+<tr><td>medium/high leakage pairs</td><td>104</td></tr></tbody></table>
+    </section>
+  </section>
+
+  <section class="panel callout">
+    <h2>对 Reddit 派生对话的有效性判断</h2>
+    <p>Reddit 数据当前的作用是扩大“现实边界文本信号”的覆盖，而不是提供真实多轮对话。它的优点是来源量大、经过本地排除与 LLM semantic screening、tracked output 不含原帖文本，且严格 source-overlap 阈值通过。它的问题同样明显：上游是单帖，不是交互；所有输出都是固定 12 条消息、严格 user/assistant 交替；所有生成成功的 session 都有至少一个 candidate point；并且同一模型参与了筛选、生成和第一轮复核。</p>
+    <p>当前最稳妥的写法是：<b>926 Reddit sessions are fictionalized sessions anchored in screened community text signals</b>。下游 benchmark 不应把它们和 DAIS/FEP 真实访谈混成同一类；建议在 release split 和论文表格中单列 Reddit，并在主指标中使用 source-family weighting 或单独报告。</p>
+  </section>
+
+  <section class="panel">
+    <h2>What We Can Claim / Cannot Claim</h2>
+    <div class="two">
+      <section>
+        <h3>可以较稳妥地 claim</h3>
+        <ul>
+          <li>已经生成 968 个可结构校验的 real-data-derived OpenAI-style session。</li>
+          <li>其中 42 个保留真实多轮访谈结构，source-turn coverage 为 1.0。</li>
+          <li>926 个 Reddit 输出是去标识化、虚构扩写的 text-signal sessions。</li>
+          <li>Reviewed split 标记 964 个 included、4 个 excluded duplicate candidates。</li>
+        </ul>
+      </section>
+      <section>
+        <h3>不能 claim</h3>
+        <ul>
+          <li>不能说 968 个 session 都是真实对话。</li>
+          <li>不能说 Reddit 社区归属或 DAIS/FEP 组别就是 delusion diagnosis。</li>
+          <li>不能把 `delusion_points` 当 clinical ground truth；它们是 LLM-extracted candidate signals。</li>
+          <li>不能把 regex PII=0 和 source-overlap 通过等同于发布伦理/隐私审查完成。</li>
+        </ul>
+      </section>
+    </div>
+  </section>
+
+  <section class="panel">
+    <h2>Recommended Next Decisions</h2>
+    <ol>
+      <li>先确定下游 benchmark 的主证据层：建议以 42 个真实多轮访谈派生 session 为结构核心，Reddit 作为单独的 synthetic/community augmentation stratum。</li>
+      <li>对 Reddit strata 增加 validity gate：抽样检查 source-signal 是否被过度扩写，或用第二模型评估“是否只保留抽象信号、没有虚构关键证据”。</li>
+      <li>主结果表不要按 raw count 让 Reddit 淹没访谈来源；使用 source-family weighting、分表报告或 cap per-source contribution。</li>
+      <li>发布前继续做 license/privacy/governance review，尤其是 Reddit 平台隐私、稀有事件链和 DAIS-C ShareAlike 边界。</li>
+    </ol>
+  </section>
+
+  <section class="panel">
+    <h2>Per-source Category Detail</h2>
+    <section class="panel"><h3>DAIS-C clinical real interview point categories</h3><div class="bars"><div class="bar-row"><div class="bar-label" title="persecutory">persecutory</div><div class="bar-track"><div class="bar-fill" style="width:100.00%"></div></div><div class="bar-value">8 <small>34.8%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="referential">referential</div><div class="bar-track"><div class="bar-fill" style="width:87.50%"></div></div><div class="bar-value">7 <small>30.4%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="other_reality_boundary">other_reality_boundary</div><div class="bar-track"><div class="bar-fill" style="width:50.00%"></div></div><div class="bar-value">4 <small>17.4%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="grandiose">grandiose</div><div class="bar-track"><div class="bar-fill" style="width:25.00%"></div></div><div class="bar-value">2 <small>8.7%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="control_or_influence">control_or_influence</div><div class="bar-track"><div class="bar-fill" style="width:12.50%"></div></div><div class="bar-value">1 <small>4.3%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="somatic">somatic</div><div class="bar-track"><div class="bar-fill" style="width:12.50%"></div></div><div class="bar-value">1 <small>4.3%</small></div></div></div></section><section class="panel"><h3>FEP friendship real interview point categories</h3><div class="bars"><div class="bar-row"><div class="bar-label" title="persecutory">persecutory</div><div class="bar-track"><div class="bar-fill" style="width:100.00%"></div></div><div class="bar-value">7 <small>41.2%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="referential">referential</div><div class="bar-track"><div class="bar-fill" style="width:57.14%"></div></div><div class="bar-value">4 <small>23.5%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="grandiose">grandiose</div><div class="bar-track"><div class="bar-fill" style="width:42.86%"></div></div><div class="bar-value">3 <small>17.6%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="other_reality_boundary">other_reality_boundary</div><div class="bar-track"><div class="bar-fill" style="width:28.57%"></div></div><div class="bar-value">2 <small>11.8%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="religious">religious</div><div class="bar-track"><div class="bar-fill" style="width:14.29%"></div></div><div class="bar-value">1 <small>5.9%</small></div></div></div></section><section class="panel"><h3>Reddit fictionalized text signal point categories</h3><div class="bars"><div class="bar-row"><div class="bar-label" title="persecutory">persecutory</div><div class="bar-track"><div class="bar-fill" style="width:100.00%"></div></div><div class="bar-value">494 <small>36.5%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="other_reality_boundary">other_reality_boundary</div><div class="bar-track"><div class="bar-fill" style="width:49.19%"></div></div><div class="bar-value">243 <small>18.0%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="referential">referential</div><div class="bar-track"><div class="bar-fill" style="width:39.07%"></div></div><div class="bar-value">193 <small>14.3%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="control_or_influence">control_or_influence</div><div class="bar-track"><div class="bar-fill" style="width:31.78%"></div></div><div class="bar-value">157 <small>11.6%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="thought_interference">thought_interference</div><div class="bar-track"><div class="bar-fill" style="width:17.41%"></div></div><div class="bar-value">86 <small>6.4%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="grandiose">grandiose</div><div class="bar-track"><div class="bar-fill" style="width:14.17%"></div></div><div class="bar-value">70 <small>5.2%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="religious">religious</div><div class="bar-track"><div class="bar-fill" style="width:9.31%"></div></div><div class="bar-value">46 <small>3.4%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="somatic">somatic</div><div class="bar-track"><div class="bar-fill" style="width:6.07%"></div></div><div class="bar-value">30 <small>2.2%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="nihilistic">nihilistic</div><div class="bar-track"><div class="bar-fill" style="width:5.26%"></div></div><div class="bar-value">26 <small>1.9%</small></div></div>
+<div class="bar-row"><div class="bar-label" title="jealous">jealous</div><div class="bar-track"><div class="bar-fill" style="width:2.00%"></div></div><div class="bar-value">7 <small>0.5%</small></div></div></div></section>
+  </section>
+
+  <footer>
+    <p>Inputs: <code>data/processed/*_64k.jsonl</code>, reviewed split/audit manifests, point metajudge outputs, semantic duplicate review outputs, and Reddit screening manifests. This page intentionally does not embed raw transcript text, raw Reddit posts, or raw API responses.</p>
+  </footer>
+</main>
+</body>
+</html>

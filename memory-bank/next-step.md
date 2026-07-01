@@ -1,6 +1,6 @@
 # Next Step
 
-Last updated: 2026-06-29
+Last updated: 2026-07-01
 
 ## Current Decision State
 
@@ -32,12 +32,19 @@ Last updated: 2026-06-29
 - Review dashboard：ignored `deviation-bench-new/data/work/review_dashboard/index.html`，展示实际实验结果、delusion/reality-boundary 指标、LLM 生成自然语言说明、状态图标、统计图表、热力图、session 过滤、完整对话、metajudge rationale 和 duplicate/leakage pair；页面统计由数据动态聚合。
 - Reviewed release split：control_calibration 13、dev_review 146、validation 105、heldout_candidate 700、excluded_duplicate 4。
 
+2026-07-01 已新增静态整体情况报告：
+
+- Report generator：`deviation-bench-new/src/build_session_overview_report.py`。
+- Report HTML：`deviation-bench-new/reports/session_overview_report.html`。
+- 核心结论：968 个 real-data-derived sessions 中，42 个是原生真实多轮访谈派生，926 个是 Reddit 单帖文本信号虚构 12-message sessions。Reddit 占 95.7% sessions 和 97.1% candidate points，不能被称为真实对话或 clinical ground truth。
+
 ## Immediate Queue
 
 1. P1：做发布前治理检查：许可/ShareAlike、社区隐私、残余命名实体和稀有事件链；自动 regex PII=0 不是绝对匿名保证。
-2. P1：基于 reviewed split manifest 重新定义下游 benchmark task；在此之前不恢复旧 memory runner 扩展。
-3. P1：如要进入 release package，明确 `excluded_duplicate_candidate` 的处理策略：默认不进入下游 benchmark release，但保留 processed record 和审计谱系。
-4. P2：可补第二模型/第二 judge variance check；当前 actual flow 只使用 DeepSeek Pro 作为 metajudge / semantic duplicate reviewer。
+2. P1：为 Reddit strata 做有效性 gate 和 source-family weighting/cap 决策；不要让 926 个虚构扩写 session 淹没 42 个真实多轮访谈派生 session。
+3. P1：基于 reviewed split manifest 重新定义下游 benchmark task；在此之前不恢复旧 memory runner 扩展。
+4. P1：如要进入 release package，明确 `excluded_duplicate_candidate` 的处理策略：默认不进入下游 benchmark release，但保留 processed record 和审计谱系。
+5. P2：可补第二模型/第二 judge variance check；当前 actual flow 只使用 DeepSeek Pro 作为 metajudge / semantic duplicate reviewer。
 
 ## Important Boundaries
 
@@ -47,6 +54,7 @@ Last updated: 2026-06-29
 - `delusion_points` 是 `llm_extracted_candidate_not_diagnosis`，允许为空。
 - 正式数据只使用 `deepseek-v4-pro`；Flash 只做 smoke；context budget 为 65,536。
 - `data/work/` 中的 normalized raw turns、API request/response、checkpoint 和浏览页不得提交。
+- `reports/session_overview_report.html` 是 tracked 静态聚合报告，不含 raw transcript / raw Reddit post / raw API response；可用于快速向用户解释当前数据边界。
 
 ## Handoff Entry Points
 

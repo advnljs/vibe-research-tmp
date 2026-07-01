@@ -1,6 +1,6 @@
 # Specs
 
-Last updated: 2026-06-29
+Last updated: 2026-07-01
 
 This file records persistent user requirements and project constraints in compact form. The full source of truth remains `AGENTS.md` plus the three primary memory-bank files.
 
@@ -14,6 +14,7 @@ This file records persistent user requirements and project constraints in compac
 - Use `deepseek-v4-pro` for formal transformation/extraction with a 64k (`65,536`) context budget; `deepseek-v4-flash` is allowed for smoke tests only.
 - Extract delusion/reality-boundary points per case, but allow an empty list and do not infer points from diagnosis group or source community.
 - Keep DAIS-C clinical, FEP, DAIS-C control, and Reddit community-fictionalized outputs distinguishable.
+- When reporting `deviation-bench-new`, explicitly distinguish 42 true multi-turn interview-derived sessions from 926 Reddit single-post text-signal fictional expansions; never describe all 968 sessions as real dialogues.
 - Do not convert this into jailbreak or safety-bypass research.
 - Use real clinical/community data only as anchors for abstracted patterns or fictional de-identified scenarios by default.
 - Do not use human annotation as paper-facing benchmark evidence.
@@ -40,6 +41,7 @@ This file records persistent user requirements and project constraints in compac
 - Treat regex PII=0 as an automatic check, not a guarantee of anonymity.
 - Keep local browser/manual reading as development/governance inspection, not paper-facing annotation.
 - Local result UI should support dynamic browsing of actual experiment results, LLM-generated natural language explanations, delusion/reality-boundary metrics, related charts/heatmaps/status icons, conversations and review outputs for `deviation-bench-new`; current entry is ignored `data/work/review_dashboard/index.html`. The UI should derive statistics from current data files rather than hand-written fixed numbers, and narrative generation should use aggregate statistics rather than raw transcripts or raw community posts.
+- Static reporting should preserve the same privacy boundary: `reports/session_overview_report.html` may include aggregate counts and validity judgments, but must not embed raw transcript text, raw Reddit posts, or raw API responses.
 
 ## Previous Agent-Memory Acceptance Criteria (Paused)
 

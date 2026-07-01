@@ -269,6 +269,23 @@ http://127.0.0.1:8770/data/work/review_dashboard/index.html
 - semantic fingerprint；
 - duplicate/leakage pair 图表与跳转。
 
+### 11. 静态整体情况报告
+
+```bash
+python3 deviation-bench-new/src/build_session_overview_report.py
+```
+
+输出：
+
+- `reports/session_overview_report.html`
+
+该页面是 tracked 静态 HTML 报告，不嵌入 raw transcript、raw Reddit post 或 raw API response。报告从三份 processed session JSONL、reviewed split/audit、point metajudge、semantic duplicate review 和 Reddit screening manifest 重新聚合统计，重点说明：
+
+- 968 个 real-data-derived sessions 中，42 个是原生真实多轮访谈派生，926 个是 Reddit 单帖文本信号的虚构 12-message 扩写；
+- Reddit session 占总 session 的 95.7%，贡献 97.1% candidate points，不能被称为真实对话或 clinical ground truth；
+- 真实访谈派生 session、DAIS-C control calibration 和 Reddit fictionalized sessions 应在下游 benchmark 中分层报告，不应混成一个统一 clinical/dialogue corpus；
+- 当前数据层通过结构/QC/reviewed split 检查，但发布前仍需要 license/privacy/governance review 和 Reddit strata validity gate。
+
 ## 关键边界
 
 - 不把“精神病性障碍访谈”等同于“每例都有妄想”。

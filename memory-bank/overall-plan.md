@@ -1,6 +1,6 @@
 # Overall Plan
 
-Last updated: 2026-06-29
+Last updated: 2026-07-01
 
 This file records the overall plan and the current implementation position. Update it whenever the plan, current phase, or next action changes.
 
@@ -17,7 +17,7 @@ This file records the overall plan and the current implementation position. Upda
 
 ## Current Phase
 
-Phase: 第一波真实数据派生 session 已完成（968 sessions）；data release hardening 已完成本地预审计、actual DeepSeek Pro point metajudge、semantic duplicate/leakage review、reviewed split/audit materialization、动态 runs dashboard 和对话/图表 review dashboard。下一阶段是发布治理检查，然后再定义下游 benchmark 任务。
+Phase: 第一波真实数据派生 session 已完成（968 sessions）；data release hardening 已完成本地预审计、actual DeepSeek Pro point metajudge、semantic duplicate/leakage review、reviewed split/audit materialization、动态 runs dashboard、对话/图表 review dashboard，以及 2026-07-01 静态整体情况/Reddit 有效性报告。下一阶段是发布治理检查和 Reddit strata validity gate，然后再定义下游 benchmark 任务。
 
 当前 2026-06-29 candidate release hardening 状态：
 
@@ -28,7 +28,8 @@ Phase: 第一波真实数据派生 session 已完成（968 sessions）；data re
 - 实际 semantic duplicate/leakage review 已完成：968 fingerprints + 240 pair reviews。
 - Reviewed split manifest 已生成：`control_calibration=13`、`dev_review=146`、`validation=105`、`heldout_candidate=700`、`excluded_duplicate=4`。
 - Review dashboard 已生成：ignored `deviation-bench-new/data/work/review_dashboard/index.html`，可动态读取 processed sessions、reviewed splits、metajudge、duplicate review、summary JSON、experiment note 和 LLM narrative JSON，展示实际实验结果、delusion/reality-boundary 指标、自然语言说明、统计图表、热力图与完整对话；统计结果由当前数据实时聚合，不手写固定数字。
-- 尚未完成：license/privacy/governance release review 和下游 benchmark task 定义。
+- Static overview report 已生成：tracked `deviation-bench-new/reports/session_overview_report.html`，强调 42 个真实多轮访谈派生 session 与 926 个 Reddit 单帖文本信号虚构 session 的边界；Reddit 占 95.7% sessions / 97.1% candidate points，不能被称为真实对话。
+- 尚未完成：license/privacy/governance release review、Reddit strata validity gate/source-family weighting 决策和下游 benchmark task 定义。
 
 ## Auxiliary Workspace Status
 

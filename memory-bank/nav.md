@@ -1,6 +1,6 @@
 # Memory Bank Navigation
 
-Last updated: 2026-06-29
+Last updated: 2026-07-01
 
 Canonical project navigation is `研究导航.md`. This file is a compact memory-bank-local index.
 
@@ -37,6 +37,8 @@ Canonical project navigation is `研究导航.md`. This file is a compact memory
 - `deviation-bench-new/data/work/runs_dashboard/index.html`: ignored dynamic local page that fetches run/result files.
 - `deviation-bench-new/src/build_review_dashboard.py`: generator for the richer local review dashboard.
 - `deviation-bench-new/src/generate_review_narratives.py`: generator for Chinese LLM narrative explanations from aggregate review stats.
+- `deviation-bench-new/src/build_session_overview_report.py`: generator for a tracked static source-accounting and Reddit-validity report.
+- `deviation-bench-new/reports/session_overview_report.html`: static HTML report explaining 42 true multi-turn interview-derived sessions vs 926 Reddit fictionalized text-signal sessions vs 968 total real-data-derived sessions.
 - `deviation-bench-new/data/reviews/deepseek_v4_pro_review_narratives_64k.json`: tracked DeepSeek Pro narrative JSON consumed by the review dashboard.
 - `deviation-bench-new/data/work/review_dashboard/index.html`: ignored dynamic local page with actual experiment results, delusion/reality-boundary metrics, status icons, charts, heatmaps, filters, conversations, metajudge rationales and duplicate/leakage review.
 - The files below belong to the paused historical agent-memory route:
@@ -73,6 +75,7 @@ python3 deviation-bench-new/src/finalize_release_hardening.py
 python3 deviation-bench-new/src/build_runs_dashboard.py
 python3 deviation-bench-new/src/generate_review_narratives.py --provider openai --model deepseek-v4-pro --base-url https://api.deepseek.com --context-window-tokens 65536 --thinking-mode disabled
 python3 deviation-bench-new/src/build_review_dashboard.py
+python3 deviation-bench-new/src/build_session_overview_report.py
 python3 -m unittest discover -s deviation-bench-new/tests -v
 python3 deviation-bench-new/src/build_dataset_browser.py --input 'deviation-bench-new/data/processed/*_64k.jsonl'
 python3 deviation-bench/src/deviation_bench_pilot.py --validate-only

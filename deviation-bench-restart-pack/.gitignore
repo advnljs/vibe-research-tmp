@@ -1,0 +1,16 @@
+# Local-only migration material.
+ds_key.txt
+*_key.txt
+*key*.txt
+
+# Duplicate raw downloaded datasets are copied here only so the directory can be
+# moved locally as a self-contained handoff pack. They should not be committed
+# a second time from this restart pack.
+data_sources/downloaded/
+
+# Local run outputs if a future agent starts executing from this pack.
+results/
+runs/
+__pycache__/
+*.py[cod]
+.pytest_cache/
